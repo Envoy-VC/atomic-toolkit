@@ -13,7 +13,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 
 // Load Atomic Asset Image
-let buffer = fs.readFileSync('assets/trees-wallpaper.jpg');
+let buffer = fs.readFileSync('assets/test.jpeg');
 let blob = new Blob([buffer]);
 let file = new File([blob], 'trees-wallpaper.jpg', { type: 'image/jpeg' });
 
@@ -76,7 +76,7 @@ describe('Atomic Toolkit', () => {
             tags: [
                 {
                     name: 'Type',
-                    value: 'file',
+                    value: 'image',
                 },
                 {
                     name: 'Title',

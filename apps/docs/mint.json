@@ -7,50 +7,48 @@
     },
     "favicon": "/favicon.svg",
     "colors": {
-        "primary": "#0D9373",
-        "light": "#07C983",
-        "dark": "#0D9373",
+        "primary": "#4779FF",
+        "light": "#6AA5FF",
+        "dark": "#4779FF",
+        "background": {
+            "dark": "#121212"
+        },
         "anchors": {
-            "from": "#0D9373",
-            "to": "#07C983"
+            "from": "#7C34FF",
+            "to": "#FE9195"
         }
     },
     "topbarLinks": [
         {
-            "name": "Support",
-            "url": "mailto:hi@mintlify.com"
+            "name": "GitHub",
+            "url": "https://github.com/Envoy-VC/atomic-toolkit"
         }
     ],
     "topbarCtaButton": {
-        "name": "Dashboard",
-        "url": "https://dashboard.mintlify.com"
+        "name": "Get Started",
+        "url": "https://github.com/Envoy-VC/atomic-toolkit"
     },
-    "tabs": [
-        {
-            "name": "API Reference",
-            "url": "api-reference"
-        }
-    ],
+    "tabs": [],
     "anchors": [
         {
             "name": "Documentation",
             "icon": "book-open-cover",
-            "url": "https://mintlify.com/docs"
+            "url": "https://atomictoolkit.mintlify.app"
         },
         {
-            "name": "Community",
-            "icon": "slack",
+            "name": "GitHub",
+            "icon": "github",
             "url": "https://mintlify.com/community"
         },
         {
-            "name": "Blog",
-            "icon": "newspaper",
-            "url": "https://mintlify.com/blog"
+            "name": "What's New",
+            "icon": "rocket",
+            "url": "https://github.com/Envoy-VC/atomic-toolkit/tree/main/CHANGELOG.md"
         }
     ],
     "navigation": [
         {
-            "group": "Get Started",
+            "group": "Introduction",
             "pages": ["introduction", "quickstart", "development"]
         },
         {
@@ -62,23 +60,12 @@
                 "essentials/settings",
                 "essentials/navigation"
             ]
-        },
-        {
-            "group": "API Documentation",
-            "pages": ["api-reference/introduction"]
-        },
-        {
-            "group": "Endpoint Examples",
-            "pages": [
-                "api-reference/endpoint/get",
-                "api-reference/endpoint/create",
-                "api-reference/endpoint/delete"
-            ]
         }
     ],
+    "backgroundImage": "https://ty4fqyqcpuijbv4cgpj46eesp7usbxaf5sqd3fcvkhayp5r4l4sq.arweave.dev/njhYYgJ9EJDXgjPTzxCSf-kg3AXsoD2UVVHBh_Y8XyU",
     "footerSocials": {
-        "twitter": "https://twitter.com/mintlify",
-        "github": "https://github.com/mintlify",
-        "linkedin": "https://www.linkedin.com/company/mintsearch"
+        "twitter": "https://twitter.com/Envoy_1084",
+        "github": "https://github.com/Envoy-VC/atomic-toolkit",
+        "linkedin": "https://www.linkedin.com/in/vedant-chainani"
     }
 }

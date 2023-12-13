@@ -21,7 +21,7 @@ importers:
         specifier: latest
         version: 1.11.1
 
-  packages/example:
+  packages/atomic-toolkit:
     devDependencies:
       '@changesets/cli':
         specifier: ^2.27.1
@@ -2489,7 +2489,7 @@ packages:
   /arconnect@0.4.2:
     resolution: {integrity: sha512-Jkpd4QL3TVqnd3U683gzXmZUVqBUy17DdJDuL/3D9rkysLgX6ymJ2e+sR+xyZF5Rh42CBqDXWNMmCjBXeP7Gbw==}
     dependencies:
-      arweave: 1.13.7
+      arweave: 1.14.4
     dev: true
 
   /are-we-there-yet@2.0.0:
@@ -2630,7 +2630,7 @@ packages:
       arconnect: 0.4.2
       asn1.js: 5.4.1
       base64-js: 1.5.1
-      bignumber.js: 9.1.1
+      bignumber.js: 9.1.2
     dev: true
 
   /arweave@1.14.4:
@@ -7825,7 +7825,7 @@ packages:
   /warp-arbundles@1.0.4:
     resolution: {integrity: sha512-KeRac/EJ7VOK+v5+PSMh2SrzpCKOAFnJICLlqZWt6qPkDCzVwcrNE5wFxOlEk5U170ewMDAB3e86UHUblevXpw==}
     dependencies:
-      arweave: 1.13.7
+      arweave: 1.14.4
       base64url: 3.0.1
       buffer: 6.0.3
       warp-isomorphic: 1.0.7
