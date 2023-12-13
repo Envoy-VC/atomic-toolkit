@@ -6,7 +6,7 @@ import { WarpFactory } from 'warp-contracts';
 import { DeployPlugin } from 'warp-contracts-plugin-deploy';
 import { ethers } from 'ethers';
 
-import AtomicToolkit from '..';
+import { AtomicToolkitWeb } from '../index';
 
 // Load dotenv configuration from .env.local
 import dotenv from 'dotenv';
@@ -17,9 +17,9 @@ let buffer = fs.readFileSync('assets/test.jpeg');
 let blob = new Blob([buffer]);
 let file = new File([blob], 'trees-wallpaper.jpg', { type: 'image/jpeg' });
 
-describe('Atomic Toolkit', () => {
+describe('Atomic Toolkit Web', () => {
     it('Should be a Class', () => {
-        expect(AtomicToolkit).toBeInstanceOf(Function);
+        expect(AtomicToolkitWeb).toBeInstanceOf(Function);
     });
     it('Should have createAtomicAssetFunction', async () => {
         const warp = WarpFactory.forTestnet().use(new DeployPlugin());
@@ -27,7 +27,7 @@ describe('Atomic Toolkit', () => {
             url: 'node1',
             token: 'matic',
         });
-        const atomicToolkit = new AtomicToolkit({
+        const atomicToolkit = new AtomicToolkitWeb({
             warp,
             irys,
         });
@@ -39,7 +39,7 @@ describe('Atomic Toolkit', () => {
             url: 'node1',
             token: 'matic',
         });
-        expect(() => new AtomicToolkit({ warp, irys })).toThrowError(
+        expect(() => new AtomicToolkitWeb({ warp, irys })).toThrowError(
             'Warp instance must have DeployPlugin',
         );
     });
@@ -68,37 +68,28 @@ describe('Atomic Toolkit', () => {
         });
         await irys.ready();
 
-        const atomicToolkit = new AtomicToolkit({
+        const atomicToolkit = new AtomicToolkitWeb({
             warp,
             irys,
         });
         const tx = await atomicToolkit.createAtomicAsset(file, {
-            tags: [
-                {
-                    name: 'Type',
-                    value: 'image',
+            initialState: JSON.stringify({
+                balances: {
+                    'Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4': 1,
                 },
-                {
-                    name: 'Title',
-                    value: 'test',
-                },
-                {
-                    name: 'Description',
-                    value: 'test',
-                },
-                {
-                    name: 'Init-State',
-                    value: JSON.stringify({
-                        balances: {
-                            '9WQ7xH2LOuqfAccjGquck8eaKARg1vMhRJaOo3LJL14': 100,
-                        },
-                        name: 'Trees Wallpaper',
-                        description: 'Trees Wallpaper',
-                        ticker: 'TREES',
-                        claimable: [],
-                    }),
-                },
-            ],
+                name: 'Test Image',
+                description: 'Test Image',
+                ticker: 'Test',
+                claimable: [],
+            }),
+            discoverability: {
+                Title: 'Test Image',
+                Description: 'Test Image',
+                Type: 'image',
+            },
+            license: {
+                License: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',
+            },
         });
         console.log(tx);
         expect(tx).toBeDefined();
