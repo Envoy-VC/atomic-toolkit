@@ -16,6 +16,11 @@ class AtomicToolkit {
     protected warp: Warp;
     protected irys: Irys;
 
+    /**
+     * Creates a new instance of the AtomicToolkitWeb class.
+     * @param {AtomicToolkit} options - The options for the AtomicToolkit instance.
+     * @throws {Error} If the Warp instance does not have the DeployPlugin.
+     */
     constructor({ warp, irys }: AtomicToolkitOpts) {
         if (!warp.hasPlugin('deploy')) {
             throw new Error('Warp instance must have DeployPlugin');
@@ -66,7 +71,7 @@ class AtomicToolkit {
 
     /**
      * Retrieves the Irys node from the API configuration URL.
-     * 
+     *
      * @returns The Irys node as either 'node1' or 'node2'.
      * @throws Error if the node is 'devnet'.
      */
