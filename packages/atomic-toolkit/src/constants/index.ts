@@ -13,3 +13,14 @@ export const BaseTradableAssetTags: Tag[] = [
     },
     { name: 'Indexed-By', value: 'ucm' },
 ];
+
+export const BaseCollectionTags: Tag[] = [
+    {
+        name: 'Content-Type',
+        value: 'application/json',
+    },
+    {
+        name: 'Data-Protocol',
+        value: 'Collection',
+    },
+];

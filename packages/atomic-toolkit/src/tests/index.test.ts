@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, beforeEach } from 'vitest';
 import fs from 'fs';
 
 import { WebIrys } from '@irys/sdk';
@@ -18,32 +18,7 @@ let blob = new Blob([buffer]);
 let file = new File([blob], 'trees-wallpaper.jpg', { type: 'image/jpeg' });
 
 describe('Atomic Toolkit Web', () => {
-    it('Should be a Class', () => {
-        expect(AtomicToolkitWeb).toBeInstanceOf(Function);
-    });
-    it('Should have createAtomicAssetFunction', async () => {
-        const warp = WarpFactory.forTestnet().use(new DeployPlugin());
-        const irys = new WebIrys({
-            url: 'node1',
-            token: 'matic',
-        });
-        const atomicToolkit = new AtomicToolkitWeb({
-            warp,
-            irys,
-        });
-        expect(atomicToolkit.createAtomicAsset).toBeInstanceOf(Function);
-    });
-    it('Should throw error if warp instance does not have deploy plugin', async () => {
-        const warp = WarpFactory.forTestnet();
-        const irys = new WebIrys({
-            url: 'node1',
-            token: 'matic',
-        });
-        expect(() => new AtomicToolkitWeb({ warp, irys })).toThrowError(
-            'Warp instance must have DeployPlugin',
-        );
-    });
-    it('Should Create a Atomic Asset', async () => {
+    async function initialize() {
         let provider = new ethers.providers.JsonRpcProvider(
             process.env.RPC_URL,
         );
@@ -72,16 +47,46 @@ describe('Atomic Toolkit Web', () => {
             warp,
             irys,
         });
+
+        return { warp, irys, atomicToolkit };
+    }
+    it('Should be a Class', () => {
+        expect(AtomicToolkitWeb).toBeInstanceOf(Function);
+    });
+    it('Should have createAtomicAssetFunction', async () => {
+        const warp = WarpFactory.forTestnet().use(new DeployPlugin());
+        const irys = new WebIrys({
+            url: 'node1',
+            token: 'matic',
+        });
+        const atomicToolkit = new AtomicToolkitWeb({
+            warp,
+            irys,
+        });
+        expect(atomicToolkit.createAtomicAsset).toBeInstanceOf(Function);
+    });
+    it('Should throw error if warp instance does not have deploy plugin', async () => {
+        const warp = WarpFactory.forTestnet();
+        const irys = new WebIrys({
+            url: 'node1',
+            token: 'matic',
+        });
+        expect(() => new AtomicToolkitWeb({ warp, irys })).toThrowError(
+            'Warp instance must have DeployPlugin',
+        );
+    });
+    it('Should Create a Atomic Asset', async () => {
+        const { atomicToolkit } = await initialize();
         const tx = await atomicToolkit.createAtomicAsset(file, {
-            initialState: JSON.stringify({
+            initialState: {
+                ticker: 'Test',
+                name: 'Test Image',
+                description: 'Test Image',
                 balances: {
                     'Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4': 1,
                 },
-                name: 'Test Image',
-                description: 'Test Image',
-                ticker: 'Test',
                 claimable: [],
-            }),
+            },
             discoverability: {
                 Title: 'Test Image',
                 Description: 'Test Image',
@@ -92,7 +97,29 @@ describe('Atomic Toolkit Web', () => {
                 License: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',
             },
         });
-        console.log(tx);
+        expect(tx).toBeDefined();
+    });
+    it('Should Create a Collection', async () => {
+        const { atomicToolkit } = await initialize();
+        const tx = await atomicToolkit.createCollection({
+            assetIds: ['QmZ7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4'],
+            collection: {
+                Name: 'Test Collection',
+                'Collection-Type': 'Test',
+            },
+            discoverability: {
+                Title: 'Test Collection',
+                Description: 'Test Collection',
+                Type: 'Document',
+                'Topic:Test': 'Test',
+            },
+            stamp: {
+                isStampable: true,
+                collectionName: 'Test Collection',
+                ticker: 'Test',
+                owner: 'Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4',
+            },
+        });
         expect(tx).toBeDefined();
     });
 });
