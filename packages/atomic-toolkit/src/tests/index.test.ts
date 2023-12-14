@@ -86,6 +86,7 @@ describe('Atomic Toolkit Web', () => {
                 Title: 'Test Image',
                 Description: 'Test Image',
                 Type: 'image',
+                'Topic:Test': 'Test',
             },
             license: {
                 License: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',

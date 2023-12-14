@@ -1,21 +1,26 @@
 import { Tag } from 'arbundles';
 import { CreateTradableAssetOpts } from '../types';
-import {
-    ContractIdentifierTags,
-    DiscoverabilityTags,
-} from '../types';
+import { ContractIdentifierTags, DiscoverabilityTags } from '../types';
 
 import { BaseTradableAssetTags } from '../constants';
 
-const addContentTypeTag = (file: File, tags: Tag[]): Tag[] => {
-    const contentType = file.type;
-    if (contentType) {
-        tags.push({ name: 'Content-Type', value: contentType });
+import mime from 'mime';
+
+const addContentTypeTag = (file: File | string, tags: Tag[]): Tag[] => {
+    let contentType: string;
+    if (file instanceof File) {
+        contentType = file.type;
+    } else {
+        contentType = mime.getType(file) ?? '';
     }
+    tags.push({ name: 'Content-Type', value: contentType });
     return tags;
 };
 
-const buildTradableAssetTags = (opts: CreateTradableAssetOpts): Tag[] => {
+const buildTradableAssetTags = (
+    file: File | string,
+    opts: CreateTradableAssetOpts,
+): Tag[] => {
     const { discoverability, license, initialState } = opts;
     const contractIdentifier = opts?.contractIdentifier ?? null;
     const additionalTags = opts?.additionalTags ?? [];
@@ -60,7 +65,7 @@ const buildTradableAssetTags = (opts: CreateTradableAssetOpts): Tag[] => {
         tags.push(tag);
     });
 
-    return tags;
+    return addContentTypeTag(file, tags);
 };
 
-export { buildTradableAssetTags, addContentTypeTag };
+export { buildTradableAssetTags };

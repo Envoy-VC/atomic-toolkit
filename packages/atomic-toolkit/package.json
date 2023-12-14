@@ -34,6 +34,7 @@
         "arbundles": "^0.10.0",
         "dotenv": "^16.3.1",
         "ethers": "v5",
+        "mime": "^4.0.0",
         "tsup": "^8.0.1",
         "typescript": "^5.3.3",
         "vitest": "^1.0.4",

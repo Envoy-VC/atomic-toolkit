@@ -23,7 +23,7 @@ class AtomicToolkit {
         pathToFile: string,
         opts: CreateTradableAssetOpts,
     ): Promise<ContractDeploy> {
-        const tags = buildTradableAssetTags(opts);
+        const tags = buildTradableAssetTags(pathToFile, opts);
         await this.irys.ready();
         const tx = await this.irys.uploadFile(pathToFile, {
             tags: tags,

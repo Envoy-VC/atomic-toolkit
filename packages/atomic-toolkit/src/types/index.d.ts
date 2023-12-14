@@ -25,7 +25,7 @@ export type AtomicToolkitWebOpts = {
     irys: WebIrys;
 };
 
-export type DiscoverabilityTags = {
+export type DiscoverabilityTags = Record<`Topic:${string}`, string> & {
     /**
      * Type of asset. One or more of: meme, image, video, podcast, blog-post, social-post, music, audio, token, web-page,
      * profile, contract, presentation, document, collection, app, other note: If you have further suggestions for asset
@@ -41,11 +41,6 @@ export type DiscoverabilityTags = {
      * A longer description of 300 characters that can provide a set of details further describing the asset
      */
     Description: string;
-    /**
-     * Zero to many topics that can be used to locate assets of a given type by a specific topic. For example: an asset of
-     * type meme might have the following two topics, Funny, Sports.
-     */
-    Topic?: string;
 };
 
 export type ContractIdentifierTags = {

@@ -2,7 +2,7 @@ import { ContractDeploy, Warp } from 'warp-contracts';
 import { WebIrys } from '@irys/sdk';
 
 // Helpers
-import { addContentTypeTag, buildTradableAssetTags } from './helpers';
+import { buildTradableAssetTags } from './helpers';
 
 // Types
 import { AtomicToolkitWebOpts, CreateTradableAssetOpts } from './types';
@@ -23,11 +23,10 @@ class AtomicToolkitWeb {
         file: File,
         opts: CreateTradableAssetOpts,
     ): Promise<ContractDeploy> {
-        const tags = buildTradableAssetTags(opts);
-        const tagsWithContentType = addContentTypeTag(file, tags);
+        const tags = buildTradableAssetTags(file, opts);
         await this.irys.ready();
         const tx = await this.irys.uploadFile(file, {
-            tags: tagsWithContentType,
+            tags: tags,
         });
         const contract = this.warp.register(tx.id, this.getIrysNode());
         return contract;
