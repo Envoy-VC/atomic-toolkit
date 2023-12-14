@@ -5,9 +5,14 @@ import { ContractIdentifierTags, DiscoverabilityTags } from '../types';
 import { BaseTradableAssetTags } from '../constants';
 
 import mime from 'mime';
+import { map, get } from 'lodash';
 
 const addContentTypeTag = (file: File | string, tags: Tag[]): Tag[] => {
     let contentType: string;
+    if (tags.filter((t) => t.name === 'Content-Type').length > 0) {
+        return tags;
+    }
+
     if (file instanceof File) {
         contentType = file.type;
     } else {
@@ -21,50 +26,44 @@ const buildTradableAssetTags = (
     file: File | string,
     opts: CreateTradableAssetOpts,
 ): Tag[] => {
-    const { discoverability, license, initialState } = opts;
-    const contractIdentifier = opts?.contractIdentifier ?? null;
-    const additionalTags = opts?.additionalTags ?? [];
+    const {
+        discoverability,
+        license,
+        initialState,
+        contractIdentifier,
+        additionalTags = [],
+    } = opts;
+
     const tags: Tag[] = [];
-
-    // Push Initial Contract State
     tags.push({ name: 'Init-State', value: initialState });
-
-    // Push Discoverability Tags
-    Object.keys(discoverability).forEach((key) => {
-        tags.push({
+    tags.push(...map(discoverability, (value, key) => ({ name: key, value })));
+    tags.push(...map(license, (value, key) => ({ name: key, value })));
+    tags.push(
+        ...map(contractIdentifier, (value, key) => ({
             name: key,
-            value: discoverability[key as keyof DiscoverabilityTags] ?? '',
-        });
-    });
+            value: get(value, key, ''),
+        })),
+    );
 
-    // Push License Tags
-    Object.keys(license).forEach((key) => {
-        tags.push({
-            name: key,
-            value: license[key] ?? '',
-        });
-    });
-
-    if (contractIdentifier) {
-        Object.keys(contractIdentifier).forEach((key) => {
-            tags.push({
-                name: key,
-                value:
-                    contractIdentifier[key as keyof ContractIdentifierTags] ??
-                    '',
-            });
-        });
-    } else {
-        BaseTradableAssetTags.forEach((tag) => {
-            tags.push(tag);
-        });
+    if (!contractIdentifier) {
+        tags.push(...BaseTradableAssetTags);
     }
 
-    // Push Additional Tags
-    additionalTags.forEach((tag) => {
-        tags.push(tag);
-    });
+    tags.push(...additionalTags);
 
+    // Check for Duplicates
+    const duplicateTags = tags.filter(
+        (tag, index, self) =>
+            self.findIndex((t) => t.name === tag.name) !== index,
+    );
+    if (duplicateTags.length > 0) {
+        throw new Error(
+            `Duplicate tag names found: ${duplicateTags
+                .map((tag) => tag.name)
+                .join(', ')}`,
+        );
+    }
+    // Add Content Type
     return addContentTypeTag(file, tags);
 };
 

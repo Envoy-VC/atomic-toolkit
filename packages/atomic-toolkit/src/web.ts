@@ -32,6 +32,8 @@ class AtomicToolkitWeb {
         return contract;
     }
 
+    public createCollection() {}
+
     public getIrysNode() {
         const url = this.irys.api.config.url.href;
         const node = url?.split('https://')[1]?.split('.irys.xyz')[0];
