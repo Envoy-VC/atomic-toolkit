@@ -1,14 +1,14 @@
 {
     "private": true,
     "scripts": {
-        "build": "turbo build",
+        "build": "turbo build --filter=atomic-toolkit",
         "dev": "turbo dev",
         "lint": "turbo lint",
         "clean": "turbo clean && rm -rf node_modules",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
         "changeset": "changeset",
         "version-packages": "changeset version",
-        "release": "turbo build && changeset publish",
+        "release": "turbo build --filter=atomic-toolkit && changeset publish",
         "test": "turbo run test"
     },
     "pipeline": {

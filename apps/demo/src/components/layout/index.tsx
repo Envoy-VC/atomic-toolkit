@@ -1,8 +1,10 @@
 import React from 'react';
 import { AntDesignConfigProvider, NotificationProvider } from '~/providers';
 
+import { ArweaveWalletKit } from 'arweave-wallet-kit';
+
 import clsx from 'clsx';
-import { Navbar, SEO } from '~/components/common';
+import { Navbar, SEO, Sidebar } from '~/components/common';
 
 // Font
 import { Inter } from 'next/font/google';
@@ -16,14 +18,32 @@ const Layout = ({ children }: Props) => {
 	return (
 		<>
 			<SEO />
-			<AntDesignConfigProvider>
-				<NotificationProvider>
-					<div className={clsx(inter.className)}>
-						<Navbar />
-						{children}
-					</div>
-				</NotificationProvider>
-			</AntDesignConfigProvider>
+			<ArweaveWalletKit
+				theme={{
+					displayTheme: 'light',
+				}}
+				config={{
+					permissions: [
+						'ACCESS_ALL_ADDRESSES',
+						'ACCESS_ADDRESS',
+						'ACCESS_PUBLIC_KEY',
+						'ACCESS_ARWEAVE_CONFIG',
+						'SIGNATURE',
+					],
+				}}
+			>
+				<AntDesignConfigProvider>
+					<NotificationProvider>
+						<div className={clsx(inter.className)}>
+							<Navbar />
+							<div className='flex flex-row pt-[8vh]'>
+								<Sidebar />
+								<div className='ml-[16rem] w-full'>{children}</div>
+							</div>
+						</div>
+					</NotificationProvider>
+				</AntDesignConfigProvider>
+			</ArweaveWalletKit>
 		</>
 	);
 };
