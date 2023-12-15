@@ -1,30 +1,3 @@
-import { Warp } from 'warp-contracts';
-import Irys, { WebIrys } from '@irys/sdk';
-import { DataItemCreateOptions } from 'arbundles';
-import { Tag } from 'arbundles';
-
-export type AtomicToolkitOpts = {
-    /**
-     * A Warp instance that uses DeployPlugin
-     */
-    warp: Warp;
-    /**
-     * Web Irys instance for uploading Assets
-     */
-    irys: Irys;
-};
-
-export type AtomicToolkitWebOpts = {
-    /**
-     * A Warp instance that uses DeployPlugin
-     */
-    warp: Warp;
-    /**
-     * Web Irys instance for uploading Assets
-     */
-    irys: WebIrys;
-};
-
 export type DiscoverabilityTags = Record<`Topic:${string}`, string> & {
     /**
      * Type of asset. One or more of: meme, image, video, podcast, blog-post, social-post, music, audio, token, web-page,
@@ -161,54 +134,6 @@ export type LicenseTags = Record<string, string> & {
     'Payment-Mode'?: string;
 };
 
-/**
- * Represents the initial state of a tradable asset.
- */
-export type TradableAssetInitState = Record<string, any> & {
-    /**
-     * Ticker for the Asset. eg- ATOMIC
-     */
-    ticker: string;
-    /**
-     * Name of the Asset. eg- Atomic Asset
-     */
-    name: string;
-    /**
-     * List of Balances for the Asset. eg- { "Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4": 1 }
-     */
-    balances: Record<string, number>;
-    /**
-     * List of Claimable Addresses for the Asset. eg- ["Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4"]
-     */
-    claimable: string[];
-};
-
-/**
- * Options for creating a tradable asset.
- */
-export type CreateTradableAssetOpts = {
-    /**
-     * The initial state of the asset.
-     */
-    initialState: TradableAssetInitState;
-    /**
-     * The discoverability tags associated with the asset.
-     */
-    discoverability: DiscoverabilityTags;
-    /**
-     * The license tags associated with the asset.
-     */
-    license: LicenseTags;
-    /**
-     * The contract identifier tags associated with the asset.
-     */
-    contractIdentifier?: ContractIdentifierTags;
-    /**
-     * Additional tags associated with the asset.
-     */
-    additionalTags?: Tag[];
-};
-
 export type CollectionSpecificTags = {
     /**
      * The Name of the collection
@@ -231,49 +156,4 @@ export type CollectionSpecificTags = {
      * Optional ID that enables assets to cross-link to collection document
      */
     'Collection-Code'?: string;
-};
-
-/**
- * Represents a stampable type.
- * @template T - A boolean type parameter.
- * @param T - A boolean value indicating whether the type is stampable.
- * @returns If T is true, returns an object with stampable properties. Otherwise, returns an object with isStampable set to false.
- */
-export type StampableType<T extends boolean> = T extends true
-    ? {
-          isStampable: true;
-          owner: string;
-          collectionName: string;
-          ticker: string;
-      }
-    : { isStampable: false };
-
-/**
- * Represents the options for a collection.
- */
-export type CollectionOpts = {
-    /**
-     * The Atomic Assets to be Included in the collection
-     */
-    assetIds: string[];
-    /**
-     * The Collection Specific tags as per specification
-     *
-     * https://specs.arweave.dev/?tx=4zqtz8-U4LNKjFU4gZ28oKkV6bTlfzJiguqjbMl9R4Q
-     */
-    collection: CollectionSpecificTags;
-    /**
-     * The discoverability tags associated with the asset.
-     */
-    discoverability: Omit<DiscoverabilityTags, 'Type'> & { Type: 'Document' };
-    /**
-     * Optional Atomic Assets Tags if you want the Collection to be Stampable.
-     *
-     * Defaults to false
-     */
-    stamp?: StampableType<boolean>;
-    /**
-     * Additional tags associated with the asset.
-     */
-    additionalTags?: Tag[];
 };

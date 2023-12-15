@@ -26,6 +26,13 @@
     ],
     "author": "Vedant Chainani",
     "license": "MIT",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        }
+    },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
         "@irys/sdk": "^0.1.1",
@@ -34,6 +41,7 @@
         "arbundles": "^0.10.0",
         "dotenv": "^16.3.1",
         "ethers": "v5",
+        "lodash": "^4.17.21",
         "mime": "^4.0.0",
         "tsup": "^8.0.1",
         "typescript": "^5.3.3",
@@ -45,6 +53,6 @@
         "access": "public"
     },
     "dependencies": {
-        "lodash": "^4.17.21"
+        "arweave": "^1.14.4"
     }
 }

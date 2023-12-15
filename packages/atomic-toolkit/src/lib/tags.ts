@@ -1,11 +1,7 @@
 import { Tag } from 'arbundles';
-import { CollectionOpts, CreateTradableAssetOpts } from '../types';
+import { CreateTradableAssetOpts, CollectionOpts } from '../types/asset';
 
-import {
-    BaseTradableAssetTags,
-    BaseCollectionTags,
-    TRADABLE_ASSET_CONTRACT_SRC,
-} from '../constants';
+import { BaseTags, TRADABLE_ASSET_CONTRACT_SRC } from './constants';
 
 import mime from 'mime';
 import { map, get } from 'lodash';
@@ -49,7 +45,7 @@ const buildTradableAssetTags = (
     );
 
     if (!contractIdentifier) {
-        tags.push(...BaseTradableAssetTags);
+        tags.push(...BaseTags['BaseTradableAssetTags']);
     }
 
     tags.push(...additionalTags);
@@ -74,7 +70,7 @@ const buildCollectionTags = (opts: CollectionOpts): Tag[] => {
     const tags: Tag[] = [];
     const { collection, discoverability, stamp } = opts;
 
-    tags.push(...BaseCollectionTags);
+    tags.push(...BaseTags['BaseCollectionTags']);
     tags.push(
         ...map(collection, (value, key) => ({
             name: key,

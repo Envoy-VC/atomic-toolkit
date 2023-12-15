@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import fs from 'fs';
 
 import { WebIrys } from '@irys/sdk';
@@ -17,7 +17,7 @@ let buffer = fs.readFileSync('assets/test.jpeg');
 let blob = new Blob([buffer]);
 let file = new File([blob], 'trees-wallpaper.jpg', { type: 'image/jpeg' });
 
-describe('Atomic Toolkit Web', () => {
+describe('AtomicToolkitWeb with Irys', () => {
     async function initialize() {
         let provider = new ethers.providers.JsonRpcProvider(
             process.env.RPC_URL,
@@ -45,35 +45,22 @@ describe('Atomic Toolkit Web', () => {
 
         const atomicToolkit = new AtomicToolkitWeb({
             warp,
+            useIrys: true,
             irys,
         });
 
         return { warp, irys, atomicToolkit };
     }
-    it('Should be a Class', () => {
-        expect(AtomicToolkitWeb).toBeInstanceOf(Function);
-    });
-    it('Should have createAtomicAssetFunction', async () => {
-        const warp = WarpFactory.forTestnet().use(new DeployPlugin());
-        const irys = new WebIrys({
-            url: 'node1',
-            token: 'matic',
-        });
-        const atomicToolkit = new AtomicToolkitWeb({
-            warp,
-            irys,
-        });
-        expect(atomicToolkit.createAtomicAsset).toBeInstanceOf(Function);
-    });
+
     it('Should throw error if warp instance does not have deploy plugin', async () => {
         const warp = WarpFactory.forTestnet();
         const irys = new WebIrys({
             url: 'node1',
             token: 'matic',
         });
-        expect(() => new AtomicToolkitWeb({ warp, irys })).toThrowError(
-            'Warp instance must have DeployPlugin',
-        );
+        expect(
+            () => new AtomicToolkitWeb({ warp, useIrys: true, irys }),
+        ).toThrowError('Warp instance must have DeployPlugin');
     });
     it('Should Create a Atomic Asset', async () => {
         const { atomicToolkit } = await initialize();

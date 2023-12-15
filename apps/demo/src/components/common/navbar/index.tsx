@@ -2,7 +2,6 @@ import React from 'react';
 import Image from 'next/image';
 
 import { ConnectButton } from 'arweave-wallet-kit';
-import { WebIrys } from '@irys/sdk';
 import { WarpFactory } from 'warp-contracts';
 import { AtomicToolkitWeb } from 'atomic-toolkit';
 import { DeployPlugin } from 'warp-contracts-plugin-deploy';
@@ -10,7 +9,6 @@ import { DeployPlugin } from 'warp-contracts-plugin-deploy';
 // Hooks
 import { useAtomicToolkit } from '~/stores';
 import { useConnection } from 'arweave-wallet-kit';
-import { useActiveAddress } from 'arweave-wallet-kit';
 
 // Icons
 import AtomicToolkitLogo from '~/assets/light.svg';
@@ -18,21 +16,12 @@ import AtomicToolkitLogo from '~/assets/light.svg';
 const Navbar = () => {
 	const { setAtomicToolkit } = useAtomicToolkit();
 	const { connected } = useConnection();
-	const activeAddress = useActiveAddress();
 
 	React.useEffect(() => {
 		const get = async () => {
-			console.log('Connecting...');
-			const arconnect = window.arweaveWallet;
-			const webIrys = new WebIrys({
-				url: 'https://node2.irys.xyz',
-				token: 'arweave',
-				wallet: { provider: arconnect },
-			});
-			await webIrys.ready();
 			const toolkit = new AtomicToolkitWeb({
-				irys: webIrys,
 				warp: WarpFactory.forTestnet().use(new DeployPlugin()),
+				useIrys: false,
 			});
 			return toolkit;
 		};

@@ -1,81 +1,107 @@
 import { ContractDeploy, Warp } from 'warp-contracts';
 import Irys from '@irys/sdk';
+import Arweave from 'arweave';
 
-// Helpers
-import { buildTradableAssetTags, buildCollectionTags } from './helpers';
+// Libraries
+import { defaultArweave } from './lib/config';
+import { uploadWithArweave, uploadWithIrys } from './lib/upload';
+import { buildTradableAssetTags, buildCollectionTags } from './lib/tags';
 
 // Types
-import {
-    AtomicToolkitOpts,
-    CreateTradableAssetOpts,
-    CollectionOpts,
-} from './types';
+import * as Types from './types';
+import { CreateTradableAssetOpts,CollectionOpts } from './types/asset';
 import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
+import { JWKInterface } from 'arweave/node/lib/wallet';
+import Transaction from 'arweave/node/lib/transaction';
 
 class AtomicToolkit {
-    protected warp: Warp;
-    protected irys: Irys;
+    public warp: Warp;
+    private useIrys: boolean;
+    public arweave?: Arweave;
+    public irys?: Irys;
+    protected jwk?: JWKInterface;
 
-    /**
-     * Creates a new instance of the AtomicToolkitWeb class.
-     * @param {AtomicToolkit} options - The options for the AtomicToolkit instance.
-     * @throws {Error} If the Warp instance does not have the DeployPlugin.
-     */
-    constructor({ warp, irys }: AtomicToolkitOpts) {
+    constructor({ warp, useIrys = false, ...props }: Types.AtomicToolkitOpts) {
         if (!warp.hasPlugin('deploy')) {
             throw new Error('Warp instance must have DeployPlugin');
         }
         this.warp = warp;
-        this.irys = irys;
+        this.useIrys = useIrys;
+        if (useIrys) {
+            this.irys = (props as Types.AtomicToolkitWithIrys).irys;
+        } else {
+            this.arweave =
+                (props as Types.AtomicToolkitWithArweave)?.arweave ??
+                defaultArweave;
+            this.jwk = (props as { jwk: JWKInterface }).jwk;
+        }
     }
 
-    /**
-     * Creates an atomic asset by uploading a file and registering it as a contract.
-     * @param file The file to be uploaded.
-     * @param opts The options for creating the tradable asset.
-     * @returns A promise that resolves to the deployed contract.
-     */
     public async createAtomicAsset(
         pathToFile: string,
         opts: CreateTradableAssetOpts,
     ): Promise<ContractDeploy> {
         const tags = buildTradableAssetTags(pathToFile, opts);
-        await this.irys.ready();
-        const tx = await this.irys.uploadFile(pathToFile, {
-            tags: tags,
-        });
-        const contract = this.warp.register(tx.id, this.getIrysNode());
-        return contract;
+        if (this.useIrys && this.irys) {
+            const tx = await uploadWithIrys({
+                irys: this.irys,
+                type: 'file',
+                data: pathToFile,
+                tags,
+            });
+            const contract = this.warp.register(tx.id, this.getIrysNode());
+            return contract;
+        } else {
+            if (!this.arweave || !this.jwk) {
+                throw new Error('Arweave and JWK must be defined');
+            }
+            const tx = await uploadWithArweave({
+                arweave: this.arweave,
+                jwk: this.jwk,
+                type: 'file',
+                data: pathToFile,
+                tags,
+            });
+            const contract = this.warp.register(tx.id, 'arweave');
+            return contract;
+        }
     }
 
-    /**
-     * Creates a collection with the specified options.
-     * @param opts - The options for creating the collection.
-     * @returns A promise that resolves to the upload response.
-     */
     public async createCollection(
         opts: CollectionOpts,
-    ): Promise<UploadResponse> {
+    ): Promise<UploadResponse | Transaction> {
         const data = {
             type: 'Collection',
             items: opts.assetIds,
         };
         const tags = buildCollectionTags(opts);
-        await this.irys.ready();
-        const tx = this.irys.upload(JSON.stringify(data), {
-            tags: tags,
-        });
-
-        return tx;
+        if (this.useIrys && this.irys) {
+            const tx = await uploadWithIrys({
+                irys: this.irys,
+                type: 'data',
+                data: JSON.stringify(data),
+                tags,
+            });
+            return tx;
+        } else {
+            if (!this.arweave || !this.jwk) {
+                throw new Error('Arweave and JWK must be defined');
+            }
+            const tx = uploadWithArweave({
+                arweave: this.arweave,
+                jwk: this.jwk,
+                type: 'data',
+                data: JSON.stringify(data),
+                tags,
+            });
+            return tx;
+        }
     }
 
-    /**
-     * Retrieves the Irys node from the API configuration URL.
-     *
-     * @returns The Irys node as either 'node1' or 'node2'.
-     * @throws Error if the node is 'devnet'.
-     */
     public getIrysNode() {
+        if (!this.irys) {
+            throw new Error('Irys is not defined');
+        }
         const url = this.irys.api.config.url.href;
         const node = url?.split('https://')[1]?.split('.irys.xyz')[0];
         if (node === 'devnet') {

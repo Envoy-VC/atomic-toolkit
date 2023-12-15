@@ -11,6 +11,7 @@ export const BaseTradableAssetTags: Tag[] = [
         name: 'Contract-Manifest',
         value: '{"evaluationOptions":{"sourceType":"redstone-sequencer","allowBigInt":true,"internalWrites":true,"unsafeClient":"skip","useConstructor":true}}',
     },
+    // TODO: Make Optional to Index by UCM
     { name: 'Indexed-By', value: 'ucm' },
 ];
 
@@ -24,3 +25,10 @@ export const BaseCollectionTags: Tag[] = [
         value: 'Collection',
     },
 ];
+
+export type BaseTagType = 'BaseTradableAssetTags' | 'BaseCollectionTags';
+
+export const BaseTags: Record<BaseTagType, Tag[]> = {
+    BaseTradableAssetTags,
+    BaseCollectionTags,
+};
