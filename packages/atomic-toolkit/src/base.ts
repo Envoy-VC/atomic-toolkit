@@ -9,7 +9,7 @@ import { buildTradableAssetTags, buildCollectionTags } from './lib/tags';
 
 // Types
 import * as Types from './types';
-import { CreateTradableAssetOpts,CollectionOpts } from './types/asset';
+import { CreateTradableAssetOpts, CollectionOpts } from './types/asset';
 import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
 import { JWKInterface } from 'arweave/node/lib/wallet';
 import Transaction from 'arweave/node/lib/transaction';
@@ -40,7 +40,7 @@ class AtomicToolkit {
     public async createAtomicAsset(
         pathToFile: string,
         opts: CreateTradableAssetOpts,
-    ): Promise<ContractDeploy> {
+    ): Promise<ContractDeploy | Transaction> {
         const tags = buildTradableAssetTags(pathToFile, opts);
         if (this.useIrys && this.irys) {
             const tx = await uploadWithIrys({
@@ -62,6 +62,9 @@ class AtomicToolkit {
                 data: pathToFile,
                 tags,
             });
+
+            // TODO: Add Handling for users to register themselves
+            await new Promise((resolve) => setTimeout(resolve, 15000));
             const contract = this.warp.register(tx.id, 'arweave');
             return contract;
         }

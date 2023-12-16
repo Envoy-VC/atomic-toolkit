@@ -55,3 +55,7 @@ export type AtomicToolkitWebOpts =
           useIrys: true;
           irys: WebIrys;
       };
+
+export * from './asset';
+export * from './tags';
+export * from './upload';

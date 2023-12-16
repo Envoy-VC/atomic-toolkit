@@ -38,21 +38,21 @@
         "@irys/sdk": "^0.1.1",
         "@types/lodash": "^4.14.202",
         "@types/node": "^18.19.3",
-        "arbundles": "^0.10.0",
         "dotenv": "^16.3.1",
         "ethers": "v5",
-        "lodash": "^4.17.21",
         "mime": "^4.0.0",
         "tsup": "^8.0.1",
         "typescript": "^5.3.3",
-        "vitest": "^1.0.4",
-        "warp-contracts": "^1.4.26",
-        "warp-contracts-plugin-deploy": "^1.0.12"
+        "vitest": "^1.0.4"
     },
     "publishConfig": {
         "access": "public"
     },
     "dependencies": {
-        "arweave": "^1.14.4"
+        "@irys/sdk": "^0.1.1",
+        "arbundles": "^0.10.0",
+        "arweave": "^1.14.4",
+        "warp-contracts": "^1.4.26",
+        "warp-contracts-plugin-deploy": "^1.0.12"
     }
 }

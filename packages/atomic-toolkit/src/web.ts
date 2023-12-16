@@ -64,6 +64,9 @@ class AtomicToolkitWeb {
                 data: file,
                 tags,
             });
+
+            // TODO: Add Handling for users to register themselves
+            await new Promise((resolve) => setTimeout(resolve, 15000));
             const contract = this.warp.register(tx.id, 'arweave');
             return contract;
         }

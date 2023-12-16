@@ -6,7 +6,7 @@ import { WarpFactory } from 'warp-contracts';
 import { DeployPlugin } from 'warp-contracts-plugin-deploy';
 import { ethers } from 'ethers';
 
-import { AtomicToolkitWeb } from '../index';
+import { AtomicToolkitWeb } from '../src/index';
 
 // Load dotenv configuration from .env.local
 import dotenv from 'dotenv';

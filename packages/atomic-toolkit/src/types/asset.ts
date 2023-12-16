@@ -17,9 +17,26 @@ export type TradableAssetInitState = Record<string, any> & {
      */
     balances: Record<string, number>;
     /**
-     * List of Claimable Addresses for the Asset. eg- ["Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4"]
+     * List of Claimable Addresses for the Asset.
      */
-    claimable: string[];
+    claimable: {
+        /**
+         * Arweave Address who called the claim Function.
+         */
+        from: string;
+        /**
+         * Quantity of the Asset to be claimed.
+         */
+        qty: number;
+        /**
+         * The Arweave Address to which the Asset is to be transferred.
+         */
+        to: string;
+        /**
+         * The Transaction ID of the Transaction which called the claim Function.
+         */
+        txID: string;
+    }[];
 };
 
 /**
@@ -37,7 +54,7 @@ export type CreateTradableAssetOpts = {
     /**
      * The license tags associated with the asset.
      */
-    license: Tags.LicenseTags;
+    license?: Tags.LicenseTags;
     /**
      * The contract identifier tags associated with the asset.
      */
@@ -80,8 +97,8 @@ export type CollectionOpts = {
     /**
      * The discoverability tags associated with the asset.
      */
-    discoverability: Omit<Tags.DiscoverabilityTags, 'Type'> & {
-        Type: 'Document';
+    discoverability: Omit<Tags.DiscoverabilityTags, 'type'> & {
+        type: 'Document';
     };
     /**
      * Optional Atomic Assets Tags if you want the Collection to be Stampable.

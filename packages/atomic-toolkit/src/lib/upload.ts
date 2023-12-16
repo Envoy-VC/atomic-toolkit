@@ -1,6 +1,6 @@
 import { WebIrys } from '@irys/sdk';
 import * as Types from '../types/upload';
-import fs from 'fs';
+import Mime from 'mime';
 
 const uploadWithIrys = async (opts: Types.IrysUploadParams) => {
     const { irys } = opts;
@@ -22,19 +22,7 @@ const uploadWithIrys = async (opts: Types.IrysUploadParams) => {
                 throw new Error('Invalid type ' + type);
             }
         } else {
-            const { data, tags, type } = opts as Types.NodeIrysUploadParams;
-            if (type === 'data') {
-                tx = await irys.upload(data, {
-                    tags: tags,
-                });
-            } else if (type === 'file') {
-                tx = await irys.uploadFile(data, {
-                    tags: tags,
-                });
-            } else {
-                // TODO: Folder Upload Coming Soon
-                throw new Error('Invalid type ' + type);
-            }
+            throw new Error('NodeIrys Coming Soon');
         }
         return tx;
     } catch (error) {
@@ -44,26 +32,24 @@ const uploadWithIrys = async (opts: Types.IrysUploadParams) => {
 
 const uploadWithArweave = async (opts: Types.ArweaveUploadParams) => {
     try {
-        const { data, arweave, jwk, tags, type } = opts;
-        let dataToUpload: string | Uint8Array | ArrayBuffer;
-
+        const { arweave, jwk, type, data, tags } = opts;
+        let dataToUpload: string | ArrayBuffer;
         if (type === 'data' && typeof data === 'string') {
             dataToUpload = data;
-        } else if (type === 'file') {
-            if (data instanceof File) {
-                dataToUpload = await data.arrayBuffer();
-            } else {
-                let buffer = fs.readFileSync(data);
-                let blob = new Blob([buffer]);
-                let fileName = data.split('/').pop() || '';
-                let file = new File([blob], fileName, {
-                    type: blob.type,
-                });
-                dataToUpload = await file.arrayBuffer();
-            }
+        } else if (type === 'file' && data instanceof File) {
+            dataToUpload = await data.arrayBuffer();
+        } else if (type === 'file' && typeof data === 'string') {
+            const { readFileSync } = require('fs');
+            let buffer = readFileSync(data);
+            let blob = new Blob([buffer]);
+            const fileName = data.split('/').pop() ?? '';
+            const type = Mime.getType(fileName) ?? 'application/octet-stream';
+            let file = new File([blob], fileName, {
+                type,
+            });
+            dataToUpload = await file.arrayBuffer();
         } else {
-            // TODO: Folder Upload Coming Soon
-            throw new Error('Invalid type ' + type);
+            throw new Error('Invalid Data as per ' + type);
         }
 
         const tx = await arweave.createTransaction(
@@ -72,9 +58,12 @@ const uploadWithArweave = async (opts: Types.ArweaveUploadParams) => {
             },
             jwk,
         );
-        tags.forEach((tag) => tx.addTag(tag.name, tag.value));
-        await arweave.transactions.sign(tx, jwk);
 
+        // Add Tags
+        tags.forEach((tag) => tx.addTag(tag.name, tag.value));
+        // Sign Tx
+        await arweave.transactions.sign(tx, jwk);
+        // Upload Tx
         let uploader = await arweave.transactions.getUploader(tx);
 
         while (!uploader.isComplete) {
