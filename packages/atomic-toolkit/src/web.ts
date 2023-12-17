@@ -13,6 +13,7 @@ import * as Types from './types';
 import { CreateTradableAssetOpts, CollectionOpts } from './types/asset';
 import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
 import Transaction from 'arweave/node/lib/transaction';
+import { DeployPlugin } from 'warp-contracts-plugin-deploy';
 
 class AtomicToolkitWeb {
     public warp: Warp;
@@ -26,6 +27,9 @@ class AtomicToolkitWeb {
         useIrys = false,
         ...props
     }: Types.AtomicToolkitWebOpts) {
+        const DeployPluginClass: typeof DeployPlugin =
+            (DeployPlugin as any)?.default ?? DeployPlugin;
+
         if (!warp.hasPlugin('deploy')) {
             throw new Error('Warp instance must have DeployPlugin');
         }

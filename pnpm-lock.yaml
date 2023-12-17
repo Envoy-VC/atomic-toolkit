@@ -47,9 +47,6 @@ importers:
       atomic-toolkit:
         specifier: workspace:*
         version: link:../../packages/atomic-toolkit
-      avcs:
-        specifier: git+https://github.com/Irys-xyz/avsc.git
-        version: github.com/Irys-xyz/avsc/297a8b41063825842cea7a7c1eb7584174ab28be
       clsx:
         specifier: ^2.0.0
         version: 2.0.0
@@ -78,8 +75,8 @@ importers:
         specifier: ^1.4.26
         version: 1.4.26
       warp-contracts-plugin-deploy:
-        specifier: 1.0.9
-        version: 1.0.9(@solana/web3.js@1.87.6)(typescript@5.3.3)(warp-arbundles@1.0.4)(warp-contracts@1.4.26)
+        specifier: ^1.0.12
+        version: 1.0.12(@solana/web3.js@1.87.6)(arweave@1.14.4)(typescript@5.3.3)(warp-arbundles@1.0.4)(warp-contracts@1.4.26)
       zod:
         specifier: ^3.22.4
         version: 3.22.4
@@ -4582,33 +4579,6 @@ packages:
       arweave-stream-tx: 1.2.2(arweave@1.14.4)
       avsc: github.com/Irys-xyz/avsc/a730cc8018b79e114b6a3381bbb57760a24c6cef
       axios: 0.21.4
-      base64url: 3.0.1
-      bs58: 4.0.1
-      ethers: 5.7.2
-      keccak: 3.0.4
-      multistream: 4.1.0
-      process: 0.11.10
-      secp256k1: 4.0.3
-      tmp-promise: 3.0.3
-    transitivePeerDependencies:
-      - '@solana/web3.js'
-      - bufferutil
-      - debug
-      - encoding
-      - utf-8-validate
-    dev: false
-
-  /arbundles@0.7.3(@solana/web3.js@1.87.6):
-    resolution: {integrity: sha512-tgRYNOGlI8INBXv/aC6LVMXmu/UAa7X/ch5/LdpDQhCp+aX1UzyCuaLkzUNLSwvv65+EZxy0MKIlcgQQAhKl+Q==}
-    dependencies:
-      '@noble/ed25519': 1.7.3
-      '@randlabs/myalgo-connect': 1.4.2
-      '@solana/wallet-adapter-base': 0.9.23(@solana/web3.js@1.87.6)
-      algosdk: 1.24.1
-      aptos: 1.8.5
-      arweave: 1.14.4
-      arweave-stream-tx: 1.2.2(arweave@1.14.4)
-      avsc: git@github.com+Bundlr-Network/avsc/a730cc8018b79e114b6a3381bbb57760a24c6cef
       base64url: 3.0.1
       bs58: 4.0.1
       ethers: 5.7.2
@@ -12287,34 +12257,6 @@ packages:
       - utf-8-validate
     dev: false
 
-  /warp-contracts-plugin-deploy@1.0.9(@solana/web3.js@1.87.6)(typescript@5.3.3)(warp-arbundles@1.0.4)(warp-contracts@1.4.26):
-    resolution: {integrity: sha512-KuG8WK+5IR000jq2miAJ1/CbzBNDfxNvC6DEZdJ2uM6b8yNFu12aSGq5XpcWJhPe3v7hrMwdaOjBukYJ1vQ9TQ==}
-    engines: {node: '>=16.5'}
-    peerDependencies:
-      warp-arbundles: ^1.0.1
-      warp-contracts: ^1.4.5
-    dependencies:
-      arbundles: 0.7.3(@solana/web3.js@1.87.6)
-      arlocal: 1.1.64(@solana/web3.js@1.87.6)(typescript@5.3.3)
-      node-stdlib-browser: 1.2.0
-      warp-arbundles: 1.0.4
-      warp-contracts: 1.4.26
-    transitivePeerDependencies:
-      - '@solana/web3.js'
-      - bluebird
-      - bufferutil
-      - debug
-      - encoding
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - supports-color
-      - tedious
-      - typescript
-      - utf-8-validate
-    dev: false
-
   /warp-contracts@1.4.26:
     resolution: {integrity: sha512-m+e5TggjxUF1TtcuKlcAyuVvkTXUi1W0W788iFzfhr7x2hnnfbGkBTiGBxhLu6VVKfxxegMMukn5ztRDmaK34w==}
     engines: {node: '>=16.8'}
@@ -12697,20 +12639,6 @@ packages:
       '@types/react': 18.2.45
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false
-
-  git@github.com+Bundlr-Network/avsc/a730cc8018b79e114b6a3381bbb57760a24c6cef:
-    resolution: {commit: a730cc8018b79e114b6a3381bbb57760a24c6cef, repo: git@github.com:Bundlr-Network/avsc.git, type: git}
-    name: avsc
-    version: 5.4.7
-    engines: {node: '>=0.11'}
-    dev: false
-
-  github.com/Irys-xyz/avsc/297a8b41063825842cea7a7c1eb7584174ab28be:
-    resolution: {tarball: https://codeload.github.com/Irys-xyz/avsc/tar.gz/297a8b41063825842cea7a7c1eb7584174ab28be}
-    name: avsc
-    version: 5.4.7
-    engines: {node: '>=0.11'}
     dev: false
 
   github.com/Irys-xyz/avsc/a730cc8018b79e114b6a3381bbb57760a24c6cef:

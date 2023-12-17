@@ -12,7 +12,7 @@ import { useConnection } from 'arweave-wallet-kit';
 
 // Icons
 import AtomicToolkitLogo from '~/assets/light.svg';
-import { WarpFactory, defaultCacheOptions } from 'warp-contracts';
+import { WarpFactory } from 'warp-contracts';
 import { DeployPlugin } from 'warp-contracts-plugin-deploy';
 
 const Navbar = () => {
@@ -20,27 +20,20 @@ const Navbar = () => {
 	const { connected } = useConnection();
 
 	React.useEffect(() => {
-		const get = async () => {
-			const warp = WarpFactory.forMainnet({
-				...defaultCacheOptions,
-				inMemory: true,
-			}).use(new DeployPlugin());
+		const get = () => {
+			const warp = WarpFactory.forMainnet();
+
+			console.log(warp);
+			warp.use(new DeployPlugin());
 			const toolkit = new AtomicToolkitWeb({
 				warp,
 				useIrys: false,
 			});
-			return toolkit;
+			setAtomicToolkit(toolkit);
 		};
 
 		if (connected) {
-			get()
-				.then((toolkit) => {
-					console.log('Toolkit: ', toolkit);
-					setAtomicToolkit(toolkit);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
+			get();
 		}
 	}, [connected]);
 

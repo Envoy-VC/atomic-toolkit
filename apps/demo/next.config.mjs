@@ -11,6 +11,13 @@ const config = {
 		locales: ['en'],
 		defaultLocale: 'en',
 	},
+	webpack: (config, { isServer }) => {
+		if (!isServer) {
+			config.optimization.innerGraph = false;
+		}
+
+		return config;
+	},
 };
 
 export default config;
