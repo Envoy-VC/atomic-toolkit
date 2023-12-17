@@ -2,9 +2,9 @@ import React from 'react';
 import Image from 'next/image';
 
 import { ConnectButton } from 'arweave-wallet-kit';
-import { WarpFactory } from 'warp-contracts';
 import { AtomicToolkitWeb } from 'atomic-toolkit';
-import { DeployPlugin } from 'warp-contracts-plugin-deploy';
+
+// @ts-ignore
 
 // Hooks
 import { useAtomicToolkit } from '~/stores';
@@ -12,6 +12,8 @@ import { useConnection } from 'arweave-wallet-kit';
 
 // Icons
 import AtomicToolkitLogo from '~/assets/light.svg';
+import { WarpFactory, defaultCacheOptions } from 'warp-contracts';
+import { DeployPlugin } from 'warp-contracts-plugin-deploy';
 
 const Navbar = () => {
 	const { setAtomicToolkit } = useAtomicToolkit();
@@ -19,8 +21,12 @@ const Navbar = () => {
 
 	React.useEffect(() => {
 		const get = async () => {
+			const warp = WarpFactory.forMainnet({
+				...defaultCacheOptions,
+				inMemory: true,
+			}).use(new DeployPlugin());
 			const toolkit = new AtomicToolkitWeb({
-				warp: WarpFactory.forTestnet().use(new DeployPlugin()),
+				warp,
 				useIrys: false,
 			});
 			return toolkit;
@@ -29,7 +35,7 @@ const Navbar = () => {
 		if (connected) {
 			get()
 				.then((toolkit) => {
-					console.log(toolkit);
+					console.log('Toolkit: ', toolkit);
 					setAtomicToolkit(toolkit);
 				})
 				.catch((err) => {

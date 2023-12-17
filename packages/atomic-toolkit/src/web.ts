@@ -6,6 +6,7 @@ import { ContractDeploy, Warp } from 'warp-contracts';
 import { defaultArweave } from './lib/config';
 import { uploadWithArweave, uploadWithIrys } from './lib/upload';
 import { buildTradableAssetTags, buildCollectionTags } from './lib/tags';
+import { retryOperation } from './lib/warp';
 
 // Types
 import * as Types from './types';
@@ -15,10 +16,10 @@ import Transaction from 'arweave/node/lib/transaction';
 
 class AtomicToolkitWeb {
     public warp: Warp;
-    private useIrys: boolean;
-    public arweave?: Arweave;
-    public irys?: WebIrys;
-    protected jwk?: string;
+    public useIrys: boolean;
+    public arweave: Arweave | null;
+    public irys: WebIrys | null;
+    public jwk: string | null;
 
     constructor({
         warp,
@@ -28,14 +29,19 @@ class AtomicToolkitWeb {
         if (!warp.hasPlugin('deploy')) {
             throw new Error('Warp instance must have DeployPlugin');
         }
+
         this.warp = warp;
         this.useIrys = useIrys;
+
         if (useIrys) {
             this.irys = (props as { irys: WebIrys }).irys;
+            this.arweave = null;
+            this.jwk = null;
         } else {
             this.arweave =
                 (props as { arweave?: Arweave }).arweave ?? defaultArweave;
             this.jwk = 'use_wallet';
+            this.irys = null;
         }
     }
 
@@ -65,10 +71,16 @@ class AtomicToolkitWeb {
                 tags,
             });
 
-            // TODO: Add Handling for users to register themselves
-            await new Promise((resolve) => setTimeout(resolve, 15000));
-            const contract = this.warp.register(tx.id, 'arweave');
-            return contract;
+            const maxAttempts = 5;
+            const delayBetweenAttempts = 5000;
+
+            const result = retryOperation(
+                () => this.warp.register(tx.id, 'arweave'),
+                maxAttempts,
+                delayBetweenAttempts,
+            );
+
+            return result;
         }
     }
 

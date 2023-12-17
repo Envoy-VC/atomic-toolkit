@@ -16,10 +16,10 @@ import Transaction from 'arweave/node/lib/transaction';
 
 class AtomicToolkit {
     public warp: Warp;
-    private useIrys: boolean;
-    public arweave?: Arweave;
-    public irys?: Irys;
-    protected jwk?: JWKInterface;
+    public useIrys: boolean;
+    public arweave: Arweave | null;
+    public irys: Irys | null;
+    protected jwk: JWKInterface | null;
 
     constructor({ warp, useIrys = false, ...props }: Types.AtomicToolkitOpts) {
         if (!warp.hasPlugin('deploy')) {
@@ -29,11 +29,14 @@ class AtomicToolkit {
         this.useIrys = useIrys;
         if (useIrys) {
             this.irys = (props as Types.AtomicToolkitWithIrys).irys;
+            this.arweave = null;
+            this.jwk = null;
         } else {
             this.arweave =
                 (props as Types.AtomicToolkitWithArweave)?.arweave ??
                 defaultArweave;
             this.jwk = (props as { jwk: JWKInterface }).jwk;
+            this.irys = null;
         }
     }
 

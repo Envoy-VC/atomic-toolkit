@@ -7,8 +7,6 @@ import { Wrapper } from '~/components/common';
 
 import { useSearchParams, useRouter } from 'next/navigation';
 
-import { Form } from 'antd';
-
 import {
 	BasicDetails,
 	InitialState,

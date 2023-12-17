@@ -18,22 +18,23 @@ const Layout = ({ children }: Props) => {
 	return (
 		<>
 			<SEO />
-			<ArweaveWalletKit
-				theme={{
-					displayTheme: 'light',
-				}}
-				config={{
-					permissions: [
-						'ACCESS_ALL_ADDRESSES',
-						'ACCESS_ADDRESS',
-						'ACCESS_PUBLIC_KEY',
-						'ACCESS_ARWEAVE_CONFIG',
-						'SIGNATURE',
-					],
-				}}
-			>
-				<AntDesignConfigProvider>
-					<NotificationProvider>
+
+			<AntDesignConfigProvider>
+				<NotificationProvider>
+					<ArweaveWalletKit
+						theme={{
+							displayTheme: 'light',
+						}}
+						config={{
+							permissions: [
+								'ACCESS_ALL_ADDRESSES',
+								'ACCESS_ADDRESS',
+								'ACCESS_PUBLIC_KEY',
+								'ACCESS_ARWEAVE_CONFIG',
+								'SIGNATURE',
+							],
+						}}
+					>
 						<div className={clsx(inter.className)}>
 							<Navbar />
 							<div className='flex flex-row pt-[8vh]'>
@@ -41,9 +42,9 @@ const Layout = ({ children }: Props) => {
 								<div className='ml-[16rem] w-full'>{children}</div>
 							</div>
 						</div>
-					</NotificationProvider>
-				</AntDesignConfigProvider>
-			</ArweaveWalletKit>
+					</ArweaveWalletKit>
+				</NotificationProvider>
+			</AntDesignConfigProvider>
 		</>
 	);
 };

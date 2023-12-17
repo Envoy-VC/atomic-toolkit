@@ -6,7 +6,7 @@ interface State {
 }
 
 interface Actions {
-	setAtomicToolkit: (atomicToolkit: AtomicToolkitWeb) => void;
+	setAtomicToolkit: (atomicToolkit: AtomicToolkitWeb | null) => void;
 }
 
 export const useAtomicToolkit = create<State & Actions>()((set) => ({

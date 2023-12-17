@@ -32,29 +32,33 @@ export type AtomicToolkitOpts =
     | AtomicToolkitWithArweave
     | AtomicToolkitWithIrys;
 
+export type AtomicToolkitWebWithArweave = {
+    /**
+     * A Warp instance that uses DeployPlugin
+     */
+    warp: Warp;
+    /**
+     * Arweave Configuration Options(either arweave or irys)
+     */
+    useIrys: false;
+    arweave?: Arweave;
+};
+
+export type AtomicToolkitWebWithIrys = {
+    /**
+     * A Warp instance that uses DeployPlugin
+     */
+    warp: Warp;
+    /**
+     * Arweave Configuration Options(either arweave or irys)
+     */
+    useIrys: true;
+    irys: WebIrys;
+};
+
 export type AtomicToolkitWebOpts =
-    | {
-          /**
-           * A Warp instance that uses DeployPlugin
-           */
-          warp: Warp;
-          /**
-           * Arweave Configuration Options(either arweave or irys)
-           */
-          useIrys: false;
-          arweave?: Arweave;
-      }
-    | {
-          /**
-           * A Warp instance that uses DeployPlugin
-           */
-          warp: Warp;
-          /**
-           * Arweave Configuration Options (either arweave or irys)
-           */
-          useIrys: true;
-          irys: WebIrys;
-      };
+    | AtomicToolkitWebWithArweave
+    | AtomicToolkitWebWithIrys;
 
 export * from './asset';
 export * from './tags';
