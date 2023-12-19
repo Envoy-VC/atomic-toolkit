@@ -12,8 +12,6 @@ import { useConnection } from 'arweave-wallet-kit';
 
 // Icons
 import AtomicToolkitLogo from '~/assets/light.svg';
-import { WarpFactory } from 'warp-contracts';
-import { DeployPlugin } from 'warp-contracts-plugin-deploy';
 
 const Navbar = () => {
 	const { setAtomicToolkit } = useAtomicToolkit();
@@ -21,12 +19,8 @@ const Navbar = () => {
 
 	React.useEffect(() => {
 		const get = () => {
-			const warp = WarpFactory.forMainnet();
-
-			console.log(warp);
-			warp.use(new DeployPlugin());
 			const toolkit = new AtomicToolkitWeb({
-				warp,
+				environment: 'mainnet',
 				useIrys: false,
 			});
 			setAtomicToolkit(toolkit);
