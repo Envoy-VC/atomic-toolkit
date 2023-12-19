@@ -4,10 +4,11 @@ import Irys, { WebIrys } from '@irys/sdk';
 import { JWKInterface } from 'arweave/node/lib/wallet';
 
 export type AtomicToolkitWithArweave = {
+    environment: 'mainnet' | 'testnet';
     /**
      * A Warp instance that uses DeployPlugin
      */
-    warp: Warp;
+    warp?: Warp;
     /**
      * Arweave Configuration Options(either arweave or irys)
      */
@@ -17,10 +18,11 @@ export type AtomicToolkitWithArweave = {
 };
 
 export type AtomicToolkitWithIrys = {
+    environment: 'mainnet' | 'testnet';
     /**
      * A Warp instance that uses DeployPlugin
      */
-    warp: Warp;
+    warp?: Warp;
     /**
      * Arweave Configuration Options(either arweave or irys)
      */
@@ -33,22 +35,33 @@ export type AtomicToolkitOpts =
     | AtomicToolkitWithIrys;
 
 export type AtomicToolkitWebWithArweave = {
+    environment: 'mainnet' | 'testnet';
     /**
      * A Warp instance that uses DeployPlugin
      */
-    warp: Warp;
+    warp?: Warp;
+    /**
+     * Wether to use Irys or not(false for Arweave Type)
+     */
+    useIrys: false;
     /**
      * Arweave Configuration Options(either arweave or irys)
      */
-    useIrys: false;
     arweave?: Arweave;
+    /**
+     * Key File to use for Arweave
+     *
+     * @default 'use_wallet'
+     */
+    jwk?: JWKInterface | 'use_wallet';
 };
 
 export type AtomicToolkitWebWithIrys = {
+    environment: 'mainnet' | 'testnet';
     /**
      * A Warp instance that uses DeployPlugin
      */
-    warp: Warp;
+    warp?: Warp;
     /**
      * Arweave Configuration Options(either arweave or irys)
      */

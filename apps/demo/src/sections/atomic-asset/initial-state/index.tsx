@@ -26,7 +26,7 @@ const InitialState = () => {
 		<div className=''>
 			<Form
 				form={form}
-				name='initial-state'
+				name='initialState'
 				onFinish={onFinish}
 				scrollToFirstError
 				initialValues={initialState}

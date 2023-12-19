@@ -1,15 +1,25 @@
 import Arweave from 'arweave';
 import { WebIrys } from '@irys/sdk';
-import { ContractDeploy, Warp } from 'warp-contracts';
+import {
+    ContractDeploy,
+    JWKInterface,
+    Warp,
+    WarpFactory,
+} from 'warp-contracts';
 
 // Libraries
 import { defaultArweave } from './lib/config';
 import { uploadWithArweave, uploadWithIrys } from './lib/upload';
-import { buildTradableAssetTags, buildCollectionTags } from './lib/tags';
+import {
+    buildTradableAssetTags,
+    buildCollectionTags,
+    buildAssetTags,
+} from './lib/tags';
 import { retryOperation } from './lib/warp';
 
 // Types
 import * as Types from './types';
+import { Tag } from 'arbundles';
 import { CreateTradableAssetOpts, CollectionOpts } from './types/asset';
 import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
 import Transaction from 'arweave/node/lib/transaction';
@@ -20,31 +30,40 @@ class AtomicToolkitWeb {
     public useIrys: boolean;
     public arweave: Arweave | null;
     public irys: WebIrys | null;
-    public jwk: string | null;
+    protected jwk: JWKInterface | 'use_wallet' | null;
 
     constructor({
+        environment,
         warp,
         useIrys = false,
         ...props
     }: Types.AtomicToolkitWebOpts) {
-        const DeployPluginClass: typeof DeployPlugin =
-            (DeployPlugin as any)?.default ?? DeployPlugin;
-
-        if (!warp.hasPlugin('deploy')) {
-            throw new Error('Warp instance must have DeployPlugin');
+        if (warp) {
+            if (!warp.hasPlugin('deploy') || warp.environment === 'local') {
+                throw new Error(
+                    'Warp instance must have DeployPlugin and should not be on Local Environment',
+                );
+            }
+            this.warp = warp;
+        } else {
+            if (environment === 'mainnet') {
+                this.warp = WarpFactory.forMainnet().use(new DeployPlugin());
+            } else {
+                this.warp = WarpFactory.forTestnet().use(new DeployPlugin());
+            }
         }
 
-        this.warp = warp;
         this.useIrys = useIrys;
 
         if (useIrys) {
-            this.irys = (props as { irys: WebIrys }).irys;
+            const { irys } = props as Types.AtomicToolkitWebWithIrys;
+            this.irys = irys;
             this.arweave = null;
             this.jwk = null;
         } else {
-            this.arweave =
-                (props as { arweave?: Arweave }).arweave ?? defaultArweave;
-            this.jwk = 'use_wallet';
+            const { arweave, jwk } = props as Types.AtomicToolkitWebWithArweave;
+            this.arweave = arweave ?? defaultArweave;
+            this.jwk = jwk ?? 'use_wallet';
             this.irys = null;
         }
     }
@@ -54,38 +73,22 @@ class AtomicToolkitWeb {
         opts: CreateTradableAssetOpts,
     ): Promise<ContractDeploy | Transaction> {
         const tags = buildTradableAssetTags(file, opts);
-        if (this.useIrys && this.irys) {
-            const tx = await uploadWithIrys({
-                irys: this.irys,
-                type: 'file',
-                data: file,
-                tags,
-            });
-            const contract = this.warp.register(tx.id, this.getIrysNode());
-            return contract;
-        } else {
-            if (!this.arweave || !this.jwk) {
-                throw new Error('Arweave and JWK must be defined');
-            }
-            const tx = await uploadWithArweave({
-                arweave: this.arweave,
-                jwk: 'use_wallet',
-                type: 'file',
-                data: file,
-                tags,
-            });
+        const maxAttempts = 5;
+        const delayBetweenAttempts = 5000;
 
-            const maxAttempts = 5;
-            const delayBetweenAttempts = 5000;
+        const tx = await this.uploadData({
+            type: 'file',
+            data: file,
+            tags,
+        });
 
-            const result = retryOperation(
-                () => this.warp.register(tx.id, 'arweave'),
-                maxAttempts,
-                delayBetweenAttempts,
-            );
+        const result = retryOperation(
+            () => this.warp.register(tx.id, this.getIrysNode()),
+            maxAttempts,
+            delayBetweenAttempts,
+        );
 
-            return result;
-        }
+        return result;
     }
 
     public async createCollection(
@@ -95,13 +98,50 @@ class AtomicToolkitWeb {
             type: 'Collection',
             items: opts.assetIds,
         };
-        const tags = buildCollectionTags(opts);
+        const baseTags: Tag[] = [];
+
+        if (opts.thumbnail) {
+            const thumbnailTx = await this.uploadData({
+                type: 'file',
+                data: opts.thumbnail.file,
+                tags: buildAssetTags(opts.thumbnail.file, opts.thumbnail.tags),
+            });
+            baseTags.push({
+                name: 'Thumbnail',
+                value: thumbnailTx.id,
+            });
+        }
+
+        if (opts.banner) {
+            const bannerTx = await this.uploadData({
+                type: 'file',
+                data: opts.banner.file,
+                tags: buildAssetTags(opts.banner.file, opts.banner.tags),
+            });
+            baseTags.push({
+                name: 'Banner',
+                value: bannerTx.id,
+            });
+        }
+
+        const tags = buildCollectionTags(baseTags, opts);
+        const tx = this.uploadData({
+            type: 'data',
+            data: JSON.stringify(data),
+            tags,
+        });
+        return tx;
+    }
+
+    protected async uploadData(
+        opts: Types.UploadDataOpts,
+    ): Promise<Transaction | UploadResponse> {
         if (this.useIrys && this.irys) {
-            const tx = await uploadWithIrys({
+            const tx = uploadWithIrys({
                 irys: this.irys,
-                type: 'data',
-                data: JSON.stringify(data),
-                tags,
+                type: opts.type,
+                data: opts.data,
+                tags: opts.tags,
             });
             return tx;
         } else {
@@ -110,15 +150,20 @@ class AtomicToolkitWeb {
             }
             const tx = uploadWithArweave({
                 arweave: this.arweave,
-                jwk: 'use_wallet',
-                type: 'data',
-                data: JSON.stringify(data),
-                tags,
+                jwk: this.jwk,
+                type: opts.type,
+                data: opts.data,
+                tags: opts.tags,
             });
             return tx;
         }
     }
 
+    /**
+     * Retrieves the Irys node from the configuration.
+     * @returns The Irys node as either 'node1' or 'node2'.
+     * @throws Error if Irys is not defined or if the node is 'devnet'.
+     */
     protected getIrysNode() {
         if (!this.irys) {
             throw new Error('Irys is not defined');

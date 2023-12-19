@@ -1,3 +1,5 @@
+import { Tag } from 'arbundles';
+
 export type DiscoverabilityTags = {
     /**
      * Type of asset. One or more of: meme, image, video, podcast, blog-post, social-post, music, audio, token, web-page,
@@ -152,9 +154,24 @@ export type CollectionSpecificTags = {
     /**
      * Optional TX_ID pointing to a banner image recommended size 1600x900 pixels
      */
-    banners?: string;
+    banner?: string;
     /**
      * Optional ID that enables assets to cross-link to collection document
      */
     collectionCode?: string;
+};
+
+export type AssetTags = {
+    /**
+     * Discoverability Tags for Asset
+     */
+    discoverability: DiscoverabilityTags;
+    /**
+     * License Tags for Asset
+     */
+    license: LicenseTags;
+    /**
+     * Additional Tags for Asset
+     */
+    additionalTags: Tag[];
 };

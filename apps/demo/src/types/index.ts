@@ -12,6 +12,7 @@ export type Discoverability = {
 };
 
 export type License = {
+	useDefaultLicense: boolean;
 	license: string;
 	feeType?: string;
 	fee?: number;
@@ -19,4 +20,5 @@ export type License = {
 	currency?: string;
 	derivation?: string;
 	paymentAddress?: string;
+	expires?: string;
 };

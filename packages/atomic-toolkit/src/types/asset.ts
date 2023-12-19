@@ -89,6 +89,24 @@ export type CollectionOpts = {
      */
     assetIds: string[];
     /**
+     * The Thumbnail for the collection recommended size 200x200 pixels
+     *
+     * (file or path to the file)
+     */
+    thumbnail?: {
+        file: File | string;
+        tags: Tags.AssetTags;
+    };
+    /**
+     * The Banner for the collection recommended size 1600x900 pixels
+     *
+     * (file or path to the file)
+     */
+    banner?: {
+        file: File | string;
+        tags: Tags.AssetTags;
+    };
+    /**
      * The Collection Specific tags as per specification
      *
      * https://specs.arweave.dev/?tx=4zqtz8-U4LNKjFU4gZ28oKkV6bTlfzJiguqjbMl9R4Q
@@ -110,4 +128,30 @@ export type CollectionOpts = {
      * Additional tags associated with the asset.
      */
     additionalTags?: Tag[];
+};
+
+/**
+ * Options for creating an asset.
+ */
+export type CreateAssetOpts = {
+    /**
+     * Asset File can be file or relative path.
+     */
+    file: File | string;
+    /**
+     * Asset Tags
+     */
+    tags: Tags.AssetTags;
+};
+
+export type UploadDataOpts = {
+    type: 'data' | 'file';
+    /**
+     * Asset File can be file or relative path.
+     */
+    data: File | string;
+    /**
+     * Asset Tags
+     */
+    tags: Tag[];
 };

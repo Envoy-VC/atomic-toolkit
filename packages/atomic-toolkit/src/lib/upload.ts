@@ -17,12 +17,24 @@ const uploadWithIrys = async (opts: Types.IrysUploadParams) => {
                 tx = await irys.uploadFile(data, {
                     tags: tags,
                 });
+            } else if (type === 'file' && typeof data === 'string') {
+                throw new Error('Invalid type' + type);
             } else {
-                // TODO: Folder Upload Coming Soon
                 throw new Error('Invalid type ' + type);
             }
         } else {
-            throw new Error('NodeIrys Coming Soon');
+            const { data, tags, type } = opts as Types.NodeIrysUploadParams;
+            if (type === 'data' && typeof data === 'string') {
+                tx = await irys.upload(data, {
+                    tags: tags,
+                });
+            } else if (type === 'file') {
+                tx = await irys.uploadFile(data, {
+                    tags: tags,
+                });
+            } else {
+                throw new Error('Invalid type ' + type);
+            }
         }
         return tx;
     } catch (error) {

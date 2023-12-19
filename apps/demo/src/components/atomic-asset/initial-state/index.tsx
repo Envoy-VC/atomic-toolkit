@@ -2,9 +2,9 @@ import React from 'react';
 import { Form, Input, Space, Button, InputNumber } from 'antd';
 
 import { HiMiniTrash } from 'react-icons/hi2';
-import toast from 'react-hot-toast';
 
 const InitialState = () => {
+	const [error, setError] = React.useState<string | null>(null);
 	return (
 		<div className='flex flex-col gap-3 '>
 			<span className='my-4 text-2xl font-medium uppercase'>Initial State</span>
@@ -30,8 +30,9 @@ const InitialState = () => {
 					rules={[
 						{
 							validator: async (_, balances) => {
+								setError(null);
 								if (!balances || balances.length < 1) {
-									toast.error('At least one owner is required');
+									setError('At least one owner is required');
 									return Promise.reject(new Error('At least one owner is required'));
 								}
 								return Promise.resolve();
@@ -80,11 +81,14 @@ const InitialState = () => {
 									</Button>
 								</div>
 							))}
-							<Form.Item>
+							<Form.Item className='my-0'>
 								<Button type='dashed' onClick={() => add()} block>
 									Add Owner
 								</Button>
 							</Form.Item>
+							{error && (
+								<div className='text-[14px] text-[#FF4D4F] opacity-100'>{error}</div>
+							)}
 						</>
 					)}
 				</Form.List>

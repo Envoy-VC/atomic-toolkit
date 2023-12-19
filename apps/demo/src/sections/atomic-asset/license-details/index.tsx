@@ -3,6 +3,8 @@ import toast from 'react-hot-toast';
 import { Button, Form, Modal } from 'antd';
 import { useRouter } from 'next/router';
 
+import Confetti from 'react-confetti';
+
 import { useCreateAtomicAsset, useAtomicToolkit } from '~/stores';
 
 import { License as LicenseForm } from '~/components/atomic-asset';
@@ -49,8 +51,10 @@ const LicenseDetails = () => {
 			const opts = buildOptions({
 				discoverability,
 				initialState,
-				license,
+				license: values,
 			});
+
+			setModalOpen(true);
 
 			const tx = await atomicToolkit.createAtomicAsset(file as RcFile, opts);
 			console.log(tx.contractTxId);
@@ -79,7 +83,7 @@ const LicenseDetails = () => {
 				initialValues={license}
 				size='large'
 			>
-				<LicenseForm />
+				<LicenseForm form={form} />
 				<div className='my-8 flex justify-between'>
 					<Button type='dashed' onClick={onBack} disabled={isCreating}>
 						Back
@@ -109,24 +113,62 @@ interface ModalProps {
 	txId: string;
 }
 
-const SuccessModal = ({ isModalOpen, txId, handleOk }: ModalProps) => (
-	<Modal title='Atomic Asset' open={isModalOpen} onOk={handleOk} footer={null}>
-		<div className='p-2'>
-			<div className='flex flex-col gap-2 text-[1rem]'>
-				Transaction ID: <span className='font-medium text-primary'>{txId}</span>
-			</div>
-			<div className='my-6 flex justify-end'>
-				<Button
-					className='bg-primary'
-					type='primary'
-					onClick={handleOk}
-					size='middle'
-				>
-					Done
-				</Button>
-			</div>
+const SuccessModal = ({ isModalOpen, txId, handleOk }: ModalProps) => {
+	const [isExploding, setIsExploding] = React.useState<boolean>(false);
+
+	React.useEffect(() => {
+		if (txId === '') return;
+		setIsExploding(true);
+		setTimeout(() => {
+			setIsExploding(false);
+		}, 5000);
+	}, [txId]);
+
+	return (
+		<div>
+			<Modal
+				title={
+					txId === '' ? 'Creating Atomic Asset...' : ' 🐘 Atomic Asset Created'
+				}
+				open={isModalOpen}
+				onOk={handleOk}
+				footer={null}
+				styles={{
+					mask: {
+						backgroundColor: 'rgba(0, 0, 0, 0.35)',
+					},
+				}}
+			>
+				<div className='p-2'>
+					{txId !== '' ? (
+						<>
+							<div className='flex flex-col gap-2 text-[1rem]'>
+								Transaction ID: <span className='font-medium text-primary'>{txId}</span>
+							</div>
+							<div className='my-6 flex justify-end'>
+								<Button
+									className='bg-primary'
+									type='primary'
+									onClick={handleOk}
+									size='middle'
+								>
+									Done
+								</Button>
+							</div>
+						</>
+					) : (
+						<div className='flex flex-row items-center justify-center gap-2 p-8 text-[1rem]'>
+							<CgSpinner className='animate-spin text-xl' />
+							<div>Creating Atomic Asset</div>
+						</div>
+					)}
+				</div>
+			</Modal>
+			{isExploding && (
+				<Confetti recycle={isExploding} numberOfPieces={100} width={1920} />
+			)}
 		</div>
-	</Modal>
-);
+	);
+};
 
 export default LicenseDetails;

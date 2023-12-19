@@ -32,7 +32,8 @@ export const useCreateAtomicAsset = create<State & Actions>((set) => ({
 		topics: [],
 	},
 	license: {
-		license: '',
+		useDefaultLicense: true,
+		license: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',
 	},
 	setFile: (file) => set({ file }),
 	setInitialState: (initialState) => set({ initialState }),
@@ -53,13 +54,8 @@ export const useCreateAtomicAsset = create<State & Actions>((set) => ({
 				topics: [],
 			},
 			license: {
-				license: '',
-				feeType: '',
-				fee: 0,
-				commercialUse: '',
-				currency: '',
-				derivation: '',
-				paymentAddress: '',
+				useDefaultLicense: true,
+				license: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',
 			},
 		}),
 }));

@@ -26,13 +26,21 @@ export const buildOptions = (opts: {
 		balances: balances,
 	};
 
-	// remove and extract fee and fee type fro object
-	const feeType = l.feeType;
-	const fee = l.fee;
-	delete l.fee;
-	delete l.feeType;
-	const license: LicenseTags = l;
-	if (feeType && fee) license.licenseFee = `${feeType}-${fee}`;
+	let license: LicenseTags;
+	if (l.useDefaultLicense) {
+		license = {
+			license: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',
+		};
+	} else {
+		// remove and extract fee and fee type fro object
+		const feeType = l.feeType;
+		const fee = l.fee;
+		delete l.fee;
+		delete l.feeType;
+		license = l;
+		if (feeType && fee && feeType !== 'None')
+			license.licenseFee = `${feeType}-${fee}`;
+	}
 
 	return {
 		initialState,

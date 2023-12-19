@@ -114,7 +114,7 @@ const buildCollectionSpecificTags = (
     tags.push({ name: 'Name', value: opts.name });
     tags.push({ name: 'Collection-Type', value: opts.collectionType });
     if (opts.thumbnail) tags.push({ name: 'Thumbnail', value: opts.thumbnail });
-    if (opts.banners) tags.push({ name: 'Banners', value: opts.banners });
+    if (opts.banner) tags.push({ name: 'Banners', value: opts.banner });
     if (opts.collectionCode)
         tags.push({ name: 'Collection-Code', value: opts.collectionCode });
     return tags;
@@ -193,8 +193,8 @@ const buildTradableAssetTags = (
  * @param opts - The options for building the collection tags.
  * @returns An array of tags.
  */
-const buildCollectionTags = (opts: CollectionOpts): Tag[] => {
-    const tags: Tag[] = [];
+const buildCollectionTags = (baseTags: Tag[], opts: CollectionOpts): Tag[] => {
+    const tags: Tag[] = baseTags;
     const { collection, discoverability, stamp, additionalTags } = opts;
 
     let collectionSpecificTags: Tag[],
@@ -233,4 +233,27 @@ const buildCollectionTags = (opts: CollectionOpts): Tag[] => {
     return tags;
 };
 
-export { buildTradableAssetTags, buildCollectionTags };
+const buildAssetTags = (file: File | string, opts: Tags.AssetTags): Tag[] => {
+    const tags: Tag[] = [];
+    let discoverabilityTags: Tag[] = [],
+        licenseTags: Tag[] = [];
+
+    discoverabilityTags = buildDiscoverabilityTags(opts.discoverability);
+
+    if (opts.license) {
+        licenseTags = buildLicenseTags(opts.license);
+    } else {
+        licenseTags = BaseTags['BaseLicenseTags'];
+    }
+
+    tags.push(...discoverabilityTags);
+    tags.push(...licenseTags);
+    tags.push(...(opts.additionalTags ?? []));
+    tags.push(getContentTypeTag(file));
+
+    checkForDuplicateTags(tags);
+
+    return tags;
+};
+
+export { buildTradableAssetTags, buildCollectionTags, buildAssetTags };

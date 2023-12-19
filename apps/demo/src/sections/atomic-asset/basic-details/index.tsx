@@ -27,7 +27,7 @@ const BasicDetails = () => {
 				initialValues={discoverability}
 				size='large'
 			>
-				<Discoverability />
+				<Discoverability form={form} />
 				<div className='my-8 flex justify-end'>
 					<Button className='bg-primary' type='primary' htmlType='submit'>
 						Next

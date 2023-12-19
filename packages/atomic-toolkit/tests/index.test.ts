@@ -1,112 +1,93 @@
 import { describe, expect, it } from 'vitest';
-import fs from 'fs';
 
-import { WebIrys } from '@irys/sdk';
-import { WarpFactory } from 'warp-contracts';
-import { DeployPlugin } from 'warp-contracts-plugin-deploy';
-import { ethers } from 'ethers';
+import Arweave from 'arweave';
+import Irys, { WebIrys } from '@irys/sdk';
 
-import { AtomicToolkitWeb } from '../src/index';
+import AtomicToolkit, { AtomicToolkitWeb } from '../src';
+import { Warp } from 'warp-contracts';
 
-// Load dotenv configuration from .env.local
-import dotenv from 'dotenv';
-dotenv.config({ path: '.env.local' });
+describe('AtomicToolkit Class', () => {
+    it('should create an instance with Arweave', async () => {
+        const environment = 'mainnet';
+        const arweave = Arweave.init({
+            host: 'arweave.net',
+            port: 443,
+            protocol: 'https',
+        });
+        const jwk = await arweave.wallets.generate();
+        const toolkit = new AtomicToolkit({
+            environment,
+            useIrys: false,
+            jwk,
+        });
 
-// Load Atomic Asset Image
-let buffer = fs.readFileSync('assets/test.jpeg');
-let blob = new Blob([buffer]);
-let file = new File([blob], 'trees-wallpaper.jpg', { type: 'image/jpeg' });
+        // Assertions
+        expect(toolkit).to.be.an.instanceof(AtomicToolkit);
+        expect(toolkit.warp).to.be.an.instanceOf(Warp); // Make sure the Warp instance is created
+        expect(toolkit.warp.hasPlugin('deploy')).to.equal(true);
+        expect(toolkit.useIrys).to.equal(false);
+        expect(toolkit.irys).to.equal(null);
+    });
 
-describe('AtomicToolkitWeb with Irys', () => {
-    async function initialize() {
-        let provider = new ethers.providers.JsonRpcProvider(
-            process.env.RPC_URL,
-        );
-        if (!process.env.PRIVATE_KEY) {
-            throw new Error('PRIVATE_KEY not found');
-        }
-        const ethersWallet = new ethers.Wallet(
-            process.env.PRIVATE_KEY,
-            provider,
-        );
-        const warp = WarpFactory.forTestnet().use(new DeployPlugin());
-        const irys = new WebIrys({
+    it('should create an instance with Irys', () => {
+        const environment = 'mainnet';
+        const useIrys = true;
+        const irysConfig = {
             url: 'https://node2.irys.xyz',
             token: 'matic',
-            wallet: {
-                name: 'ethersv5',
-                provider: {
-                    ...ethersWallet,
-                    getSigner: () => ethersWallet,
-                },
-            },
+        };
+        const irys = new Irys(irysConfig);
+        const toolkit = new AtomicToolkit({ environment, useIrys, irys });
+
+        // Assertions
+        expect(toolkit).to.be.an.instanceof(AtomicToolkit);
+        expect(toolkit.warp).to.be.an.instanceOf(Warp); // Make sure the Warp instance is created
+        expect(toolkit.warp.hasPlugin('deploy')).to.equal(true);
+        expect(toolkit.useIrys).to.equal(true);
+        expect(toolkit.arweave).to.equal(null);
+        expect(toolkit.irys).to.equal(irys);
+    });
+});
+
+describe('AtomicToolkitWeb Class', () => {
+    it('should create an instance with Arweave', async () => {
+        const environment = 'mainnet';
+        const arweave = Arweave.init({
+            host: 'arweave.net',
+            port: 443,
+            protocol: 'https',
         });
-        await irys.ready();
-
-        const atomicToolkit = new AtomicToolkitWeb({
-            warp,
-            useIrys: true,
-            irys,
+        const jwk = await arweave.wallets.generate();
+        const toolkit = new AtomicToolkitWeb({
+            environment,
+            useIrys: false,
+            jwk,
         });
 
-        return { warp, irys, atomicToolkit };
-    }
+        // Assertions
+        expect(toolkit).to.be.an.instanceof(AtomicToolkitWeb);
+        expect(toolkit.warp).to.be.an.instanceOf(Warp); // Make sure the Warp instance is created
+        expect(toolkit.warp.hasPlugin('deploy')).to.equal(true);
+        expect(toolkit.useIrys).to.equal(false);
+        expect(toolkit.irys).to.equal(null);
+    });
 
-    it('Should throw error if warp instance does not have deploy plugin', async () => {
-        const warp = WarpFactory.forTestnet();
-        const irys = new WebIrys({
-            url: 'node1',
+    it('should create an instance with Irys', () => {
+        const environment = 'mainnet';
+        const useIrys = true;
+        const irysConfig = {
+            url: 'https://node2.irys.xyz',
             token: 'matic',
-        });
-        expect(
-            () => new AtomicToolkitWeb({ warp, useIrys: true, irys }),
-        ).toThrowError('Warp instance must have DeployPlugin');
-    });
-    it('Should Create a Atomic Asset', async () => {
-        const { atomicToolkit } = await initialize();
-        const tx = await atomicToolkit.createAtomicAsset(file, {
-            initialState: {
-                ticker: 'Test',
-                name: 'Test Image',
-                description: 'Test Image',
-                balances: {
-                    'Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4': 1,
-                },
-                claimable: [],
-            },
-            discoverability: {
-                Title: 'Test Image',
-                Description: 'Test Image',
-                Type: 'image',
-                'Topic:Test': 'Test',
-            },
-            license: {
-                License: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',
-            },
-        });
-        expect(tx).toBeDefined();
-    });
-    it('Should Create a Collection', async () => {
-        const { atomicToolkit } = await initialize();
-        const tx = await atomicToolkit.createCollection({
-            assetIds: ['QmZ7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4'],
-            collection: {
-                Name: 'Test Collection',
-                'Collection-Type': 'Test',
-            },
-            discoverability: {
-                Title: 'Test Collection',
-                Description: 'Test Collection',
-                Type: 'Document',
-                'Topic:Test': 'Test',
-            },
-            stamp: {
-                isStampable: true,
-                collectionName: 'Test Collection',
-                ticker: 'Test',
-                owner: 'Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4',
-            },
-        });
-        expect(tx).toBeDefined();
+        };
+        const irys = new WebIrys(irysConfig);
+        const toolkit = new AtomicToolkitWeb({ environment, useIrys, irys });
+
+        // Assertions
+        expect(toolkit).to.be.an.instanceof(AtomicToolkitWeb);
+        expect(toolkit.warp).to.be.an.instanceOf(Warp); // Make sure the Warp instance is created
+        expect(toolkit.warp.hasPlugin('deploy')).to.equal(true);
+        expect(toolkit.useIrys).to.equal(true);
+        expect(toolkit.arweave).to.equal(null);
+        expect(toolkit.irys).to.equal(irys);
     });
 });
