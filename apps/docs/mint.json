@@ -26,7 +26,7 @@
     ],
     "topbarCtaButton": {
         "name": "Get Started",
-        "url": "https://github.com/Envoy-VC/atomic-toolkit"
+        "url": "/quickstart"
     },
     "tabs": [],
     "anchors": [
@@ -43,22 +43,50 @@
         {
             "name": "What's New",
             "icon": "rocket",
-            "url": "https://github.com/Envoy-VC/atomic-toolkit/tree/main/CHANGELOG.md"
+            "url": "https://github.com/Envoy-VC/atomic-toolkit/blob/main/packages/atomic-toolkit/CHANGELOG.md"
         }
     ],
     "navigation": [
         {
             "group": "Introduction",
-            "pages": ["introduction", "quickstart", "development"]
+            "pages": ["introduction", "quickstart"]
         },
         {
-            "group": "Essentials",
+            "group": "Guides",
             "pages": [
-                "essentials/markdown",
-                "essentials/code",
-                "essentials/images",
-                "essentials/settings",
-                "essentials/navigation"
+                "guides/overview",
+                {
+                    "group": "Usage",
+                    "icon": "book",
+                    "pages": [
+                        "usage/installation",
+                        "usage/node",
+                        "usage/browser"
+                    ]
+                },
+                {
+                    "group": "Atomic Asset",
+                    "icon": "image",
+                    "pages": ["guides/create-atomic-asset"]
+                },
+                {
+                    "group": "Collection",
+                    "icon": "layer-group",
+                    "pages": ["guides/create-collection"]
+                }
+            ]
+        },
+        {
+            "group": "Types References",
+            "pages": [
+                "types-reference/overview",
+                "types-reference/atomic-asset",
+                "types-reference/collection",
+                {
+                    "group": "Tags",
+                    "icon": "tags",
+                    "pages": ["types-reference/udl"]
+                }
             ]
         }
     ],
