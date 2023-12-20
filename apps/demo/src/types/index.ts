@@ -1,3 +1,5 @@
+import { UploadFile } from 'antd';
+
 export type InitialState = {
 	ticker: string;
 	name: string;
@@ -5,6 +7,7 @@ export type InitialState = {
 };
 
 export type Discoverability = {
+	indexWithUCM: boolean;
 	type: string;
 	title: string;
 	description: string;
@@ -21,4 +24,18 @@ export type License = {
 	derivation?: string;
 	paymentAddress?: string;
 	expires?: string;
+};
+
+export type CollectionDetails = {
+	ticker: string;
+	name: string;
+	description: string;
+	collectionType: string;
+	topics: string[];
+	owner: string;
+	isStampable: boolean;
+};
+
+export type CollectionAssets = {
+	units: string;
 };

@@ -18,14 +18,16 @@ interface Actions {
 	reset: () => void;
 }
 
-export const useCreateAtomicAsset = create<State & Actions>((set) => ({
+const initialState: State = {
 	file: null,
+
 	initialState: {
 		ticker: '',
 		name: '',
 		balances: [],
 	},
 	discoverability: {
+		indexWithUCM: true,
 		type: '',
 		title: '',
 		description: '',
@@ -35,27 +37,13 @@ export const useCreateAtomicAsset = create<State & Actions>((set) => ({
 		useDefaultLicense: true,
 		license: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',
 	},
+};
+
+export const useCreateAtomicAsset = create<State & Actions>((set) => ({
+	...initialState,
 	setFile: (file) => set({ file }),
 	setInitialState: (initialState) => set({ initialState }),
 	setDiscoverability: (discoverability) => set({ discoverability }),
 	setLicense: (license) => set({ license }),
-	reset: () =>
-		set({
-			file: null,
-			initialState: {
-				ticker: '',
-				name: '',
-				balances: [],
-			},
-			discoverability: {
-				type: '',
-				title: '',
-				description: '',
-				topics: [],
-			},
-			license: {
-				useDefaultLicense: true,
-				license: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',
-			},
-		}),
+	reset: () => set(initialState),
 }));

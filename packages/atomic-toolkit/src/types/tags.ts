@@ -143,8 +143,7 @@ export type CollectionSpecificTags = {
      */
     name: string;
     /**
-     * The collection type defines the collection for other applications to consume, e.g. "assets", "images", "media",
-     * "audio", "video", "products"
+     * The collection type defines the collection for other applications to consume, e.g. "assets", "images", "media", "audio", "video", "products"
      */
     collectionType: string;
     /**

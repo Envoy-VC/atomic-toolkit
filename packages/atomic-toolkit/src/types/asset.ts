@@ -60,6 +60,12 @@ export type CreateTradableAssetOpts = {
      */
     contractIdentifier?: Tags.ContractIdentifierTags;
     /**
+     * Wether to Index the Asset (Making it tradable on Marketplaces like BazAR)
+     *
+     * @default true
+     */
+    indexWithUCM?: boolean;
+    /**
      * Additional tags associated with the asset.
      */
     additionalTags?: Tag[];

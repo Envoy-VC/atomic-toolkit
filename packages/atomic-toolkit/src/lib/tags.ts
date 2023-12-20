@@ -175,7 +175,11 @@ const buildTradableAssetTags = (
         });
     }
 
-    tags.push({ name: 'Indexed-By', value: 'ucm' });
+    const { indexWithUCM = true } = opts;
+
+    if (indexWithUCM) {
+        tags.push({ name: 'Indexed-By', value: 'ucm' });
+    }
 
     tags.push(...discoverabilityTags);
     tags.push(...licenseTags);

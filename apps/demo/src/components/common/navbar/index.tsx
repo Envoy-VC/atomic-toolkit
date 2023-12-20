@@ -32,7 +32,7 @@ const Navbar = () => {
 	}, [connected]);
 
 	return (
-		<div className='fixed h-[8vh] w-full border-b-2 border-[#E5E7EB] bg-white p-4 px-6'>
+		<div className='fixed z-[11] h-[8vh] w-full border-b-2 border-[#E5E7EB] bg-white p-4 px-6'>
 			<div className='flex flex-row items-center justify-between'>
 				<div className='flex flex-row items-center gap-2'>
 					<Image
@@ -43,12 +43,12 @@ const Navbar = () => {
 					/>
 				</div>
 				<ConnectButton
-					showBalance
-					showProfilePicture
+					showBalance={false}
+					showProfilePicture={false}
 					useAns
 					profileModal
 					accent='#fff'
-					className='ConnectBtn !border-2 !border-black !p-1 !text-black'
+					className='ConnectBtn !border-2 !border-black !p-1 !text-black !text-xs sm:!text-[1rem]'
 				/>
 			</div>
 		</div>

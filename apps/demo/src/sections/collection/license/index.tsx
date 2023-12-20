@@ -4,26 +4,40 @@ import { Button, Form, Modal } from 'antd';
 import { useRouter } from 'next/router';
 
 import Confetti from 'react-confetti';
+import { RcFile } from 'antd/es/upload';
 
-import { useCreateAtomicAsset, useAtomicToolkit } from '~/stores';
+import { useCreateCollection, useAtomicToolkit } from '~/stores';
 
-import { License as LicenseForm } from '~/components/atomic-asset';
+import { CollectionLicenseForm } from '~/components/collection';
 
-import { buildOptions } from '~/helpers';
+import { buildCollectionOpts, buildLicenseOpts } from '~/helpers';
 
 import { CgSpinner } from 'react-icons/cg';
 
 import * as Types from '~/types';
-import { RcFile } from 'antd/es/upload';
+import { CreateTradableAssetOpts } from 'atomic-toolkit';
 
-const LicenseDetails = () => {
+export interface ContractDeploy {
+	contractTxId: string;
+	srcTxId?: string;
+}
+
+const CollectionLicense = () => {
 	const router = useRouter();
 	const [form] = Form.useForm<Types.License>();
 
 	const { atomicToolkit } = useAtomicToolkit();
 
-	const { file, discoverability, initialState, license, setLicense, reset } =
-		useCreateAtomicAsset();
+	const {
+		files,
+		thumbnail,
+		banner,
+		collection,
+		assets,
+		license,
+		reset,
+		setLicense,
+	} = useCreateCollection();
 
 	const [isCreating, setIsCreating] = React.useState<boolean>(false);
 	const [modalOpen, setModalOpen] = React.useState<boolean>(false);
@@ -33,35 +47,78 @@ const LicenseDetails = () => {
 		setModalOpen(false);
 		setTxId('');
 		reset();
-		router.push('/atomic-asset?step=basic-details');
+		router.push('/collection?step=basic-details');
+	};
+
+	const getAtomicOpts = (
+		license: Types.License,
+		collection: Types.CollectionDetails,
+		index: number,
+		units: string,
+		type: string
+	) => {
+		const licenseOpts = buildLicenseOpts(license);
+		const opts: CreateTradableAssetOpts = {
+			initialState: {
+				name: `${collection.name} #${index}`,
+				ticker: collection.ticker,
+				balances: {
+					[collection.owner]: parseInt(units),
+				},
+				claimable: [],
+			},
+			discoverability: {
+				type: type,
+				title: `${collection.name} #${index}`,
+				description: collection.description,
+				topics: collection.topics,
+			},
+			license: licenseOpts,
+			indexWithUCM: false,
+		};
+		return opts;
 	};
 
 	const onFinish = async (values: Types.License) => {
 		try {
+			if (!atomicToolkit) {
+				throw new Error('Atomic Toolkit is not initialized');
+			}
 			setIsCreating(true);
 			setLicense(values);
-			if (!atomicToolkit) {
-				toast.error('Atomic Toolkit is not initialized');
-				return;
-			}
-			if (!file) {
-				toast.error('Asset file is required');
-				return;
-			}
-			const opts = buildOptions({
-				discoverability,
-				initialState,
-				license: values,
+			setModalOpen(true);
+
+			const promises = files.map((file, index) => {
+				const type =
+					(
+						file?.type ??
+						file?.originFileObj?.type ??
+						'application/octet-stream'
+					).split('/')[0] ?? 'asset';
+
+				const opts = getAtomicOpts(values, collection, index, assets.units, type);
+				return atomicToolkit.createAtomicAsset(file as RcFile, opts);
 			});
 
-			setModalOpen(true);
-			
-			const tx = await atomicToolkit.createAtomicAsset(file as RcFile, opts);
-			console.log(tx.contractTxId);
-			setTxId(tx.contractTxId);
-			setModalOpen(true);
+			const txns = await Promise.all(promises);
+			const assetIds: string[] = [];
+			txns.forEach((txn) => {
+				assetIds.push(txn.contractTxId);
+			});
+			const opts = buildCollectionOpts({
+				collection,
+				license,
+				assets,
+				thumbnail,
+				banner,
+				assetIds,
+				files,
+			});
+			const tx = await atomicToolkit.createCollection(opts);
+			setTxId(tx.id);
 			toast.success('Successfully Created');
 		} catch (error) {
+			setModalOpen(false);
 			console.log(error);
 			toast.error(String(error));
 		} finally {
@@ -70,7 +127,7 @@ const LicenseDetails = () => {
 	};
 
 	const onBack = () => {
-		router.push('/atomic-asset?step=initial-state');
+		router.push('/collection?step=assets');
 	};
 
 	return (
@@ -82,8 +139,9 @@ const LicenseDetails = () => {
 				scrollToFirstError
 				initialValues={license}
 				size='large'
+				className='max-w-xl p-4'
 			>
-				<LicenseForm form={form} />
+				<CollectionLicenseForm form={form} />
 				<div className='my-8 flex justify-between'>
 					<Button type='dashed' onClick={onBack} disabled={isCreating}>
 						Back
@@ -97,7 +155,7 @@ const LicenseDetails = () => {
 						{isCreating ? (
 							<CgSpinner className='animate-spin text-lg' />
 						) : (
-							'Create Asset'
+							'Create Collection'
 						)}
 					</Button>
 				</div>
@@ -127,9 +185,7 @@ const SuccessModal = ({ isModalOpen, txId, handleOk }: ModalProps) => {
 	return (
 		<div>
 			<Modal
-				title={
-					txId === '' ? 'Creating Atomic Asset...' : ' 🐘 Atomic Asset Created'
-				}
+				title={txId === '' ? 'Creating Collection...' : ' 🐘 Collection Created'}
 				open={isModalOpen}
 				onOk={handleOk}
 				footer={null}
@@ -143,7 +199,7 @@ const SuccessModal = ({ isModalOpen, txId, handleOk }: ModalProps) => {
 					{txId !== '' ? (
 						<>
 							<div className='flex flex-col gap-2 text-[1rem]'>
-								Transaction ID: <span className='font-medium text-primary'>{txId}</span>
+								Collection ID: <span className='font-medium text-primary'>{txId}</span>
 							</div>
 							<div className='my-6 flex justify-end'>
 								<Button
@@ -159,14 +215,16 @@ const SuccessModal = ({ isModalOpen, txId, handleOk }: ModalProps) => {
 					) : (
 						<div className='flex flex-row items-center justify-center gap-2 p-8 text-[1rem]'>
 							<CgSpinner className='animate-spin text-xl' />
-							<div>Creating Atomic Asset</div>
+							<div>Creating Collection...</div>
 						</div>
 					)}
 				</div>
 			</Modal>
-			{isExploding && <Confetti recycle={isExploding} numberOfPieces={100} />}
+			{isExploding && txId !== '' && (
+				<Confetti recycle={isExploding} numberOfPieces={100} />
+			)}
 		</div>
 	);
 };
 
-export default LicenseDetails;
+export default CollectionLicense;

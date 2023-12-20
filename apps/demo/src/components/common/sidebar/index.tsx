@@ -38,7 +38,7 @@ const Divider = () => {
 
 const Sidebar = () => {
 	return (
-		<div className='fixed h-full w-full max-w-[16rem] border-r-[1px] border-[#E5E7EB] px-4 py-8'>
+		<div className='fixed hidden h-full w-full max-w-[16rem] border-r-[1px] border-[#E5E7EB] px-4 py-8 lg:flex'>
 			<div className='flex flex-col gap-2'>
 				<Heading title='Introduction' />
 				<SidebarItem title='Getting Started' href='/' />

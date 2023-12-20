@@ -73,7 +73,7 @@ class AtomicToolkitWeb {
         opts: CreateTradableAssetOpts,
     ): Promise<ContractDeploy | Transaction> {
         const tags = buildTradableAssetTags(file, opts);
-        const maxAttempts = 5;
+        const maxAttempts = 7;
         const delayBetweenAttempts = 5000;
 
         const tx = await this.uploadData({
@@ -82,8 +82,9 @@ class AtomicToolkitWeb {
             tags,
         });
 
+        const node = this.arweave ? 'arweave' : this.getIrysNode();
         const result = retryOperation(
-            () => this.warp.register(tx.id, this.getIrysNode()),
+            () => this.warp.register(tx.id, node),
             maxAttempts,
             delayBetweenAttempts,
         );

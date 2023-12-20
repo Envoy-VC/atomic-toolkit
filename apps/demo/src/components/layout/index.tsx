@@ -39,7 +39,7 @@ const Layout = ({ children }: Props) => {
 							<Navbar />
 							<div className='flex flex-row pt-[8vh]'>
 								<Sidebar />
-								<div className='ml-[16rem] w-full'>{children}</div>
+								<div className='w-full lg:ml-[16rem]'>{children}</div>
 							</div>
 						</div>
 					</ArweaveWalletKit>

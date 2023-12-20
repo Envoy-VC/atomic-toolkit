@@ -23,7 +23,7 @@ export const retryOperation = async <T>(
             const result = await operation();
             return result; // Operation succeeded, return the result
         } catch (error) {
-            console.error(`Attempt ${attempts + 1} failed: ${error}`);
+            console.log(`Attempt ${attempts + 1} to register failed`);
             attempts++;
             if (attempts < maxAttempts) {
                 console.log(
