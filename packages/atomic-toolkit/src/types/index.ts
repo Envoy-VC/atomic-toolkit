@@ -43,7 +43,7 @@ export type AtomicToolkitWebWithArweave = {
     /**
      * Wether to use Irys or not(false for Arweave Type)
      */
-    useIrys: false;
+    useIrys?: false;
     /**
      * Arweave Configuration Options(either arweave or irys)
      */

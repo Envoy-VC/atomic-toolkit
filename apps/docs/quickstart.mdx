@@ -1,21 +1,142 @@
 ---
 title: Quickstart
-description: 'Learn how to update your docs locally and and deploy them to the public.'
+description: Get up and running quickly with Atomic Toolkit's simple installation and setup process.
 icon: 'bolt'
 ---
 
-## Setup your development
+Let's dive into a quick installation and setup guide to get you started with Atomic Toolkit.
 
-Learn how to update your docs locally and and deploy them to the public.
+## Install the SDK
 
-### Edit and preview
+<CodeGroup>
+```bash npm
+npm install atomic-toolkit
+```
 
-<AccordionGroup>
-    <Accordion icon="github" title="Clone your docs locally"></Accordion>
-    <Accordion icon="rectangle-terminal" title="Preview changes">
-    
-       ada
+```bash yarn
+yarn add atomic-toolkit
+```
 
-    </Accordion>
+```bash pnpm
+pnpm add atomic-toolkit
+```
 
-</AccordionGroup>
+</CodeGroup>
+
+## Setup the SDK
+
+First, import the SDK into your project. You can do this on the server-side or client-side depending on your use case.
+
+<CodeGroup>
+
+```ts Server-side
+import AtomicToolkit from 'atomic-toolkit';
+```
+
+```ts Client-side
+import { AtomicToolkitWeb } from 'atomic-toolkit';
+```
+
+</CodeGroup>
+
+Currently, Atomic Toolkit can be initialized using a Arweave Wallet or [Irys SDK](https://irys.xyz/).
+
+### Using an Arweave Wallet
+
+<CodeGroup>
+
+```ts Server-side
+const key = JSON.parse(readFileSync('wallet.json').toString());
+
+const atomicToolkit = new AtomicToolkit({
+    environment: 'mainnet',
+    jwk: key,
+});
+```
+
+```ts Client-side
+const atomicToolkit = new AtomicToolkitWeb({
+    environment: 'mainnet',
+});
+```
+
+</CodeGroup>
+
+### Using Irys
+
+<CodeGroup>
+
+```ts Server-side
+import Irys from '@irys/sdk';
+
+const irys = new Irys({
+    url: 'https://node2.irys.xyz',
+    token: 'matic',
+    key: 'your-private-key',
+});
+
+await irys.ready();
+
+const atomicToolkit = new AtomicToolkit({
+    environment: 'mainnet',
+    useIrys: true,
+    irys: irys,
+});
+```
+
+```ts Client-side
+import { WebIrys } from '@irys/sdk';
+
+const webIrys = new WebIrys({
+    url: 'https://node2.irys.xyz',
+    token: 'matic',
+});
+
+await webIrys.ready();
+
+const atomicToolkit = new AtomicToolkitWeb({
+    environment: 'mainnet',
+    useIrys: true,
+    irys: webIrys,
+});
+```
+
+</CodeGroup>
+
+## Create a Atomic Asset
+
+Now that you have the SDK setup, you can create a new Atomic Asset.
+
+```ts
+const atomicToolkit = new AtomicToolkitWeb({
+    environment: 'mainnet',
+});
+
+// Simple Text File
+const file = new File(['hello world'], 'hello.txt', {
+    type: 'text/plain',
+});
+
+const res = await atomicToolkit.createAtomicAsset(file, {
+    initialState: {
+        ticker: 'HELLO',
+        name: 'Hello World',
+        balances: {
+            '9WQ7xH2LOuqfAccjGquck8eaKARg1vMhRJaOo3LJL14': 1,
+        },
+        claimable: [],
+    },
+    discoverability: {
+        title: 'Hello World',
+        description: 'Hello World',
+        type: 'text',
+    },
+});
+
+console.log(res.contractTxId);
+console.log(res?.srcTxId);
+
+// F4YEvnMmcFFBtF0Qe4Hycl_6Ocgr-fBCoCdIuJSYUI8
+
+// Of9pi--Gj7hCTawhgxOwbuWnFI1h24TTgO5pw8ENJNQ
+```

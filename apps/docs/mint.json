@@ -60,7 +60,7 @@
                     "icon": "book",
                     "pages": [
                         "usage/installation",
-                        "usage/node",
+                        "usage/server-side",
                         "usage/browser"
                     ]
                 },
