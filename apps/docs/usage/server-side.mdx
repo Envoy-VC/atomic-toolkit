@@ -1,3 +1,96 @@
 ---
 title: Server-side Usage
+description: Use Atomic Toolkit in Server Environments
 ---
+
+This section guides you through initializing Atomic Toolkit within a server environment like a backend application. Currently Atomic toolkit can be initializing in the following ways:
+
+1. Using Arweave Wallet
+2. Using Irys SDK
+
+## Using Arweave Wallet
+
+It uses the Arweave Wallet to sign transactions and interact with the Arweave network.
+
+```ts
+import { readFileSync } from 'fs';
+import AtomicToolkit from 'atomic-toolkit';
+
+const key = JSON.parse(readFileSync('wallet.json').toString());
+
+const atomicToolkit = new AtomicToolkit({
+    environment: 'mainnet',
+    jwk: key,
+});
+```
+
+### Input Parameters
+
+The following params are available for this function and they must be passed in as an object:
+
+-   **environment**: `mainnet` | `testnet`: The environment to use. If testnet is used, warp for testnet will be used.
+-   **warp (optional)**: `Warp`: A Warp Instance to use with Deploy Plugin. If not provided, the default Warp instance for Mainnet will be used.
+-   **arweave (optional)**: `Arweave`: An Arweave Instance to use. If not provided, the default Arweave instance with gateway [arweave.net](arweave.net) will be used.
+-   **jwk**: `JWKInterface`: The Key to use for signing transactions. Should be a JWK object.
+
+<Warning>
+    Private keys must be kept secure at all times. Please ensure that the
+    `wallet.json` file is not pushed to a version control (eg. GitHub). If you
+    are using a CI/CD pipeline, ensure that the wallet.json file is not stored
+    in the repository.
+</Warning>
+
+<Note>
+    The Warp instance should use the `DeployPlugin`. It is neccessary to
+    register Atomic Assets
+</Note>
+
+### Default Values
+
+```ts
+/**
+ * Default Warp instance
+ */
+const warp = WarpFactory.forMainnet().use(new DeployPlugin());
+
+/**
+ * Default Arweave configuration.
+ */
+const defaultArweave = new Arweave({
+    host: 'arweave.net',
+    port: 443,
+    protocol: 'https',
+});
+```
+
+### Custom Instance Example
+
+```ts
+import Arweave from 'arweave';
+import { readFileSync } from 'fs';
+import AtomicToolkit from 'atomic-toolkit';
+import { DeployPlugin } from 'warp-contracts-plugin-deploy';
+import { WarpFactory, defaultCacheOptions } from 'warp-contracts';
+
+const key = JSON.parse(readFileSync('wallet.json').toString());
+
+const warp = WarpFactory.forMainnet().use(new DeployPlugin());
+
+const arweave = new Arweave({
+    host: 'arweave.net',
+    port: 443,
+    protocol: 'https',
+});
+
+const warp = WarpFactory.forMainnet({
+    ...defaultCacheOptions,
+    inMemory: true,
+}).use(new DeployPlugin());
+
+const atomicToolkit = new AtomicToolkit({
+    environment: 'mainnet',
+    warp,
+    arweave,
+    jwk: key,
+});
+```

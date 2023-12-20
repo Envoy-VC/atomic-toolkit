@@ -4,7 +4,7 @@ import Arweave from 'arweave';
 import Irys, { WebIrys } from '@irys/sdk';
 
 import AtomicToolkit, { AtomicToolkitWeb } from '../src';
-import { Warp } from 'warp-contracts';
+import { Warp, WarpFactory } from 'warp-contracts';
 
 describe('AtomicToolkit Class', () => {
     it('should create an instance with Arweave', async () => {

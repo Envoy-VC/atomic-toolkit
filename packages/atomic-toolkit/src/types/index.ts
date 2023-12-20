@@ -13,6 +13,9 @@ export type AtomicToolkitWithArweave = {
      * Arweave Configuration Options(either arweave or irys)
      */
     useIrys?: false;
+    /**
+     * Arweave Configuration Options
+     */
     arweave?: Arweave;
     jwk: JWKInterface;
 };

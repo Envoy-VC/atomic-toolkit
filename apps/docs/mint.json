@@ -6,6 +6,10 @@
         "light": "/logo/light.svg"
     },
     "favicon": "/favicon.svg",
+    "feedback": {
+        "thumbsRating": true,
+        "suggestEdit": true
+    },
     "colors": {
         "primary": "#4779FF",
         "light": "#6AA5FF",
@@ -93,7 +97,6 @@
     "backgroundImage": "https://ty4fqyqcpuijbv4cgpj46eesp7usbxaf5sqd3fcvkhayp5r4l4sq.arweave.dev/njhYYgJ9EJDXgjPTzxCSf-kg3AXsoD2UVVHBh_Y8XyU",
     "footerSocials": {
         "twitter": "https://twitter.com/Envoy_1084",
-        "github": "https://github.com/Envoy-VC/atomic-toolkit",
-        "linkedin": "https://www.linkedin.com/in/vedant-chainani"
+        "github": "https://github.com/Envoy-VC/atomic-toolkit"
     }
 }
