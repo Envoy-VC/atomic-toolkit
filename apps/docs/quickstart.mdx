@@ -49,15 +49,12 @@ Currently, Atomic Toolkit can be initialized using a Arweave Wallet or [Irys SDK
 const key = JSON.parse(readFileSync('wallet.json').toString());
 
 const atomicToolkit = new AtomicToolkit({
-    environment: 'mainnet',
     jwk: key,
 });
 ```
 
 ```ts Client-side
-const atomicToolkit = new AtomicToolkitWeb({
-    environment: 'mainnet',
-});
+const atomicToolkit = new AtomicToolkitWeb({});
 ```
 
 </CodeGroup>
@@ -78,8 +75,6 @@ const irys = new Irys({
 await irys.ready();
 
 const atomicToolkit = new AtomicToolkit({
-    environment: 'mainnet',
-    useIrys: true,
     irys: irys,
 });
 ```
@@ -95,8 +90,6 @@ const webIrys = new WebIrys({
 await webIrys.ready();
 
 const atomicToolkit = new AtomicToolkitWeb({
-    environment: 'mainnet',
-    useIrys: true,
     irys: webIrys,
 });
 ```
@@ -108,16 +101,14 @@ const atomicToolkit = new AtomicToolkitWeb({
 Now that you have the SDK setup, you can create a new Atomic Asset.
 
 ```ts
-const atomicToolkit = new AtomicToolkitWeb({
-    environment: 'mainnet',
-});
+const atomicToolkit = new AtomicToolkitWeb({});
 
 // Simple Text File
 const file = new File(['hello world'], 'hello.txt', {
     type: 'text/plain',
 });
 
-const res = await atomicToolkit.createAtomicAsset(file, {
+const res = await atomicToolkit.assets.createAtomicAsset(file, {
     initialState: {
         ticker: 'HELLO',
         name: 'Hello World',
