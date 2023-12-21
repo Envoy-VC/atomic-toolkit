@@ -19,10 +19,7 @@ const Navbar = () => {
 
 	React.useEffect(() => {
 		const get = () => {
-			const toolkit = new AtomicToolkitWeb({
-				environment: 'mainnet',
-				useIrys: false,
-			});
+			const toolkit = new AtomicToolkitWeb({});
 			setAtomicToolkit(toolkit);
 		};
 
@@ -48,7 +45,7 @@ const Navbar = () => {
 					useAns
 					profileModal
 					accent='#fff'
-					className='ConnectBtn !border-2 !border-black !p-1 !text-black !text-xs sm:!text-[1rem]'
+					className='ConnectBtn !border-2 !border-black !p-1 !text-xs !text-black sm:!text-[1rem]'
 				/>
 			</div>
 		</div>

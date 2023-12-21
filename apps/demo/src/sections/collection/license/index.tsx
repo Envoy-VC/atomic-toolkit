@@ -97,7 +97,7 @@ const CollectionLicense = () => {
 					).split('/')[0] ?? 'asset';
 
 				const opts = getAtomicOpts(values, collection, index, assets.units, type);
-				return atomicToolkit.createAtomicAsset(file as RcFile, opts);
+				return atomicToolkit.assets.createAtomicAsset(file as RcFile, opts);
 			});
 
 			const txns = await Promise.all(promises);
@@ -114,7 +114,7 @@ const CollectionLicense = () => {
 				assetIds,
 				files,
 			});
-			const tx = await atomicToolkit.createCollection(opts);
+			const tx = await atomicToolkit.collection.createCollection(opts);
 			setTxId(tx.id);
 			toast.success('Successfully Created');
 		} catch (error) {

@@ -55,8 +55,11 @@ const LicenseDetails = () => {
 			});
 
 			setModalOpen(true);
-			
-			const tx = await atomicToolkit.createAtomicAsset(file as RcFile, opts);
+
+			const tx = await atomicToolkit.assets.createAtomicAsset(
+				file as RcFile,
+				opts
+			);
 			console.log(tx.contractTxId);
 			setTxId(tx.contractTxId);
 			setModalOpen(true);
