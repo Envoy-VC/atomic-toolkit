@@ -172,5 +172,5 @@ export type AssetTags = {
     /**
      * Additional Tags for Asset
      */
-    additionalTags: Tag[];
+    additionalTags?: Tag[];
 };

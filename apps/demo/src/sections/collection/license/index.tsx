@@ -114,7 +114,7 @@ const CollectionLicense = () => {
 				assetIds,
 				files,
 			});
-			const tx = await atomicToolkit.collection.createCollection(opts);
+			const tx = await atomicToolkit.collection.createCollectionWithAssetIds(opts);
 			setTxId(tx.id);
 			toast.success('Successfully Created');
 		} catch (error) {

@@ -1,7 +1,7 @@
 import { UploadFile } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import {
-	CollectionOpts,
+	CreateCollectionWithAssetIdsOpts,
 	CreateTradableAssetOpts,
 	TradableAssetInitState,
 	DiscoverabilityTags,
@@ -70,8 +70,8 @@ export const buildCollectionOpts = ({
 	collection,
 	assetIds,
 	license,
-}: BuildCollectionOptsProps): CollectionOpts => {
-	let opts = {} as CollectionOpts;
+}: BuildCollectionOptsProps): CreateCollectionWithAssetIdsOpts => {
+	let opts = {} as CreateCollectionWithAssetIdsOpts;
 
 	const licenseOpts = buildLicenseOpts(license);
 

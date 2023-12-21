@@ -18,7 +18,7 @@ import AtomicToolkit from 'atomic-toolkit';
 
 const key = JSON.parse(readFileSync('wallet.json').toString());
 
-const atomicToolkit = new AtomicToolkit({
+const toolkit = new AtomicToolkit({
     jwk: key,
 });
 ```
@@ -72,7 +72,10 @@ import { WarpFactory, defaultCacheOptions } from 'warp-contracts';
 
 const key = JSON.parse(readFileSync('wallet.json').toString());
 
-const warp = WarpFactory.forMainnet().use(new DeployPlugin());
+const warp = WarpFactory.forMainnet({
+    ...defaultCacheOptions,
+    inMemory: true,
+}).use(new DeployPlugin());
 
 const arweave = new Arweave({
     host: 'arweave.net',
@@ -85,9 +88,78 @@ const warp = WarpFactory.forMainnet({
     inMemory: true,
 }).use(new DeployPlugin());
 
-const atomicToolkit = new AtomicToolkit({
+const toolkit = new AtomicToolkit({
     warp,
     arweave,
     jwk: key,
+});
+```
+
+## Using Irys SDK
+
+This uses the Irys SDK to sign transactions and interact with the Arweave network.
+
+```ts
+import AtomicToolkit from 'atomic-toolkit';
+import Irys from '@irys/sdk';
+
+const irys = new Irys({
+    url: 'https://node2.irys.xyz',
+    token: 'matic',
+    key: 'your-ethereum-private-key',
+});
+
+await irys.ready();
+
+const toolkit = new AtomicToolkit({
+    irys,
+});
+```
+
+### Input Parameters
+
+The following params are available for this function and they must be passed in as an object:
+
+-   **warp (optional)**: `Warp`: A Warp Instance to use with Deploy Plugin. If not provided, the default Warp instance for Mainnet will be used.
+-   **irys**: `Irys`: The Irys SDK instance to use.
+
+<Note>
+    The Warp instance should use the `DeployPlugin`. It is neccessary to
+    register Atomic Assets
+</Note>
+
+### Default Values
+
+```ts
+/**
+ * Default Warp instance
+ */
+const warp = WarpFactory.forMainnet().use(new DeployPlugin());
+```
+
+### Custom Instance Example
+
+```ts
+import Irys from '@irys/sdk';
+import AtomicToolkit from 'atomic-toolkit';
+import { DeployPlugin } from 'warp-contracts-plugin-deploy';
+import { WarpFactory, defaultCacheOptions } from 'warp-contracts';
+
+const warp = WarpFactory.forMainnet({
+    ...defaultCacheOptions,
+    inMemory: true,
+}).use(new DeployPlugin());
+
+const irys = new Irys({
+    url: 'https://node2.irys.xyz',
+    token: 'matic',
+    key: 'your-ethereum-private-key',
+});
+
+await irys.ready();
+
+const toolkit = new AtomicToolkit({
+    irys,
+    warp,
 });
 ```

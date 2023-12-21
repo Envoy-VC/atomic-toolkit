@@ -1,5 +1,8 @@
 import { Tag } from 'arbundles';
-import { CreateTradableAssetOpts, CollectionOpts } from '../../types/asset';
+import {
+    CreateTradableAssetOpts,
+    CreateCollectionWithAssetIdsOpts,
+} from '../../types/asset';
 import * as Tags from '../../types/tags';
 
 import { BaseTags, TRADABLE_ASSET_CONTRACT_SRC } from './constants';
@@ -197,7 +200,10 @@ const buildTradableAssetTags = (
  * @param opts - The options for building the collection tags.
  * @returns An array of tags.
  */
-const buildCollectionTags = (baseTags: Tag[], opts: CollectionOpts): Tag[] => {
+const buildCollectionTags = (
+    baseTags: Tag[],
+    opts: CreateCollectionWithAssetIdsOpts,
+): Tag[] => {
     const tags: Tag[] = baseTags;
     const { collection, discoverability, stamp, additionalTags } = opts;
 

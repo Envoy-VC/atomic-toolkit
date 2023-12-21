@@ -1,3 +1,111 @@
 ---
 title: Atomic Toolkit in Browser
+description: Use Atomic Toolkit in Frontend Applications
 ---
+
+This section walks through the steps to use Atomic Toolkit in a browser application. Currently you can initialize Atomic Toolkit in a browser application using the following methods:
+
+1. Using Injected Arweave Wallet
+2. Using WebIrys
+
+## Using Injected Arweave Wallet
+
+This uses `window.arweave` as a Injected Connector.
+
+```ts
+import { AtomicToolkitWeb } from 'atomic-toolkit';
+
+const toolkit = new AtomicToolkitWeb({});
+```
+
+### Input Parameters
+
+The following params are available and they must be passed in as an object:
+
+-   **warp (optional)**: `Warp`: A Warp Instance to use with Deploy Plugin. If not provided, the default Warp instance for Mainnet will be used.
+-   **arweave (optional)**: `Arweave`: An Arweave Instance to use. If not provided, the default Arweave instance with gateway [arweave.net](arweave.net) will be used.
+-   **jwk (optional)**: `JWKInterface` | `use_wallet`: The Key to use for signing transactions. Defaults to use the Browser Extention.
+
+### Default Values
+
+```ts
+/**
+ * Default Warp instance
+ */
+const warp = WarpFactory.forMainnet().use(new DeployPlugin());
+
+/**
+ * Default Arweave configuration.
+ */
+const defaultArweave = new Arweave({
+    host: 'arweave.net',
+    port: 443,
+    protocol: 'https',
+});
+
+/**
+ * Default JWK
+ */
+const jwk = 'use_wallet';
+```
+
+### Custom Instance Example
+
+```ts
+import Arweave from 'arweave';
+import { AtomicToolkitWeb } from 'atomic-toolkit';
+import { DeployPlugin } from 'warp-contracts-plugin-deploy';
+import { WarpFactory, defaultCacheOptions } from 'warp-contracts';
+
+const warp = WarpFactory.forMainnet({
+    ...defaultCacheOptions,
+    inMemory: true,
+}).use(new DeployPlugin());
+
+const arweave = Arweave.init({
+    host: 'arweave.net',
+    port: 443,
+    protocol: 'https',
+    logging: false,
+});
+
+const toolkit = new AtomicToolkitWeb({
+    arweave,
+    warp,
+    jwk: 'use_wallet',
+});
+```
+
+## Using WebIrys
+
+This uses WebIrys instance for uploading data.
+
+```ts
+import { WebIrys } from '@irys/sdk';
+import { AtomicToolkitWeb } from 'atomic-toolkit';
+
+const getWebIrys = async () => {
+    await window.ethereum.enable();
+    const provider = new providers.Web3Provider(window.ethereum);
+    const url = 'https://node2.irys.xyz';
+    const token = 'matic';
+    const rpcURL = '';
+    const wallet = { rpcUrl: rpcURL, name: 'ethersv5', provider: provider };
+    const webIrys = new WebIrys({ url, token, wallet });
+    await webIrys.ready();
+    return webIrys;
+};
+
+const webIrys = await getWebIrys();
+
+const toolkit = new AtomicToolkitWeb({ irys: webIrys });
+```
+
+For more methods on initializing WebIrys, please refer to [Irys Documentation](https://docs.irys.xyz/developer-docs/irys-sdk/irys-in-the-browser).
+
+### Input Parameters
+
+The following params are available and they must be passed in as an object:
+
+-   **warp (optional)**: `Warp`: A Warp Instance to use with Deploy Plugin. If not provided, the default Warp instance for Mainnet will be used.
+-   **irys**: `WebIrys`: A WebIrys Instance to use for uploading data.

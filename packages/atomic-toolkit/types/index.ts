@@ -3,6 +3,11 @@ import { Warp } from 'warp-contracts';
 import Irys, { WebIrys } from '@irys/sdk';
 import { JWKInterface } from 'arweave/node/lib/wallet';
 
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = T | U extends object
+    ? (Without<T, U> & U) | (Without<U, T> & T)
+    : T | U;
+
 export type AtomicToolkitWithArweave = {
     /**
      * A Warp instance that uses DeployPlugin
@@ -29,9 +34,10 @@ export type AtomicToolkitWithIrys = {
     irys: Irys;
 };
 
-export type AtomicToolkitNodeOpts =
-    | AtomicToolkitWithArweave
-    | AtomicToolkitWithIrys;
+export type AtomicToolkitNodeOpts = XOR<
+    AtomicToolkitWithArweave,
+    AtomicToolkitWithIrys
+>;
 
 export type AtomicToolkitWebWithArweave = {
     /**
@@ -61,16 +67,10 @@ export type AtomicToolkitWebWithIrys = {
     irys: WebIrys;
 };
 
-export type AtomicToolkitWebOpts =
-    | AtomicToolkitWebWithArweave
-    | AtomicToolkitWebWithIrys;
-
-export type ModuleOpts = {
-    warp: Warp;
-    arweave: Arweave | null;
-    irys: WebIrys | Irys | null;
-    jwk: JWKInterface | 'use_wallet' | null;
-};
+export type AtomicToolkitWebOpts = XOR<
+    AtomicToolkitWebWithArweave,
+    AtomicToolkitWebWithIrys
+>;
 
 export * from './asset';
 export * from './tags';

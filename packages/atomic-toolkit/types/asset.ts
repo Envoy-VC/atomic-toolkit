@@ -90,7 +90,7 @@ export type StampableType<T extends boolean> = T extends true
 /**
  * Represents the options for a collection.
  */
-export type CollectionOpts = {
+export type CreateCollectionWithAssetIdsOpts = {
     /**
      * The Atomic Assets to be Included in the collection
      */
@@ -161,4 +161,19 @@ export type UploadDataOpts = {
      * Asset Tags
      */
     tags: Tag[];
+};
+
+export type CreateCollectionOpts = {
+    assets: File[];
+    thumbnail: File;
+    banner: File;
+    license: Tags.LicenseTags;
+    ticker: string;
+    balances: Record<string, number>;
+    collection: Tags.CollectionSpecificTags;
+    discoverability: Omit<Tags.DiscoverabilityTags, 'type'> & {
+        type: 'Document';
+    };
+    stamp?: StampableType<boolean>;
+    additionalTags?: Tag[];
 };
