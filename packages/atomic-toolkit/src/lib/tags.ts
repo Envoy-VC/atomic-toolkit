@@ -1,6 +1,6 @@
 import { Tag } from 'arbundles';
-import { CreateTradableAssetOpts, CollectionOpts } from '../types/asset';
-import * as Tags from '../types/tags';
+import { CreateTradableAssetOpts, CollectionOpts } from '../../types/asset';
+import * as Tags from '../../types/tags';
 
 import { BaseTags, TRADABLE_ASSET_CONTRACT_SRC } from './constants';
 

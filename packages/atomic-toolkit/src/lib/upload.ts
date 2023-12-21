@@ -1,5 +1,5 @@
 import { WebIrys } from '@irys/sdk';
-import * as Types from '../types/upload';
+import * as Types from '../../types/upload';
 import Mime from 'mime';
 
 const uploadWithIrys = async (opts: Types.IrysUploadParams) => {

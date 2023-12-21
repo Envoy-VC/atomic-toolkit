@@ -32,4 +32,9 @@ export type WebIrysUploadParams = {
     tags: Tag[];
 };
 
-export type IrysUploadParams = NodeIrysUploadParams | WebIrysUploadParams;
+export type IrysUploadParams = {
+    irys: WebIrys | Irys;
+    type: 'data' | 'file';
+    data: string | File;
+    tags: Tag[];
+};

@@ -1,4 +1,4 @@
-import { ContractDeploy, Warp } from 'warp-contracts';
+import { Warp } from 'warp-contracts';
 import Irys from '@irys/sdk';
 import Arweave from 'arweave';
 
@@ -6,36 +6,26 @@ import { WarpFactory } from 'warp-contracts';
 import { DeployPlugin } from 'warp-contracts-plugin-deploy';
 
 // Libraries
-import { retryOperation } from './lib/warp';
-import { defaultArweave } from './lib/config';
 import { uploadWithArweave, uploadWithIrys } from './lib/upload';
-import {
-    buildTradableAssetTags,
-    buildCollectionTags,
-    buildAssetTags,
-} from './lib/tags';
+import { defaultArweave } from './lib/config';
 
 // Types
-import * as Types from './types';
-import { Tag } from 'arbundles';
-import { CreateTradableAssetOpts, CollectionOpts } from './types/asset';
-import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
+import * as Types from '../types';
 import { JWKInterface } from 'arweave/node/lib/wallet';
 import Transaction from 'arweave/node/lib/transaction';
+import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
 
-class AtomicToolkit {
-    public warp: Warp;
-    public useIrys: boolean;
-    public arweave: Arweave | null;
-    public irys: Irys | null;
+class AtomicToolkitBase {
+    protected warp: Warp;
+    protected arweaveInstance: Arweave;
+    protected irys: Irys | null | undefined;
     protected jwk: JWKInterface | null;
+    //
 
-    constructor({
-        environment,
-        warp,
-        useIrys = false,
-        ...props
-    }: Types.AtomicToolkitOpts) {
+    constructor(
+        opts: Types.AtomicToolkitNodeOpts | Types.AtomicToolkitWebOpts,
+    ) {
+        const { warp, ...props } = opts;
         if (warp) {
             if (!warp.hasPlugin('deploy') || warp.environment === 'local') {
                 throw new Error(
@@ -44,122 +34,39 @@ class AtomicToolkit {
             }
             this.warp = warp;
         } else {
-            if (environment === 'mainnet') {
-                this.warp = WarpFactory.forMainnet().use(new DeployPlugin());
-            } else {
-                this.warp = WarpFactory.forTestnet().use(new DeployPlugin());
-            }
+            this.warp = WarpFactory.forMainnet().use(new DeployPlugin());
         }
 
-        this.useIrys = useIrys;
-
-        if (useIrys) {
+        if (typeof props === 'object' && 'irys' in props) {
             const { irys } = props as Types.AtomicToolkitWithIrys;
             this.irys = irys;
-            this.arweave = null;
+            this.arweaveInstance = defaultArweave;
             this.jwk = null;
         } else {
-            const { arweave, jwk } = props as Types.AtomicToolkitWebWithArweave;
-            if (jwk === 'use_wallet') {
-                throw new Error(
-                    'JWK must be of type JWKInterface when using Irys, use AtomicToolkitWeb "use_wallet" to use the current wallet',
-                );
-            }
-            this.arweave = arweave ?? defaultArweave;
-            this.jwk = jwk ?? null;
+            const { arweave, jwk } = props as Types.AtomicToolkitWithArweave;
+            this.arweaveInstance = arweave ?? defaultArweave;
+            this.jwk = jwk;
             this.irys = null;
         }
-    }
-
-    public async createAtomicAsset(
-        pathToFile: string,
-        opts: CreateTradableAssetOpts,
-    ): Promise<ContractDeploy | Transaction> {
-        const tags = buildTradableAssetTags(pathToFile, opts);
-
-        const maxAttempts = 5;
-        const delayBetweenAttempts = 5000;
-
-        const tx = await this.uploadData({
-            type: 'file',
-            data: pathToFile,
-            tags,
-        });
-
-        const result = retryOperation(
-            () => this.warp.register(tx.id, this.getIrysNode()),
-            maxAttempts,
-            delayBetweenAttempts,
-        );
-
-        return result;
-    }
-
-    public async createCollection(
-        opts: CollectionOpts,
-    ): Promise<UploadResponse | Transaction> {
-        const data = {
-            type: 'Collection',
-            items: opts.assetIds,
-        };
-        const baseTags: Tag[] = [];
-
-        if (opts.thumbnail) {
-            const thumbnailTx = await this.uploadData({
-                type: 'file',
-                data: opts.thumbnail.file,
-                tags: buildAssetTags(opts.thumbnail.file, opts.thumbnail.tags),
-            });
-            baseTags.push({
-                name: 'Thumbnail',
-                value: thumbnailTx.id,
-            });
-        }
-
-        if (opts.banner) {
-            const bannerTx = await this.uploadData({
-                type: 'file',
-                data: opts.banner.file,
-                tags: buildAssetTags(opts.banner.file, opts.banner.tags),
-            });
-            baseTags.push({
-                name: 'Banner',
-                value: bannerTx.id,
-            });
-        }
-
-        const tags = buildCollectionTags(baseTags, opts);
-
-        const tx = this.uploadData({
-            type: 'data',
-            data: JSON.stringify(data),
-            tags,
-        });
-        return tx;
     }
 
     protected async uploadData(
         opts: Types.UploadDataOpts,
     ): Promise<Transaction | UploadResponse> {
-        if (this.useIrys && this.irys) {
-            if (opts.data instanceof File) {
-                throw new Error(
-                    'String data not supported in NodeIrys, provide File path instead.',
-                );
-            }
+        if (this.irys) {
             const tx = uploadWithIrys({
                 irys: this.irys,
-                data: opts.data,
                 type: opts.type,
+                data: opts.data,
                 tags: opts.tags,
             });
             return tx;
         } else {
-            if (!this.arweave || !this.jwk) {
+            if (!this.arweaveInstance || !this.jwk) {
                 throw new Error('Arweave and JWK must be defined');
             }
             const tx = uploadWithArweave({
-                arweave: this.arweave,
+                arweave: this.arweaveInstance,
                 jwk: this.jwk,
                 type: opts.type,
                 data: opts.data,
@@ -169,7 +76,7 @@ class AtomicToolkit {
         }
     }
 
-    public getIrysNode() {
+    protected getIrysNode() {
         if (!this.irys) {
             throw new Error('Irys is not defined');
         }
@@ -182,4 +89,4 @@ class AtomicToolkit {
     }
 }
 
-export default AtomicToolkit;
+export default AtomicToolkitBase;

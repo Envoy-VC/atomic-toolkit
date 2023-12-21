@@ -1,5 +1,6 @@
 import { Tag } from 'arbundles';
 import * as Tags from './tags';
+
 /**
  * Represents the initial state of a tradable asset.
  */

@@ -7,12 +7,12 @@ import Collection from './lib/collection';
 // Types
 import * as Types from '../types';
 
-class AtomicToolkitWeb extends AtomicToolkitBase {
+class AtomicToolkit extends AtomicToolkitBase {
     public assets: AtomicAssets;
     public collection: Collection;
     public arweave: Arweave;
 
-    constructor(opts: Types.AtomicToolkitWebOpts) {
+    constructor(opts: Types.AtomicToolkitNodeOpts) {
         super(opts);
         this.assets = new AtomicAssets(opts);
         this.collection = new Collection(opts);
@@ -20,4 +20,4 @@ class AtomicToolkitWeb extends AtomicToolkitBase {
     }
 }
 
-export default AtomicToolkitWeb;
+export default AtomicToolkit;
