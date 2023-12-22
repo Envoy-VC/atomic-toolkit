@@ -35,6 +35,9 @@ const CollectionLicense = () => {
 		license,
 		reset,
 		setLicense,
+		setFiles,
+		setBanner,
+		setThumbnail,
 	} = useCreateCollection();
 
 	const [isCreating, setIsCreating] = React.useState<boolean>(false);
@@ -43,9 +46,12 @@ const CollectionLicense = () => {
 	const [txId, setTxId] = React.useState<string>('');
 
 	const handleOk = () => {
-		setModalOpen(false);
 		setTxId('');
+		setFiles([]);
+		setBanner(null);
+		setThumbnail(null);
 		reset();
+		setModalOpen(false);
 		router.push('/collection?step=basic-details');
 	};
 
@@ -69,7 +75,7 @@ const CollectionLicense = () => {
 
 			const opts = buildCollectionOpts({
 				collection,
-				license,
+				license: values,
 				assets,
 				thumbnail,
 				banner,

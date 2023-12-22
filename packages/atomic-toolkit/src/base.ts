@@ -19,7 +19,7 @@ class AtomicToolkitBase {
     protected warp: Warp;
     protected arweaveInstance: Arweave;
     protected irys: Irys | null | undefined;
-    protected jwk: JWKInterface | null;
+    protected jwk: JWKInterface | 'use_wallet' | null;
     //
 
     constructor(
@@ -43,9 +43,11 @@ class AtomicToolkitBase {
             this.arweaveInstance = defaultArweave;
             this.jwk = null;
         } else {
-            const { arweave, jwk } = props as Types.AtomicToolkitWithArweave;
+            const { arweave, jwk } = props as
+                | Types.AtomicToolkitWithArweave
+                | Types.AtomicToolkitWebWithArweave;
             this.arweaveInstance = arweave ?? defaultArweave;
-            this.jwk = jwk;
+            this.jwk = jwk ?? 'use_wallet';
             this.irys = null;
         }
     }

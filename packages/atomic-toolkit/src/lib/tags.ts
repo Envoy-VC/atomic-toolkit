@@ -117,7 +117,7 @@ const buildCollectionSpecificTags = (
     tags.push({ name: 'Name', value: opts.name });
     tags.push({ name: 'Collection-Type', value: opts.collectionType });
     if (opts.thumbnail) tags.push({ name: 'Thumbnail', value: opts.thumbnail });
-    if (opts.banner) tags.push({ name: 'Banners', value: opts.banner });
+    if (opts.banner) tags.push({ name: 'Banner', value: opts.banner });
     if (opts.collectionCode)
         tags.push({ name: 'Collection-Code', value: opts.collectionCode });
     return tags;
