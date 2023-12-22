@@ -146,18 +146,46 @@ export type UploadDataOpts = {
 };
 
 export type CreateCollectionOpts = {
+    /**
+     * Atomic assets can be a Array of files or relative paths.
+     */
     assets: File[] | string[];
+    /**
+     * The Collection Thumbnail File or relative path. (recommended size: 300x300)
+     */
     thumbnail: File | string;
+    /**
+     * The Collection Banner File or relative path. (recommended size: 1600x900)
+     */
     banner: File | string;
+    /**
+     * License Tags associated with the Collection. Same License tags will be
+     * applied to all the Atomic Assets.
+     */
     license: Tags.LicenseTags;
+    /**
+     * Initial State for the Atomic Assets
+     */
     initState: {
         ticker: string;
         balances: Record<string, number>;
     };
+    /**
+     * The Collection Specific tags as per specification
+     */
     collection: Omit<Tags.CollectionSpecificTags, 'thumbnail' | 'banner'>;
+    /**
+     * The discoverability tags associated with the collection.
+     */
     discoverability: Omit<Tags.DiscoverabilityTags, 'type'> & {
         type: 'Document';
     };
+    /**
+     * Tags associated with stamps. Use this if you want your collection to be stampable.
+     */
     stamp?: StampableType<boolean>;
+    /**
+     * Additional tags associated with the collection.
+     */
     additionalTags?: Tag[];
 };

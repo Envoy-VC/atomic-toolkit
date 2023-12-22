@@ -15,7 +15,7 @@ const CollectionAssetDetails = () => {
 	const router = useRouter();
 	const [form] = Form.useForm<Types.CollectionAssets>();
 
-	const { files, assets, setAssets, setFiles } = useCreateCollection();
+	const { files, assets, setAssets, setFiles, addFile } = useCreateCollection();
 
 	const onFinish = (values: any) => {
 		setAssets(values);
@@ -32,7 +32,7 @@ const CollectionAssetDetails = () => {
 		showUploadList: false,
 		fileList: files,
 		beforeUpload(file) {
-			setFiles([...files, file]);
+			addFile(file);
 			return false;
 		},
 		onRemove(file) {
@@ -85,7 +85,12 @@ const CollectionAssetDetails = () => {
 						</p>
 					</Upload.Dragger>
 
-					<Button type='dashed' onClick={() => {}}>
+					<Button
+						type='dashed'
+						onClick={() => {
+							setFiles([]);
+							}}
+					>
 						Reset
 					</Button>
 					<div className='my-8 flex justify-between'>

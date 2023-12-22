@@ -19,6 +19,7 @@ interface Actions {
 	setAssets: (assets: CollectionAssets) => void;
 	setLicense: (license: License) => void;
 	setFiles: (files: UploadFile[]) => void;
+	addFile: (file: UploadFile) => void;
 	reset: () => void;
 }
 
@@ -51,6 +52,7 @@ export const useCreateCollection = create<State & Actions>((set) => ({
 	setCollection: (collection) => set({ collection }),
 	setAssets: (assets) => set({ assets }),
 	setLicense: (license) => set({ license }),
+	addFile: (file) => set((state) => ({ files: [...state.files, file] })),
 	setFiles: (files) => set({ files }),
 	reset: () => set(initialState),
 }));

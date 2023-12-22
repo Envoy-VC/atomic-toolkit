@@ -58,6 +58,11 @@ const CollectionLicense = () => {
 			if (!atomicToolkit) {
 				throw new Error('Atomic Toolkit is not initialized');
 			}
+
+			if (!thumbnail || !banner) {
+				toast.error('Thumbnail and Banner are required');
+				throw new Error('Thumbnail and Banner are required');
+			}
 			setIsCreating(true);
 			setLicense(values);
 			setModalOpen(true);
