@@ -37,7 +37,7 @@ const Layout = ({ children }: Props) => {
 					>
 						<div className={clsx(inter.className)}>
 							<Navbar />
-							<div className='flex flex-row pt-[8vh]'>
+							<div className='flex flex-col pt-[8vh] lg:flex-row'>
 								<Sidebar />
 								<div className='w-full lg:ml-[16rem]'>{children}</div>
 							</div>

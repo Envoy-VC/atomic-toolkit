@@ -45,7 +45,7 @@ const Navbar = () => {
 					useAns
 					profileModal
 					accent='#fff'
-					className='ConnectBtn !border-2 !border-black !p-1 !text-xs !text-black sm:!text-[1rem]'
+					className='ConnectBtn !border-2 !border-black !p-0 !text-xs !text-black sm:!text-[1rem]'
 				/>
 			</div>
 		</div>
