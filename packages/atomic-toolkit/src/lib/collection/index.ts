@@ -9,7 +9,7 @@ import { retryOperation } from '../warp';
 
 // Types
 import { Tag } from 'arbundles';
-import * as Types from '../../../types';
+import * as Types from '../../types';
 import Transaction from 'arweave/node/lib/transaction';
 import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
 import AtomicToolkitBase from '../../base';

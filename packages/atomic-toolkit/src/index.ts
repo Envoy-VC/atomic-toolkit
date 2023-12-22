@@ -4,4 +4,4 @@ import AtomicToolkitWeb from './web';
 export default AtomicToolkit;
 export { AtomicToolkitWeb };
 
-export * from '../types';
+export * from './types';

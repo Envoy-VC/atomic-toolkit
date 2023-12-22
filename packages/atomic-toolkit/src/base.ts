@@ -10,7 +10,7 @@ import { uploadWithArweave, uploadWithIrys } from './lib/upload';
 import { defaultArweave } from './lib/config';
 
 // Types
-import * as Types from '../types';
+import * as Types from './types';
 import { JWKInterface } from 'arweave/node/lib/wallet';
 import Transaction from 'arweave/node/lib/transaction';
 import { UploadResponse } from '@irys/sdk/build/cjs/common/types';

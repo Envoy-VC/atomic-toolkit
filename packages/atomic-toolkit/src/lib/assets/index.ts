@@ -3,7 +3,7 @@ import { retryOperation } from '../../lib/warp';
 import { buildTradableAssetTags } from '../tags';
 
 // Types
-import * as Types from '../../../types';
+import * as Types from '../../types';
 import type { ContractDeploy } from 'warp-contracts';
 import Transaction from 'arweave/node/lib/transaction';
 import AtomicToolkitBase from '../../base';

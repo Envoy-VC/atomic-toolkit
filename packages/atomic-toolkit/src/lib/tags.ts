@@ -2,8 +2,8 @@ import { Tag } from 'arbundles';
 import {
     CreateTradableAssetOpts,
     CreateCollectionWithAssetIdsOpts,
-} from '../../types/asset';
-import * as Tags from '../../types/tags';
+} from '../types/asset';
+import * as Tags from '../types/tags';
 
 import { BaseTags, TRADABLE_ASSET_CONTRACT_SRC } from './constants';
 
@@ -68,6 +68,9 @@ const buildContractIdentifierTags = (
 const buildLicenseTags = (opts: Tags.LicenseTags): Tag[] => {
     const tags: Tag[] = [];
     tags.push({ name: 'License', value: opts.license });
+    if (opts.access) {
+        tags.push({ name: 'Access', value: opts.access });
+    }
     if (opts.accessFee)
         tags.push({ name: 'Access-Fee', value: opts.accessFee });
     if (opts.derivation)
@@ -101,6 +104,12 @@ const buildLicenseTags = (opts: Tags.LicenseTags): Tag[] => {
             name: 'Payment-Mode',
             value: opts.paymentMode,
         });
+    if (opts.dataModelTraining) {
+        tags.push({
+            name: 'Data-Model-Training',
+            value: opts.dataModelTraining,
+        });
+    }
 
     return tags;
 };
@@ -266,4 +275,11 @@ const buildAssetTags = (file: File | string, opts: Tags.AssetTags): Tag[] => {
     return tags;
 };
 
-export { buildTradableAssetTags, buildCollectionTags, buildAssetTags };
+export {
+    buildTradableAssetTags,
+    buildCollectionTags,
+    buildAssetTags,
+    getContentTypeTag,
+    buildDiscoverabilityTags,
+    buildContractIdentifierTags,
+};

@@ -51,6 +51,13 @@ export type LicenseTags = {
      * The license you are using. eg- yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8
      */
     license: string;
+    /**
+     * Access type. Can  be either public or restricted
+     */
+    access?: string;
+    /**
+     * Access fee. eg- One-Time-0.1 or Monthly-10
+     */
     accessFee?: string;
     /**
      * Allowed-With-Credit
@@ -135,6 +142,22 @@ export type LicenseTags = {
      * If no ”Payment-Mode” tag is present, Payments shall be made to the Payment Address(es)
      */
     paymentMode?: string;
+    /**
+     * The "Data-Model-Training" tag is used to indicate the data model training rights for the asset.
+     * It can be in the following formats
+     *
+     * Allowed
+     *
+     * Allowed-With-Fee-One-Time-[.0-9+]
+     *
+     * Allowed-With-Fee-Monthly-[.0-9+]
+     *
+     * [Before/After]-[0-9+]-Years-Data-Model-Training
+     *
+     *
+     * If no “Data-Model-Training” tag is present, Data Model Training is not allowed.
+     */
+    dataModelTraining?: string;
 };
 
 export type CollectionSpecificTags = {

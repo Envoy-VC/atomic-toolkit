@@ -5,7 +5,7 @@ import AtomicAssets from './lib/assets';
 import Collection from './lib/collection';
 
 // Types
-import * as Types from '../types';
+import * as Types from './types';
 
 class AtomicToolkitWeb extends AtomicToolkitBase {
     public assets: AtomicAssets;
