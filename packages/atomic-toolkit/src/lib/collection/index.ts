@@ -30,30 +30,6 @@ class Collection extends AtomicToolkitBase {
         };
         const baseTags: Tag[] = [];
 
-        if (opts.thumbnail) {
-            const thumbnailTx = await this.uploadData({
-                type: 'file',
-                data: opts.thumbnail.file,
-                tags: buildAssetTags(opts.thumbnail.file, opts.thumbnail.tags),
-            });
-            baseTags.push({
-                name: 'Thumbnail',
-                value: thumbnailTx.id,
-            });
-        }
-
-        if (opts.banner) {
-            const bannerTx = await this.uploadData({
-                type: 'file',
-                data: opts.banner.file,
-                tags: buildAssetTags(opts.banner.file, opts.banner.tags),
-            });
-            baseTags.push({
-                name: 'Banner',
-                value: bannerTx.id,
-            });
-        }
-
         const tags = buildCollectionTags(baseTags, opts);
         const tx = this.uploadData({
             type: 'data',
@@ -110,9 +86,8 @@ class Collection extends AtomicToolkitBase {
                     const tradableAssetOpts: Types.CreateTradableAssetOpts = {
                         initialState: {
                             name: `${opts.collection.name} #${index}`,
-                            ticker: opts.ticker,
-                            balances: opts.balances,
                             claimable: [],
+                            ...opts.initState,
                         },
                         discoverability: {
                             type: 'image',
@@ -159,7 +134,7 @@ class Collection extends AtomicToolkitBase {
     }
 
     protected async createAtomicAsset(
-        file: File,
+        file: File | string,
         opts: Types.CreateTradableAssetOpts,
     ): Promise<ContractDeploy | Transaction> {
         const tags = buildTradableAssetTags(file, opts);

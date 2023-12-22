@@ -1,8 +1,6 @@
 import { create } from 'zustand';
 import { UploadFile } from 'antd';
 
-import { CollectionOpts, CollectionSpecificTags } from 'atomic-toolkit';
-
 import { CollectionDetails, CollectionAssets, License } from '~/types';
 
 export interface State {

@@ -4,18 +4,16 @@ import { Button, Form, Modal } from 'antd';
 import { useRouter } from 'next/router';
 
 import Confetti from 'react-confetti';
-import { RcFile } from 'antd/es/upload';
 
 import { useCreateCollection, useAtomicToolkit } from '~/stores';
 
 import { CollectionLicenseForm } from '~/components/collection';
 
-import { buildCollectionOpts, buildLicenseOpts } from '~/helpers';
+import { buildCollectionOpts } from '~/helpers';
 
 import { CgSpinner } from 'react-icons/cg';
 
 import * as Types from '~/types';
-import { CreateTradableAssetOpts } from 'atomic-toolkit';
 
 export interface ContractDeploy {
 	contractTxId: string;
@@ -41,6 +39,7 @@ const CollectionLicense = () => {
 
 	const [isCreating, setIsCreating] = React.useState<boolean>(false);
 	const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+	const [progress, setProgress] = React.useState<string>('idle');
 	const [txId, setTxId] = React.useState<string>('');
 
 	const handleOk = () => {
@@ -50,33 +49,8 @@ const CollectionLicense = () => {
 		router.push('/collection?step=basic-details');
 	};
 
-	const getAtomicOpts = (
-		license: Types.License,
-		collection: Types.CollectionDetails,
-		index: number,
-		units: string,
-		type: string
-	) => {
-		const licenseOpts = buildLicenseOpts(license);
-		const opts: CreateTradableAssetOpts = {
-			initialState: {
-				name: `${collection.name} #${index}`,
-				ticker: collection.ticker,
-				balances: {
-					[collection.owner]: parseInt(units),
-				},
-				claimable: [],
-			},
-			discoverability: {
-				type: type,
-				title: `${collection.name} #${index}`,
-				description: collection.description,
-				topics: collection.topics,
-			},
-			license: licenseOpts,
-			indexWithUCM: false,
-		};
-		return opts;
+	const callback = (progress: string) => {
+		setProgress(progress);
 	};
 
 	const onFinish = async (values: Types.License) => {
@@ -88,33 +62,20 @@ const CollectionLicense = () => {
 			setLicense(values);
 			setModalOpen(true);
 
-			const promises = files.map((file, index) => {
-				const type =
-					(
-						file?.type ??
-						file?.originFileObj?.type ??
-						'application/octet-stream'
-					).split('/')[0] ?? 'asset';
-
-				const opts = getAtomicOpts(values, collection, index, assets.units, type);
-				return atomicToolkit.assets.createAtomicAsset(file as RcFile, opts);
-			});
-
-			const txns = await Promise.all(promises);
-			const assetIds: string[] = [];
-			txns.forEach((txn) => {
-				assetIds.push(txn.contractTxId);
-			});
 			const opts = buildCollectionOpts({
 				collection,
 				license,
 				assets,
 				thumbnail,
 				banner,
-				assetIds,
 				files,
 			});
-			const tx = await atomicToolkit.collection.createCollectionWithAssetIds(opts);
+			console.log(opts);
+			const { mutateAsync } = await atomicToolkit.collection.createCollection(
+				callback,
+				opts
+			);
+			const tx = await mutateAsync();
 			setTxId(tx.id);
 			toast.success('Successfully Created');
 		} catch (error) {
@@ -159,7 +120,12 @@ const CollectionLicense = () => {
 						)}
 					</Button>
 				</div>
-				<SuccessModal isModalOpen={modalOpen} handleOk={handleOk} txId={txId} />
+				<SuccessModal
+					isModalOpen={modalOpen}
+					handleOk={handleOk}
+					txId={txId}
+					progress={progress}
+				/>
 			</Form>
 		</div>
 	);
@@ -168,10 +134,16 @@ const CollectionLicense = () => {
 interface ModalProps {
 	isModalOpen: boolean;
 	handleOk: () => void;
+	progress: string;
 	txId: string;
 }
 
-const SuccessModal = ({ isModalOpen, txId, handleOk }: ModalProps) => {
+const SuccessModal = ({
+	isModalOpen,
+	txId,
+	handleOk,
+	progress,
+}: ModalProps) => {
 	const [isExploding, setIsExploding] = React.useState<boolean>(false);
 
 	React.useEffect(() => {
@@ -215,7 +187,17 @@ const SuccessModal = ({ isModalOpen, txId, handleOk }: ModalProps) => {
 					) : (
 						<div className='flex flex-row items-center justify-center gap-2 p-8 text-[1rem]'>
 							<CgSpinner className='animate-spin text-xl' />
-							<div>Creating Collection...</div>
+							<div>
+								{progress === 'idle' && 'Initializing...'}
+								{progress === 'uploading-thumbnail' && 'Uploading Thumbnail'}
+								{progress === 'uploading-banner' && 'Uploading Banner'}
+								{progress.startsWith('uploading-asset') &&
+									`Uploading Asset ${
+										progress.split('-')[progress.split('-').length - 1]
+									}`}
+								{progress === 'creating-collection' && 'Creating Collection'}
+								{progress === 'success' && 'Finalizing...'}
+							</div>
 						</div>
 					)}
 				</div>

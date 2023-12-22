@@ -96,24 +96,6 @@ export type CreateCollectionWithAssetIdsOpts = {
      */
     assetIds: string[];
     /**
-     * The Thumbnail for the collection recommended size 200x200 pixels
-     *
-     * (file or path to the file)
-     */
-    thumbnail?: {
-        file: File | string;
-        tags: Tags.AssetTags;
-    };
-    /**
-     * The Banner for the collection recommended size 1600x900 pixels
-     *
-     * (file or path to the file)
-     */
-    banner?: {
-        file: File | string;
-        tags: Tags.AssetTags;
-    };
-    /**
      * The Collection Specific tags as per specification
      *
      * https://specs.arweave.dev/?tx=4zqtz8-U4LNKjFU4gZ28oKkV6bTlfzJiguqjbMl9R4Q
@@ -164,13 +146,15 @@ export type UploadDataOpts = {
 };
 
 export type CreateCollectionOpts = {
-    assets: File[];
-    thumbnail: File;
-    banner: File;
+    assets: File[] | string[];
+    thumbnail: File | string;
+    banner: File | string;
     license: Tags.LicenseTags;
-    ticker: string;
-    balances: Record<string, number>;
-    collection: Tags.CollectionSpecificTags;
+    initState: {
+        ticker: string;
+        balances: Record<string, number>;
+    };
+    collection: Omit<Tags.CollectionSpecificTags, 'thumbnail' | 'banner'>;
     discoverability: Omit<Tags.DiscoverabilityTags, 'type'> & {
         type: 'Document';
     };

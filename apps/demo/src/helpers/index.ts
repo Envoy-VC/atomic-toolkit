@@ -1,15 +1,15 @@
 import { UploadFile } from 'antd';
 import { RcFile } from 'antd/es/upload';
 import {
-	CreateCollectionWithAssetIdsOpts,
 	CreateTradableAssetOpts,
 	TradableAssetInitState,
 	DiscoverabilityTags,
 	LicenseTags,
+	CreateCollectionOpts,
 } from 'atomic-toolkit';
 
 import { State } from '~/stores/collection';
-import { CollectionDetails, CollectionAssets, License } from '~/types';
+import { License } from '~/types';
 
 import * as Types from '~/types';
 
@@ -65,52 +65,29 @@ interface BuildCollectionOptsProps extends State {
 }
 
 export const buildCollectionOpts = ({
-	thumbnail,
+	files,
+	assets,
 	banner,
+	thumbnail,
 	collection,
-	assetIds,
 	license,
-}: BuildCollectionOptsProps): CreateCollectionWithAssetIdsOpts => {
-	let opts = {} as CreateCollectionWithAssetIdsOpts;
+}: State): CreateCollectionOpts => {
+	let opts = {} as CreateCollectionOpts;
 
-	const licenseOpts = buildLicenseOpts(license);
-
-	// Collection
+	opts.assets = files as RcFile[];
+	opts.thumbnail = thumbnail as RcFile;
+	opts.banner = banner as RcFile;
+	opts.license = buildLicenseOpts(license);
+	opts.initState = {
+		ticker: collection.ticker,
+		balances: {
+			[collection.owner]: parseInt(assets.units),
+		},
+	};
 	opts.collection = {
 		name: collection.name,
 		collectionType: collection.collectionType,
 	};
-
-	if (thumbnail) {
-		opts.thumbnail = {
-			file: thumbnail as RcFile,
-			tags: {
-				discoverability: {
-					type: 'image',
-					title: `${collection.name} Thumbnail`,
-					description: 'Thumbnail for collection',
-				},
-				license: licenseOpts,
-				additionalTags: [],
-			},
-		};
-	}
-
-	if (banner) {
-		opts.banner = {
-			file: thumbnail as RcFile,
-			tags: {
-				discoverability: {
-					type: 'image',
-					title: `${collection.name} Banner`,
-					description: 'Banner for collection',
-				},
-				license: licenseOpts,
-				additionalTags: [],
-			},
-		};
-	}
-
 	opts.discoverability = {
 		type: 'Document',
 		title: collection.name,
@@ -130,8 +107,5 @@ export const buildCollectionOpts = ({
 			isStampable: false,
 		};
 	}
-
-	opts.assetIds = assetIds;
-
 	return opts;
 };
