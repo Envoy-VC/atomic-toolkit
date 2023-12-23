@@ -20,7 +20,7 @@ export type AtomicToolkitWithArweave = {
     /**
      * Key File
      */
-    jwk: JWKInterface;
+    key: JWKInterface;
 };
 
 export type AtomicToolkitWithIrys = {
@@ -53,7 +53,7 @@ export type AtomicToolkitWebWithArweave = {
      *
      * @default 'use_wallet'
      */
-    jwk?: JWKInterface | 'use_wallet';
+    key?: JWKInterface | 'use_wallet';
 };
 
 export type AtomicToolkitWebWithIrys = {

@@ -2,8 +2,12 @@ import { Warp } from 'warp-contracts';
 import Irys from '@irys/sdk';
 import Arweave from 'arweave';
 
+// Warp
 import { WarpFactory } from 'warp-contracts';
 import { DeployPlugin } from 'warp-contracts-plugin-deploy';
+
+// GraphQL
+import { Client, cacheExchange, fetchExchange } from '@urql/core';
 
 // Libraries
 import { uploadWithArweave, uploadWithIrys } from './lib/upload';
@@ -19,8 +23,8 @@ class AtomicToolkitBase {
     protected warp: Warp;
     protected arweaveInstance: Arweave;
     protected irys: Irys | null | undefined;
-    protected jwk: JWKInterface | 'use_wallet' | null;
-    //
+    protected key: JWKInterface | 'use_wallet' | null;
+    protected urqlClient: Client;
 
     constructor(
         opts: Types.AtomicToolkitNodeOpts | Types.AtomicToolkitWebOpts,
@@ -41,15 +45,19 @@ class AtomicToolkitBase {
             const { irys } = props as Types.AtomicToolkitWithIrys;
             this.irys = irys;
             this.arweaveInstance = defaultArweave;
-            this.jwk = null;
+            this.key = null;
         } else {
-            const { arweave, jwk } = props as
+            const { arweave, key } = props as
                 | Types.AtomicToolkitWithArweave
                 | Types.AtomicToolkitWebWithArweave;
             this.arweaveInstance = arweave ?? defaultArweave;
-            this.jwk = jwk ?? 'use_wallet';
+            this.key = key ?? 'use_wallet';
             this.irys = null;
         }
+        this.urqlClient = new Client({
+            url: 'https://arweave.net/graphql',
+            exchanges: [cacheExchange, fetchExchange],
+        });
     }
 
     protected async uploadData(
@@ -64,12 +72,12 @@ class AtomicToolkitBase {
             });
             return tx;
         } else {
-            if (!this.arweaveInstance || !this.jwk) {
+            if (!this.arweaveInstance || !this.key) {
                 throw new Error('Arweave and JWK must be defined');
             }
             const tx = uploadWithArweave({
                 arweave: this.arweaveInstance,
-                jwk: this.jwk,
+                jwk: this.key,
                 type: opts.type,
                 data: opts.data,
                 tags: opts.tags,

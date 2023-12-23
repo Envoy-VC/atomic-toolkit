@@ -49,7 +49,7 @@ Currently, Atomic Toolkit can be initialized using a Arweave Wallet or [Irys SDK
 const key = JSON.parse(readFileSync('wallet.json').toString());
 
 const toolkit = new AtomicToolkit({
-    jwk: key,
+    key: key,
 });
 ```
 

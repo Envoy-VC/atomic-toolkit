@@ -2,10 +2,10 @@ import { Tag } from 'arbundles';
 import {
     CreateTradableAssetOpts,
     CreateCollectionWithAssetIdsOpts,
-} from '../types/asset';
-import * as Tags from '../types/tags';
+} from '../../types/asset';
+import * as Tags from '../../types/tags';
 
-import { BaseTags, TRADABLE_ASSET_CONTRACT_SRC } from './constants';
+import { BaseTags, TRADABLE_ASSET_CONTRACT_SRC } from '../constants';
 
 import mime from 'mime';
 
@@ -14,7 +14,7 @@ import mime from 'mime';
  * @param file - The file or file path.
  * @returns The Content-Type tag.
  */
-const getContentTypeTag = (file: File | string): Tag => {
+export const getContentTypeTag = (file: File | string): Tag => {
     let contentType: string;
 
     if (file instanceof File) {
@@ -30,7 +30,9 @@ const getContentTypeTag = (file: File | string): Tag => {
  * @param opts - The options for building the discoverability tags.
  * @returns An array of tags.
  */
-const buildDiscoverabilityTags = (opts: Tags.DiscoverabilityTags): Tag[] => {
+export const buildDiscoverabilityTags = (
+    opts: Tags.DiscoverabilityTags,
+): Tag[] => {
     const tags: Tag[] = [];
     tags.push({ name: 'Title', value: opts.title });
     tags.push({ name: 'Description', value: opts.description });
@@ -48,7 +50,7 @@ const buildDiscoverabilityTags = (opts: Tags.DiscoverabilityTags): Tag[] => {
  * @param opts - The options for building the tags.
  * @returns An array of tags.
  */
-const buildContractIdentifierTags = (
+export const buildContractIdentifierTags = (
     opts: Tags.ContractIdentifierTags,
 ): Tag[] => {
     const tags: Tag[] = [];
@@ -65,7 +67,7 @@ const buildContractIdentifierTags = (
  * @param opts - The options for license tags.
  * @returns An array of tags.
  */
-const buildLicenseTags = (opts: Tags.LicenseTags): Tag[] => {
+export const buildLicenseTags = (opts: Tags.LicenseTags): Tag[] => {
     const tags: Tag[] = [];
     tags.push({ name: 'License', value: opts.license });
     if (opts.access) {
@@ -119,7 +121,7 @@ const buildLicenseTags = (opts: Tags.LicenseTags): Tag[] => {
  * @param opts - The options for building the tags.
  * @returns An array of tags.
  */
-const buildCollectionSpecificTags = (
+export const buildCollectionSpecificTags = (
     opts: Tags.CollectionSpecificTags,
 ): Tag[] => {
     const tags: Tag[] = [];
@@ -137,7 +139,7 @@ const buildCollectionSpecificTags = (
  * @param tags - The array of tags to check.
  * @throws {Error} - If duplicate tag names are found.
  */
-const checkForDuplicateTags = (tags: Tag[]): void => {
+export const checkForDuplicateTags = (tags: Tag[]): void => {
     const duplicateTags = tags.filter(
         (tag, index, self) =>
             self.findIndex((t) => t.name === tag.name) !== index,
@@ -159,7 +161,7 @@ const checkForDuplicateTags = (tags: Tag[]): void => {
  * @param opts - The options for creating the tradable asset.
  * @returns An array of tags for the tradable asset.
  */
-const buildTradableAssetTags = (
+export const buildTradableAssetTags = (
     file: File | string,
     opts: CreateTradableAssetOpts,
 ) => {
@@ -209,7 +211,7 @@ const buildTradableAssetTags = (
  * @param opts - The options for building the collection tags.
  * @returns An array of tags.
  */
-const buildCollectionTags = (
+export const buildCollectionTags = (
     baseTags: Tag[],
     opts: CreateCollectionWithAssetIdsOpts,
 ): Tag[] => {
@@ -252,7 +254,10 @@ const buildCollectionTags = (
     return tags;
 };
 
-const buildAssetTags = (file: File | string, opts: Tags.AssetTags): Tag[] => {
+export const buildAssetTags = (
+    file: File | string,
+    opts: Tags.AssetTags,
+): Tag[] => {
     const tags: Tag[] = [];
     let discoverabilityTags: Tag[] = [],
         licenseTags: Tag[] = [];
@@ -273,13 +278,4 @@ const buildAssetTags = (file: File | string, opts: Tags.AssetTags): Tag[] => {
     checkForDuplicateTags(tags);
 
     return tags;
-};
-
-export {
-    buildTradableAssetTags,
-    buildCollectionTags,
-    buildAssetTags,
-    getContentTypeTag,
-    buildDiscoverabilityTags,
-    buildContractIdentifierTags,
 };

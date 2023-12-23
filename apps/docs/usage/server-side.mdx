@@ -19,7 +19,7 @@ import AtomicToolkit from 'atomic-toolkit';
 const key = JSON.parse(readFileSync('wallet.json').toString());
 
 const toolkit = new AtomicToolkit({
-    jwk: key,
+    key: key,
 });
 ```
 
@@ -29,7 +29,7 @@ The following params are available for this function and they must be passed in 
 
 -   **warp (optional)**: `Warp`: A Warp Instance to use with Deploy Plugin. If not provided, the default Warp instance for Mainnet will be used.
 -   **arweave (optional)**: `Arweave`: An Arweave Instance to use. If not provided, the default Arweave instance with gateway [arweave.net](arweave.net) will be used.
--   **jwk**: `JWKInterface`: The Key to use for signing transactions. Should be a JWK object.
+-   **key**: `JWKInterface`: The Key to use for signing transactions. Should be a JWK object.
 
 <Warning>
     Private keys must be kept secure at all times. Please ensure that the
@@ -91,7 +91,7 @@ const warp = WarpFactory.forMainnet({
 const toolkit = new AtomicToolkit({
     warp,
     arweave,
-    jwk: key,
+    key: key,
 });
 ```
 

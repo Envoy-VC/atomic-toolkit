@@ -24,7 +24,7 @@ The following params are available and they must be passed in as an object:
 
 -   **warp (optional)**: `Warp`: A Warp Instance to use with Deploy Plugin. If not provided, the default Warp instance for Mainnet will be used.
 -   **arweave (optional)**: `Arweave`: An Arweave Instance to use. If not provided, the default Arweave instance with gateway [arweave.net](arweave.net) will be used.
--   **jwk (optional)**: `JWKInterface` | `use_wallet`: The Key to use for signing transactions. Defaults to use the Browser Extention.
+-   **key (optional)**: `JWKInterface` | `use_wallet`: The Key to use for signing transactions. Defaults to `use_wallet` to use the Browser Extention.
 
 ### Default Values
 
@@ -44,9 +44,9 @@ const defaultArweave = new Arweave({
 });
 
 /**
- * Default JWK
+ * Default Key
  */
-const jwk = 'use_wallet';
+const key = 'use_wallet';
 ```
 
 ### Custom Instance Example
@@ -72,7 +72,7 @@ const arweave = Arweave.init({
 const toolkit = new AtomicToolkitWeb({
     arweave,
     warp,
-    jwk: 'use_wallet',
+    key: 'use_wallet',
 });
 ```
 
@@ -109,3 +109,42 @@ The following params are available and they must be passed in as an object:
 
 -   **warp (optional)**: `Warp`: A Warp Instance to use with Deploy Plugin. If not provided, the default Warp instance for Mainnet will be used.
 -   **irys**: `WebIrys`: A WebIrys Instance to use for uploading data.
+
+### Default Values
+
+```ts
+/**
+ * Default Warp instance
+ */
+const warp = WarpFactory.forMainnet().use(new DeployPlugin());
+```
+
+### Custom Instance Example
+
+```ts
+import { WebIrys } from '@irys/sdk';
+import { AtomicToolkitWeb } from 'atomic-toolkit';
+import { DeployPlugin } from 'warp-contracts-plugin-deploy';
+import { WarpFactory, defaultCacheOptions } from 'warp-contracts';
+
+const warp = WarpFactory.forMainnet({
+    ...defaultCacheOptions,
+    inMemory: true,
+}).use(new DeployPlugin());
+
+const getWebIrys = async () => {
+    await window.ethereum.enable();
+    const provider = new providers.Web3Provider(window.ethereum);
+    const url = 'https://node2.irys.xyz';
+    const token = 'matic';
+    const rpcURL = '';
+    const wallet = { rpcUrl: rpcURL, name: 'ethersv5', provider: provider };
+    const webIrys = new WebIrys({ url, token, wallet });
+    await webIrys.ready();
+    return webIrys;
+};
+
+const webIrys = await getWebIrys();
+
+const toolkit = new AtomicToolkitWeb({ warp: warp, irys: webIrys });
+```
