@@ -39,18 +39,33 @@ class Collection extends AtomicToolkitBase {
         return tx;
     }
 
-    public async createCollection(
-        callback: (progress: string) => void,
+    public createCollection(
+        callback: (progress: Types.CollectionProgress, error?: string) => void,
         opts: Types.CreateCollectionOpts,
     ) {
         let progress: string = 'idle';
         let error: Error | null = null;
+        let files: File[] | string[] = [];
+        if (typeof opts.assets === 'string') {
+            const { readdirSync } = require('fs');
+            const { join } = require('path');
+            const paths: string[] = readdirSync(opts.assets).map(
+                (file: string) => join(opts.assets, file),
+            );
+            if (paths.length === 0)
+                throw new Error('No files found in the directory');
+            files = paths;
+        } else {
+            files = opts.assets;
+        }
+
+        const progressPerStep: number = 100 / (files.length + 3);
 
         const mutateAsync = async () => {
             try {
                 // Upload Thumbnail and Banner
                 progress = 'uploading-thumbnail';
-                callback(progress);
+                callback({ step: progress, progress: 0 });
                 const thumbTx = await this.uploadData({
                     type: 'file',
                     data: opts.thumbnail,
@@ -64,7 +79,7 @@ class Collection extends AtomicToolkitBase {
                     }),
                 });
                 progress = 'uploading-banner';
-                callback(progress);
+                callback({ step: progress, progress: progressPerStep });
                 const bannerTx = await this.uploadData({
                     type: 'file',
                     data: opts.banner,
@@ -80,9 +95,13 @@ class Collection extends AtomicToolkitBase {
 
                 // Upload All Atomic Assets
                 let assetUploadPromises = [];
-                for (let index = 0; index < opts.assets.length; index++) {
+
+                for (let index = 0; index < files.length; index++) {
                     progress = `uploading-asset-${index}`;
-                    callback(progress);
+                    callback({
+                        step: progress,
+                        progress: progressPerStep * (index + 2),
+                    });
                     const tradableAssetOpts: Types.CreateTradableAssetOpts = {
                         initialState: {
                             name: `${opts.collection.name} #${index}`,
@@ -98,7 +117,7 @@ class Collection extends AtomicToolkitBase {
                         indexWithUCM: true,
                     };
                     const tx = await this.createAtomicAsset(
-                        opts.assets[index]!,
+                        files[index]!,
                         tradableAssetOpts,
                     );
                     assetUploadPromises.push(tx.contractTxId);
@@ -108,7 +127,10 @@ class Collection extends AtomicToolkitBase {
 
                 // Create Collection
                 progress = 'creating-collection';
-                callback(progress);
+                callback({
+                    step: progress,
+                    progress: progressPerStep * (files.length + 2),
+                });
                 const res = this.createCollectionWithAssetIds({
                     assetIds,
                     collection: {
@@ -121,16 +143,26 @@ class Collection extends AtomicToolkitBase {
                     additionalTags: opts.additionalTags,
                 });
                 progress = 'success';
-                callback(progress);
+                callback({
+                    step: progress,
+                    progress: 100,
+                });
                 progress = 'idle';
                 return res;
             } catch (err) {
                 error = new Error(String(err));
+                callback(
+                    {
+                        step: progress,
+                        progress: 0,
+                    },
+                    String(error),
+                );
                 throw error;
             }
         };
 
-        return { progress, mutateAsync };
+        return { mutateAsync };
     }
 
     protected async createAtomicAsset(

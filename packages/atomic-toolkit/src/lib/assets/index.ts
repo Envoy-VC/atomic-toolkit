@@ -19,7 +19,7 @@ class AtomicAssets extends AtomicToolkitBase {
     public async createAtomicAsset(
         file: File,
         opts: Types.CreateTradableAssetOpts,
-    ): Promise<ContractDeploy | Transaction> {
+    ): Promise<ContractDeploy> {
         const tags = buildTradableAssetTags(file, opts);
         const maxAttempts = 7;
         const delayBetweenAttempts = 5000;

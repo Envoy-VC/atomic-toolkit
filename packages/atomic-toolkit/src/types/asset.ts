@@ -20,24 +20,26 @@ export type TradableAssetInitState = Record<string, any> & {
     /**
      * List of Claimable Addresses for the Asset.
      */
-    claimable: {
-        /**
-         * Arweave Address who called the claim Function.
-         */
-        from: string;
-        /**
-         * Quantity of the Asset to be claimed.
-         */
-        qty: number;
-        /**
-         * The Arweave Address to which the Asset is to be transferred.
-         */
-        to: string;
-        /**
-         * The Transaction ID of the Transaction which called the claim Function.
-         */
-        txID: string;
-    }[];
+    claimable: ClaimableType[];
+};
+
+export type ClaimableType = {
+    /**
+     * Arweave Address who called the claim Function.
+     */
+    from: string;
+    /**
+     * Quantity of the Asset to be claimed.
+     */
+    qty: number;
+    /**
+     * The Arweave Address to which the Asset is to be transferred.
+     */
+    to: string;
+    /**
+     * The Transaction ID of the Transaction which called the claim Function.
+     */
+    txID: string;
 };
 
 /**
@@ -73,53 +75,6 @@ export type CreateTradableAssetOpts = {
 };
 
 /**
- * Represents a stampable type.
- * @template T - A boolean type parameter.
- * @param T - A boolean value indicating whether the type is stampable.
- * @returns If T is true, returns an object with stampable properties. Otherwise, returns an object with isStampable set to false.
- */
-export type StampableType<T extends boolean> = T extends true
-    ? {
-          isStampable: true;
-          owner: string;
-          collectionName: string;
-          ticker: string;
-      }
-    : { isStampable: false };
-
-/**
- * Represents the options for a collection.
- */
-export type CreateCollectionWithAssetIdsOpts = {
-    /**
-     * The Atomic Assets to be Included in the collection
-     */
-    assetIds: string[];
-    /**
-     * The Collection Specific tags as per specification
-     *
-     * https://specs.arweave.dev/?tx=4zqtz8-U4LNKjFU4gZ28oKkV6bTlfzJiguqjbMl9R4Q
-     */
-    collection: Tags.CollectionSpecificTags;
-    /**
-     * The discoverability tags associated with the asset.
-     */
-    discoverability: Omit<Tags.DiscoverabilityTags, 'type'> & {
-        type: 'Document';
-    };
-    /**
-     * Optional Atomic Assets Tags if you want the Collection to be Stampable.
-     *
-     * Defaults to false
-     */
-    stamp?: StampableType<boolean>;
-    /**
-     * Additional tags associated with the asset.
-     */
-    additionalTags?: Tag[];
-};
-
-/**
  * Options for creating an asset.
  */
 export type CreateAssetOpts = {
@@ -133,6 +88,9 @@ export type CreateAssetOpts = {
     tags: Tags.AssetTags;
 };
 
+/**
+ * Options for Uploading Data
+ */
 export type UploadDataOpts = {
     type: 'data' | 'file';
     /**
@@ -143,49 +101,4 @@ export type UploadDataOpts = {
      * Asset Tags
      */
     tags: Tag[];
-};
-
-export type CreateCollectionOpts = {
-    /**
-     * Atomic assets can be a Array of files or relative paths.
-     */
-    assets: File[] | string[];
-    /**
-     * The Collection Thumbnail File or relative path. (recommended size: 300x300)
-     */
-    thumbnail: File | string;
-    /**
-     * The Collection Banner File or relative path. (recommended size: 1600x900)
-     */
-    banner: File | string;
-    /**
-     * License Tags associated with the Collection. Same License tags will be
-     * applied to all the Atomic Assets.
-     */
-    license: Tags.LicenseTags;
-    /**
-     * Initial State for the Atomic Assets
-     */
-    initState: {
-        ticker: string;
-        balances: Record<string, number>;
-    };
-    /**
-     * The Collection Specific tags as per specification
-     */
-    collection: Omit<Tags.CollectionSpecificTags, 'thumbnail' | 'banner'>;
-    /**
-     * The discoverability tags associated with the collection.
-     */
-    discoverability: Omit<Tags.DiscoverabilityTags, 'type'> & {
-        type: 'Document';
-    };
-    /**
-     * Tags associated with stamps. Use this if you want your collection to be stampable.
-     */
-    stamp?: StampableType<boolean>;
-    /**
-     * Additional tags associated with the collection.
-     */
-    additionalTags?: Tag[];
 };

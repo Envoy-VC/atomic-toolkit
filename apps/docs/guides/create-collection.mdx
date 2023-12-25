@@ -1,3 +1,181 @@
 ---
-title: Create Atomic Asset
+title: Create Collection
+description: Group various atomic assets in a collection.
 ---
+
+There are two ways to create a collection:
+
+1. **Using Asset IDs** - If you have already created atomic assets or want more control on each atomic asset in the collection, you can use this method.
+2. **Using Asset Files** - This method is used to create a collection from a set of files. The Assets will share the same traits such as License, Description but will vary in suffixes. eg - `Asset #0`, `Asset #1`, `Asset #2` etc.
+
+## Using Asset IDs
+
+### Basic Syntax
+
+The function is called as follows:
+
+```ts
+const tx = await toolkit.collection.createCollectionWithAssetIds(opts);
+```
+
+### Input Parameters
+
+The function takes one input parameter - **opts: `CreateTradableAssetOpts`**. It contains the following parameters
+
+-   **assetIds: `string[]`**: An array of asset IDs to be grouped in the collection.
+-   **collection: `CollectionSpecificTags`**: The collection specific tags as per [Collection Data Protocol](https://specs.arweave.dev/?tx=4zqtz8-U4LNKjFU4gZ28oKkV6bTlfzJiguqjbMl9R4Q). It contain feilds such as **_name_**, **_collectionType_**, **_thumbnail_**, **_banner_** and **_collectionCode_**. For details on the options see the [Collection Specific Tags](/types-reference/tags/collection-specific) section.
+-   **discoverability: `DiscoverabilityTags`**: The discoverability tags for the Collection as per [ANS-110 Specification](https://specs.arweave.dev/#/view/SYHBhGAmBo6fgAkINNoRtumOzxNB8-JFv2tPhBuNk5c). Contains feilds like **_title_**, **_description_**, **_type_** and **_topics_**. For details on the options see the [Discoverability Tags](/types-reference/tags/discoverability) section.
+
+<Note>
+    **type** should be equal to `Document` as per the Collection Data Protocol
+</Note>
+
+-   **stamp (optional): `StampableType`**: The stamping options for the collection. If stamp is specified the your collection can be stamped by others. Defaults to false. For details on the options see the [Stamping Options](/types-reference/collection#stampable-type) section.
+-   **additionalTags (optional): `Tag[]`**: Additional tags for the Atomic Asset. Duplicate tags will throw an error. For details on the options see the [Tag](/types-reference/atomic-asset#tag-type) section.
+
+For details on the options see the [Create Collection Options](/types-reference/collection#create-collection-with-asset-ids) section.
+
+### Return Value
+
+The function returns a promise that resolves to `UploadResponse` or `Transaction` depending on whether Irys is used or not.
+
+-   `UploadResonse` - Returned when Irys is used. It contains feilds such as:
+    -   **id: `string`** - The transaction ID of the collection.
+    -   **signature: `string`** - The signature used while creating the collection.
+    -   **timestamp: `number`** - The timestamp of the transaction.
+-   `Transaction` - Returned when Arweave is used. It contains feilds such as:
+    -   **id: `string`** - The transaction ID of the collection.
+    -   **owner: `string`** - The owner of the collection.
+    -   **tags: `Tag[]`** - The tags of the collection.
+    -   **data: `Uint8Array`** - The data of the collection.
+    -   **signature: `string`** - The signature used while creating the collection.
+
+### Example Usage
+
+```ts
+const tx = await toolkit.collection.createCollectionWithAssetIds({
+    assetIds: [
+        'UojiXFblaKNQhedHoA112u2YOhTi2GsPKYL-yFu4BCw',
+        'wP6jOlDS3xxRLaeJSiSsjVVYGFFQBkvwZFNLvicj7YY',
+        'H4Jvfg0iPmzCKfoIariAqNScWPRIvDvXJ01zYiwWKBI',
+    ],
+    discoverability: {
+        type: 'Document',
+        title: 'Collection Name',
+        description: 'Collection description',
+        topics: ['topic1', 'topic2'],
+    },
+    collection: {
+        name: 'Collection Name',
+        collectionType: 'images',
+        banner: 'tiVxs_UzXWvDNP-gFlQ1plmT5hOHYckO53HF2wG4gNc',
+        thumbnail: 'igavGmOC2bTjJ54KMzRiYnf42K0UMnea9d4troN7y2s',
+    },
+    stamp: {
+        isStampable: true,
+        collectionName: 'Collection Name',
+        owner: 'Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4',
+        ticker: 'ATOMIC',
+    },
+});
+```
+
+## Using Asset Files
+
+### Basic Syntax
+
+The function is called as follows:
+
+```ts
+const tx = await toolkit.collection.createCollection(callback, opts);
+```
+
+### Input Parameters
+
+The function takes two input parameters:
+
+-   **callback: `(progress: CollectionProgress, error?: string) => void`**: The callback function to be called for progress, **CollectionProgress** has two parameters:
+    -   **step: `string`**: The current step of the transaction.
+    -   **progress: `number`**: The progress of the transaction out of 100.
+-   **opts: `CreateCollectionOpts`**: It contains the following parameters:
+
+    -   **assets: `File[]` | `string`**: An array of files or the path to the directory containing the files to be grouped in the collection.
+    -   **thumbnail: `File` | `string`**: The thumbnail file or the path to the thumbnail file for the collection.
+    -   **banner: `File` | `string`**: The banner file or the path to the banner file for the collection.
+    -   **license (optional): `LicenseTags`**: Universal Data License Tags for the Asset. By default base UDL tags will be used. For details on the options see the [License Tags](/types-reference/tags/udl) section.
+    -   **initState**: The Initial state for each Atomic Asset, it contains the following parameters:
+        -   **ticker: `string`**: The ticker for the asset.
+        -   **balances: `Record<string,number>`**: The initial balances for each wallet. The key is the wallet address and the value is the balance.
+    -   **collection: `CollectionSpecificTags`**: The collection specific tags as per [Collection Data Protocol](https://specs.arweave.dev/?tx=4zqtz8-U4LNKjFU4gZ28oKkV6bTlfzJiguqjbMl9R4Q). It contain feilds such as **_name_**, **_collectionType_**, and **_collectionCode_**. For details on the options see the [Collection Specific Tags](/types-reference/tags/collection-specific) section.
+    -   **discoverability: `DiscoverabilityTags`**: The discoverability tags for the Collection as per [ANS-110 Specification](https://specs.arweave.dev/#/view/SYHBhGAmBo6fgAkINNoRtumOzxNB8-JFv2tPhBuNk5c). Contains feilds like **_title_**, **_description_**, **_type_** and **_topics_**. For details on the options see the [Discoverability Tags](/types-reference/tags/discoverability) section.
+
+    <Note>
+        **type** should be equal to `Document` as per the Collection Data
+        Protocol
+    </Note>
+
+    -   **stamp (optional): `StampableType`**: The stamping options for the collection. If stamp is specified the your collection can be stamped by others. Defaults to false. For details on the options see the [Stamping Options](/types-reference/collection#stampable-type) section.
+    -   **additionalTags (optional): `Tag[]`**: Additional tags for the Atomic Asset. Duplicate tags will throw an error. For details on the options see the [Tag](/types-reference/atomic-asset#tag-type) section.
+
+For details on the options see the [Create Collection Options](/types-reference/collection#create-collection-with-assets) section.
+
+### Return Value
+
+The function returns a function called `mutateAsync` which when called returns a promise that will resolve to `UploadResponse` or `Transaction` depending on whether Irys is used or not.
+
+-   `UploadResonse` - Returned when Irys is used. It contains feilds such as:
+    -   **id: `string`** - The transaction ID of the collection.
+    -   **signature: `string`** - The signature used while creating the collection.
+    -   **timestamp: `number`** - The timestamp of the transaction.
+-   `Transaction` - Returned when Arweave is used. It contains feilds such as:
+    -   **id: `string`** - The transaction ID of the collection.
+    -   **owner: `string`** - The owner of the collection.
+    -   **tags: `Tag[]`** - The tags of the collection.
+    -   **data: `Uint8Array`** - The data of the collection.
+    -   **signature: `string`** - The signature used while creating the collection.
+
+<Note>
+    You don't need to include the _banner_ and _thumbnail_ feilds in the
+    **collection** parameter. They will be automatically added to the collection
+    after uploading.
+</Note>
+
+### Example Usage
+
+```ts
+const assets = 'assets/';
+const thumbnail = 'images/thumbnail.png';
+const banner = 'images/banner.png';
+
+const onCallback = (progress) => {
+    console.log(progress);
+};
+
+const { mutateAsync } = toolkit.collection.createCollection(onCallback, {
+    assets,
+    banner,
+    thumbnail,
+    discoverability: {
+        type: 'Document',
+        title: 'Collection Name',
+        description: 'Collection description',
+        topics: ['topic1', 'topic2'],
+    },
+    collection: {
+        name: 'Collection Name',
+        collectionType: 'images',
+    },
+    initState: {
+        ticker: 'ATOMIC',
+        balances: {
+            'Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4': 1,
+        },
+    },
+    license: {
+        license: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',
+        commercialUse: 'Allowed',
+    },
+});
+
+const tx = await mutateAsync();
+```

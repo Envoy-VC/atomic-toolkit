@@ -75,3 +75,4 @@ export type AtomicToolkitWebOpts = XOR<
 export * from './asset';
 export * from './tags';
 export * from './upload';
+export * from './collection';

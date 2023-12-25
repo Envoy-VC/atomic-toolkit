@@ -1,0 +1,31 @@
+---
+title: Discoverability Tags
+---
+
+Discoverability Tags as per [ANS-110 Specification](https://specs.arweave.dev/#/view/SYHBhGAmBo6fgAkINNoRtumOzxNB8-JFv2tPhBuNk5c)
+
+```ts
+export type DiscoverabilityTags = {
+    /**
+     * Type of asset. One or more of: meme, image, video, podcast,
+     * blog-post, social-post, music, audio, token, web-page, profile,
+     * contract, presentation, document, collection, app, other
+     */
+    type: string;
+    /**
+     * A maximum of 150 characters used to identify the content, this title
+     * can provide a quick eye catching description ofthe asset
+     */
+    title: string;
+    /**
+     * A longer description of 300 characters that can provide a set of details
+     * further describing the asset
+     */
+    description: string;
+    /**
+     * Topics for the asset, these can be used to help categorize the asset and
+     * make it easier to find more information about it.
+     */
+    topics?: string[];
+};
+```

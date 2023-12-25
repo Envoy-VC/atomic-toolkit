@@ -89,7 +89,12 @@
                 {
                     "group": "Tags",
                     "icon": "tags",
-                    "pages": ["types-reference/udl"]
+                    "pages": [
+                        "types-reference/tags/udl",
+                        "types-reference/tags/discoverability",
+                        "types-reference/tags/contract-identifiers",
+                        "types-reference/tags/collection-specific"
+                    ]
                 }
             ]
         }

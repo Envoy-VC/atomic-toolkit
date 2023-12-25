@@ -1,3 +1,65 @@
 ---
 title: Create Atomic Asset
+desccription: Create a new Atomic Asset as per Arweave Tradable Atomic Asset Specification.
 ---
+
+The `createAtomicAsset` function allows you to create a new Atomic Asset as per Arweave Tradable Atomic Asset Specification.
+
+## Basic Syntax
+
+The function is called as follows:
+
+```ts
+const tx = await toolkit.assets.createAtomicAsset(file, opts);
+```
+
+## Input Parameters
+
+The function takes the following input parameters:
+
+-   **file: `File` | `string`**: The Asset file for the Atomic Asset. For toolkit initialized for server-side usage with Irys the file should be a relative path to the file from the root of the project.
+-   **opts: `CreateTradableAssetOpts`**: The options for the Atomic Asset. For details on the options see the [Create Tradable Asset Options](/types-reference/atomic-asset#create-atomic-asset-options) section.
+    -   **initialState: `TradableAssetInitState`**: The object containing Initial state of the Atomic Asset. It contains feilds like **_name_**, **_ticker_**, **_balances_** and **_claimable_**. For details on the options see the [Tradable Asset Initial State](/types-reference/atomic-asset#initial-state) section.
+    -   **discoverability: `DiscoverabilityTags`**: The discoverability tags for the Atomic Asset as per [ANS-110 Specification](https://specs.arweave.dev/#/view/SYHBhGAmBo6fgAkINNoRtumOzxNB8-JFv2tPhBuNk5c). Contains feilds like **_title_**, **_description_**, **_type_** and **_topics_**. For details on the options see the [Discoverability Tags](/types-reference/tags/discoverability) section.
+    -   **license (optional): `LicenseTags`**: Universal Data License Tags for the Asset. By default base UDL tags will be used. For details on the options see the [License Tags](/types-reference/tags/udl) section.
+    -   **contractIdentifier (optional): `ContractIdentifierTags`**: Contract Identifiers tags. use this only if you want to use a custom contract. Fo r details on the options see the [Contract Identifier Tags](/types-reference/tags/contract-identifiers) section.
+    -   **indexWithUCM (optional): `boolean`**: Whether to index the Atomic Asset with UCM. Defaults to `true`.
+    -   **additionalTags (optional): `Tag[]`**: Additional tags for the Atomic Asset. Duplicate tags will throw an error. For details on the options see the [Tag](/types-reference/atomic-asset#tag-type) section.
+
+<Note>
+    NodeIrys only supports file paths so if you are using AtomicToolkit in
+    server-side mode with Irys then you must pass the file path as the first
+    argument to the function.
+</Note>
+
+## Return Value
+
+The return value is a Promise that resolves to the `ContractDeploy`. It has the following properties:
+
+-   **contractTxId: `string`**: The transaction ID of the Atomic Asset contract.
+-   **srcTxId: `string`**: The transaction ID of the Atomic Asset contract source.
+
+## Example Usage
+
+```ts
+const tx = await toolkit.assets.createAtomicAsset(image, {
+    initialState: {
+        name: 'Atomic Asset',
+        ticker: 'ATOMIC',
+        description: 'Atomic Asset description',
+        balances: {
+            'Z7t5Dw42qalSx9-1u4wINXWayX7Ktu_i3sbc31tSDb4': 1,
+        },
+        claimable: [],
+    },
+    discoverability: {
+        title: 'Atomic Asset',
+        description: 'Atomic Asset description',
+        type: 'image',
+    },
+    license: {
+        license: 'yRj4a5KMctX_uOmKWCFJIjmY8DeJcusVk6-HzLiM_t8',
+        commercialUse: 'Allowed',
+    },
+});
+```

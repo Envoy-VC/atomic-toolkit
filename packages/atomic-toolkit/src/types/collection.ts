@@ -1,54 +1,6 @@
----
-title: Collection
-icon: 'layer-group'
----
+import * as Tags from './tags';
+import { Tag } from 'arbundles';
 
-## Create Collection with Asset Ids
-
-Options for creating an collection with Asset Ids.
-
--   **collection**: [CollectionSpecificTags](/types-reference/tags/collection-specific)
--   **discoverability**: [DiscoverabilityTags](/types-reference/tags/discoverability)
--   **stamp**: [StampableType](/types-reference/collection#stampable-type)
--   **additionalTags**: [Tag[]](/types-reference/atomic-asset#tag-type)
-
-```ts
-/**
- * Represents the options for a collection.
- */
-export type CreateCollectionWithAssetIdsOpts = {
-    /**
-     * The Atomic Assets to be Included in the collection
-     */
-    assetIds: string[];
-    /**
-     * The Collection Specific tags as per specification
-     *
-     * https://specs.arweave.dev/?tx=4zqtz8-U4LNKjFU4gZ28oKkV6bTlfzJiguqjbMl9R4Q
-     */
-    collection: CollectionSpecificTags;
-    /**
-     * The discoverability tags associated with the asset.
-     */
-    discoverability: Omit<DiscoverabilityTags, 'type'> & {
-        type: 'Document';
-    };
-    /**
-     * Optional Atomic Assets Tags if you want the Collection to be Stampable.
-     *
-     * Defaults to false
-     */
-    stamp?: StampableType;
-    /**
-     * Additional tags associated with the asset.
-     */
-    additionalTags?: Tag[];
-};
-```
-
-## Stampable Type
-
-```ts
 /**
  * Represents a stampable type.
  */
@@ -69,18 +21,44 @@ export type StampableType =
           ticker: string;
       }
     | { isStampable: false };
-```
 
-## Create Collection with Assets
+/**
+ * Represents the options for a collection.
+ */
+export type CreateCollectionWithAssetIdsOpts = {
+    /**
+     * The Atomic Assets to be Included in the collection
+     */
+    assetIds: string[];
+    /**
+     * The Collection Specific tags as per specification
+     *
+     * https://specs.arweave.dev/?tx=4zqtz8-U4LNKjFU4gZ28oKkV6bTlfzJiguqjbMl9R4Q
+     */
+    collection: Tags.CollectionSpecificTags;
+    /**
+     * The discoverability tags associated with the asset.
+     */
+    discoverability: Omit<Tags.DiscoverabilityTags, 'type'> & {
+        type: 'Document';
+    };
+    /**
+     * Optional Atomic Assets Tags if you want the Collection to be Stampable.
+     *
+     * Defaults to false
+     */
+    stamp?: StampableType;
+    /**
+     * Additional tags associated with the asset.
+     */
+    additionalTags?: Tag[];
+};
 
-Options for creating an collection with Assets.
+export type CollectionProgress = {
+    step: string;
+    progress: number;
+};
 
--   **license**: [LicenseTags](/types-reference/tags/license)
--   **collection**: [CollectionSpecificTags](/types-reference/tags/collection-specific)
--   **discoverability**: [DiscoverabilityTags](/types-reference/tags/discoverability)
--   **stamp**: [StampableType](/types-reference/collection#stampable-type)
-
-```ts
 export type CreateCollectionOpts = {
     /**
      * Atomic assets can be a Array of files or folder directory.
@@ -125,4 +103,3 @@ export type CreateCollectionOpts = {
      */
     additionalTags?: Tag[];
 };
-```

@@ -1,0 +1,30 @@
+---
+title: Contract Identifier
+---
+
+Contract Identifier Tags as per [Tradable Atomic Asset Specification](https://specs.arweave.dev/#/view/MzhNJMYJ8fnZ6zOByi4s6qqFFcsZyE8m90ufHmmqJZU)
+
+```ts
+export type ContractIdentifierTags = {
+    /**
+     * SmartWeaveContract - Flags this TX as a SmartWeave Contract
+     */
+    appName: string;
+    /**
+     * The version of SmartWeave that is supported. eg- 0.3.0
+     */
+    appVersion: string;
+    /**
+     * The source code for the contract. eg- Of9pi--Gj7hCTawhgxOwbuWnFI1h24TTgO5pw8ENJNQ
+     */
+    contractSrc: string;
+    /**
+     * The starting state of the contract
+     */
+    initState: string;
+    /**
+     * The manifest required to properly evaluate
+     */
+    contractManifest: string;
+};
+```
