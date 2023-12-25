@@ -14,6 +14,7 @@ import { buildCollectionOpts } from '~/helpers';
 import { CgSpinner } from 'react-icons/cg';
 
 import * as Types from '~/types';
+import { CollectionProgress } from 'atomic-toolkit';
 
 export interface ContractDeploy {
 	contractTxId: string;
@@ -55,8 +56,8 @@ const CollectionLicense = () => {
 		router.push('/collection?step=basic-details');
 	};
 
-	const callback = (progress: string) => {
-		setProgress(progress);
+	const callback = (progress: CollectionProgress) => {
+		setProgress(progress.step);
 	};
 
 	const onFinish = async (values: Types.License) => {
@@ -82,7 +83,7 @@ const CollectionLicense = () => {
 				files,
 			});
 			console.log(opts);
-			const { mutateAsync } = await atomicToolkit.collection.createCollection(
+			const { mutateAsync } = atomicToolkit.collection.createCollection(
 				callback,
 				opts
 			);
