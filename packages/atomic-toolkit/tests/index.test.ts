@@ -14,7 +14,7 @@ describe('AtomicToolkit Class', () => {
         });
         const jwk = await arweave.wallets.generate();
         const toolkit = new AtomicToolkit({
-            jwk,
+            key: jwk,
         });
 
         // Assertions
@@ -43,7 +43,7 @@ describe('AtomicToolkitWeb Class', () => {
         });
         const jwk = await arweave.wallets.generate();
         const toolkit = new AtomicToolkitWeb({
-            jwk,
+            key: jwk,
         });
 
         // Assertions

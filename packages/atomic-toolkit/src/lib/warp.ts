@@ -1,3 +1,5 @@
+import { TradableAssetInitState } from '../types';
+
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
@@ -35,4 +37,18 @@ export const retryOperation = async <T>(
     }
 
     throw new Error(`Operation failed after ${maxAttempts} attempts`);
+};
+
+export const readState = async (contractTxId: string) => {
+    try {
+        const url = `https://dre-u.warp.cc/contract?id=${contractTxId}&events=false`;
+        const res = (await fetch(url)
+            .then((res) => res.json())
+            .then((res) => res.state)) as TradableAssetInitState;
+
+        return res;
+    } catch (error) {
+        console.error(error);
+        throw new Error(String(error));
+    }
 };

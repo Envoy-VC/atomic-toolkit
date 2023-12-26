@@ -7,6 +7,10 @@ import {
 import { ContractDeploy } from 'warp-contracts';
 import { retryOperation } from '../warp';
 
+// GraphQL
+import { GetCollectionQuery } from '../../../generated/graphql';
+import { GetCollection } from '../graphql/collection';
+
 // Types
 import { Tag } from 'arbundles';
 import * as Types from '../../types';
@@ -163,6 +167,27 @@ class Collection extends AtomicToolkitBase {
         };
 
         return { mutateAsync };
+    }
+
+    public async getCollection(id: string) {
+        try {
+            const res = await this.gql
+                .query<GetCollectionQuery>(GetCollection, {
+                    collectionId: id,
+                })
+                .toPromise();
+
+            if (!res?.data || !res?.data.transaction)
+                throw new Error('No data');
+
+            const data = (await fetch('https://arweave.net/' + id).then((res) =>
+                res.json(),
+            )) as { type: 'Collection'; items: string[] };
+
+            return { ...res.data.transaction, data };
+        } catch (error) {
+            throw new Error(String(error));
+        }
     }
 
     protected async createAtomicAsset(

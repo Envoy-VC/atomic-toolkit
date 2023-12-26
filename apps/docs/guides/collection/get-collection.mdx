@@ -1,0 +1,68 @@
+---
+title: Get Collection
+description: Returns details regarding the collection.
+---
+
+## Usage
+
+```ts
+const res = await toolkit.collection.getCollection(id);
+```
+
+## Input Parameters
+
+-   **id: `string`**: The Collection to retrieve.
+
+<Note>
+    The Function will throw an error if Id does not has necessary Tags as per
+    the [Collection
+    Protocol](https://specs.arweave.dev/#/view/4zqtz8-U4LNKjFU4gZ28oKkV6bTlfzJiguqjbMl9R4Q)
+</Note>
+
+## Return Value
+
+The return value is a Promise that resolves to the `object`. It has the following properties:
+
+-   **id: `string`**: The transaction ID of the Collection
+-   **owner**: The Owner of the Transaction, it has the following tow feilds:
+    -   **id: `string`**: The Address of the owner.
+    -   **key: `string`**: The key of the owner.
+-   **tags: Tag[]**: The Tags of the Atomic Asset.
+-   **state: `CollectionData`**: The Collection Data, it has the following fields:
+    -   **type: `string`**: Collection
+    -   **items: `string[]`**: The Items of the Collection.
+
+## Example
+
+```ts
+const id = 'naUSbwwYgZo1Zo8wD1jsWNTulydnccOTnx6eOyzy5AM';
+
+const res = await toolkit.collection.getCollection(id);
+```
+
+**Response:**
+
+```json
+{
+    "id": "naUSbwwYgZo1Zo8wD1jsWNTulydnccOTnx6eOyzy5AM",
+    "owner": {
+        "address": "lI9-NG4x2OLcoH-mC-I1FDTH103Up_yjuiRcNQG77Kg",
+        "key": "..."
+    },
+    "tags": [...],
+    "data": {
+        "type": "Collection",
+        "items": [
+            "sGzVbVABiWT6fnU7qruryjilYeufjKabNBoy1wS1LlA",
+            "du9bVSXdLobW7Qq5dxjHK7jC3o9BXLXaY_b-Amj6dBc",
+            "sp-4lXQpoSN2eC-cozHciZkjxV_kzaXfgsHtiNH_8hs",
+            "cwjwZv0wV8b-6G9MvOxxYlN_6Vv69_K--g4HIKMsXd8",
+            "qJT8sHT5B0AMKt87zogCGVyPS-GTxlhxVibNNCbOfj4",
+            "JHj7KEfjADfwSasspI8f5yCvfZL1YhRvSkP8FOWLVaM",
+            "_99PpbdCgDtj3FjVn4YOAxDleARCBEMZK0JPulwz1Wk",
+            "h2wXK7uqdSx9H2-bISdNNTGmLiStA8_TASFuAQP3FCk",
+            "1y_mTr00n7btOw4YkNV8rXhjs9rZNpzhVXwa14FqfJc"
+        ]
+    }
+}
+```

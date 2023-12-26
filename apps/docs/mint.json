@@ -71,12 +71,18 @@
                 {
                     "group": "Atomic Asset",
                     "icon": "image",
-                    "pages": ["guides/create-atomic-asset"]
+                    "pages": [
+                        "guides/atomic-asset/create-atomic-asset",
+                        "guides/atomic-asset/get-atomic-asset"
+                    ]
                 },
                 {
                     "group": "Collection",
                     "icon": "layer-group",
-                    "pages": ["guides/create-collection"]
+                    "pages": [
+                        "guides/collection/create-collection",
+                        "guides/collection/get-collection"
+                    ]
                 }
             ]
         },

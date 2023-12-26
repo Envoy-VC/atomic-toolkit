@@ -15,7 +15,8 @@
         "build": "tsup src/index.ts --format cjs,esm --dts",
         "lint": "tsc",
         "ci": "pnpm run lint && pnpm run test && pnpm run build",
-        "release": "pnpm run lint && pnpm run test && pnpm run build && changeset publish"
+        "release": "pnpm run lint && pnpm run test && pnpm run build && changeset publish",
+        "codegen": "graphql-codegen"
     },
     "keywords": [
         "arweave",
@@ -35,6 +36,8 @@
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
+        "@graphql-codegen/cli": "5.0.0",
+        "@graphql-codegen/client-preset": "^4.1.0",
         "@irys/sdk": "^0.1.1",
         "@types/lodash": "^4.14.202",
         "@types/node": "^18.19.3",
@@ -53,6 +56,7 @@
         "@irys/sdk": "^0.1.1",
         "arbundles": "^0.10.0",
         "arweave": "^1.14.4",
+        "graphql": "^16.8.1",
         "warp-contracts": "^1.4.26",
         "warp-contracts-plugin-deploy": "^1.0.12"
     }

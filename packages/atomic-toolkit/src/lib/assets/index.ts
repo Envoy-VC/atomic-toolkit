@@ -1,13 +1,15 @@
 // Helper functions
-import { retryOperation } from '../../lib/warp';
 import { buildTradableAssetTags } from '../tags';
+import { readState, retryOperation } from '../../lib/warp';
+
+// GraphQL Queries
+import { GetAtomicAsset } from '../graphql/assets';
 
 // Types
 import * as Types from '../../types';
-import type { ContractDeploy } from 'warp-contracts';
-import Transaction from 'arweave/node/lib/transaction';
 import AtomicToolkitBase from '../../base';
-import Arweave from 'arweave';
+import type { ContractDeploy } from 'warp-contracts';
+import { GetAtomicAssetQuery } from '../../../generated/graphql';
 
 class AtomicAssets extends AtomicToolkitBase {
     constructor(
@@ -38,6 +40,45 @@ class AtomicAssets extends AtomicToolkitBase {
         );
 
         return result;
+    }
+
+    public async getAtomicAsset(id: string) {
+        try {
+            const res = await this.gql
+                .query<GetAtomicAssetQuery>(GetAtomicAsset, {
+                    transactionId: id,
+                })
+                .toPromise();
+
+            if (!res?.data || !res?.data.transaction)
+                throw new Error('No data');
+
+            const data = res.data.transaction;
+
+            const requiredTags = [
+                {
+                    name: 'App-Name',
+                    value: 'SmartWeaveContract',
+                },
+            ];
+
+            // throw error if required tags are missing
+            if (
+                !requiredTags.every((tag) =>
+                    data.tags.some(
+                        (t) => t.name === tag.name && t.value === tag.value,
+                    ),
+                )
+            )
+                throw new Error('Missing required Atomic Asset Tags');
+
+            const state = await readState(id);
+
+            return { ...data, state };
+        } catch (error) {
+            console.error(error);
+            throw new Error(String(error));
+        }
     }
 }
 

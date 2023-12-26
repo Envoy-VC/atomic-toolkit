@@ -1,0 +1,57 @@
+---
+title: Get Atomic Asset
+description: Returns details regarding the Atomic Asset including the evaluated state.
+---
+
+## Usage
+
+```ts
+const res = await toolkit.assets.getAtomicAsset(id);
+```
+
+## Input Parameters
+
+-   **id: `string`**: The Atomic Asset ID.
+
+<Note>
+    The Function will throw an error if Transaction Id does not has necessary
+    Atomic Asset Tags
+</Note>
+
+## Return Value
+
+The return value is a Promise that resolves to the `object`. It has the following properties:
+
+-   **id: `string`**: The transaction ID of the Atomic Asset contract.
+-   **owner**: The Owner of the Transaction, it has the following tow feilds:
+    -   **id: `string`**: The Address of the owner.
+    -   **key: `string`**: The key of the owner.
+-   **tags: Tag[]**: The Tags of the Atomic Asset.
+-   **state: `Record<string,any>`**: The current evaluated state for the Atomic Asset.
+
+## Example
+
+```ts
+const id = 'HbsnADOnipgjAlVWwH-cClIozntMm6ePuER6HZp8Qf8';
+
+const res = await toolkit.assets.getAtomicAsset(id);
+```
+
+**Response:**
+
+```json
+{
+    "id": "HbsnADOnipgjAlVWwH-cClIozntMm6ePuER6HZp8Qf8",
+    "owner": {
+        "address": "9WQ7xH2LOuqfAccjGquck8eaKARg1vMhRJaOo3LJL14",
+        "key": "..."
+    },
+    "tags": [...],
+    "state": {
+        "name": "Envoy_ Avatar",
+        "ticker": "ENVOY",
+        "balances": { "9WQ7xH2LOuqfAccjGquck8eaKARg1vMhRJaOo3LJL14": 1 },
+        "claimable": []
+    }
+}
+```
