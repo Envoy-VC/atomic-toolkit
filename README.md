@@ -1,73 +1,70 @@
-# Turborepo Design System starter with Changesets
+# Atomic Toolkit
 
-This is an official React design system starter powered by Turborepo. Versioning and package publishing is handled by [Changesets](https://github.com/changesets/changesets) and fully automated with GitHub Actions.
+Atomic Toolkit is your streamlined path to building on Atomic Standards. Craft rock-solid, spec-compliant assets with ease, thanks to robust type safety.
 
-## Using this example
+## Key Features
 
-Run the following command:
+1. **Robust Type Safety**: Ensure accurate asset creation and adherence to Arweave specifications.
+2. **Clear and Concise SDK**: Get up and running quickly with a developer-friendly experience.
+3. **Comprehensive Function Coverage**: Create, fetch, and manage a variety of atomic assets, collections, and more.
 
-```sh
-npx create-turbo@latest -e with-changesets
+## Getting Started
+
+### Installation
+
+```bash
+npm install atomic-toolkit
 ```
 
-## What's inside?
+### Setup
 
-This Turborepo includes the following:
+Import the SDK:
 
-### Apps and Packages
-
--   `docs`: A placeholder documentation site powered by [Next.js](https://nextjs.org/)
--   `@acme/core`: core React components
--   `@acme/utils`: shared React utilities
--   `@acme/tsconfig`: shared `tsconfig.json`s used throughout the monorepo
--   `@acme/eslint-config`: ESLint preset
-
-Each package and app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
--   [TypeScript](https://www.typescriptlang.org/) for static type checking
--   [ESLint](https://eslint.org/) for code linting
--   [Prettier](https://prettier.io) for code formatting
-
-### Useful commands
-
--   `yarn build` - Build all packages and the docs site
--   `yarn dev` - Develop all packages and the docs site
--   `yarn lint` - Lint all packages
--   `yarn changeset` - Generate a changeset
--   `yarn clean` - Clean up all `node_modules` and `dist` folders (runs each package's clean script)
-
-### Changing the npm organization scope
-
-The npm organization scope for this design system starter is `@acme`. To change this, it's a bit manual at the moment, but you'll need to do the following:
-
--   Rename folders in `packages/*` to replace `acme` with your desired scope
--   Search and replace `acme` with your desired scope
--   Re-run `yarn install`
-
-## Versioning and Publishing packages
-
-Package publishing has been configured using [Changesets](https://github.com/changesets/changesets). Please review their [documentation](https://github.com/changesets/changesets#documentation) to familiarize yourself with the workflow.
-
-This example comes with automated npm releases setup in a [GitHub Action](https://github.com/changesets/action). To get this working, you will need to create an `NPM_TOKEN` and `GITHUB_TOKEN` in your repository settings. You should also install the [Changesets bot](https://github.com/apps/changeset-bot) on your GitHub repository as well.
-
-For more information about this automation, refer to the official [changesets documentation](https://github.com/changesets/changesets/blob/main/docs/automating-changesets.md)
-
-### npm
-
-If you want to publish package to the public npm registry and make them publicly available, this is already setup.
-
-To publish packages to a private npm organization scope, **remove** the following from each of the `package.json`'s
-
-```diff
-- "publishConfig": {
--  "access": "public"
-- },
+```ts
+import AtomicToolkit from 'atomic-toolkit';
 ```
 
-### GitHub Package Registry
+## Initialize with Arweave Wallet or Irys SDK
 
-See [Working with the npm registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#publishing-a-package-using-publishconfig-in-the-packagejson-file)
+Using Arweave Wallet
+
+```ts
+const key = JSON.parse(readFileSync('wallet.json').toString());
+
+const toolkit = new AtomicToolkit({ key });
+```
+
+Using Irys:
+
+```ts
+import Irys from '@irys/sdk';
+
+const irys = new Irys({
+    url: 'https://node2.irys.xyz',
+    token: 'matic',
+    key: 'your-private-key',
+});
+
+await irys.ready();
+
+const toolkit = new AtomicToolkit({ irys });
+```
+
+## Documentation
+
+For a complete overview of available functions and usage examples, please refer to the official documentation: [https://atomictoolkit.mintlify.app](https://atomictoolkit.mintlify.app/introduction)
+
+# Contributing
+
+We welcome contributions! Check out our [contributing guide](./contrubuting.md) for more information
+
+# Future Plans
+
+We're actively working on expanding functionality. Stay tuned for:
+
+-   Stamp Functions
+-   Atomic Tweet Functions
+-   UCM Marketplace Functions
+-   UDL Functions
+
+**Let's build the future of atomic assets together!**
