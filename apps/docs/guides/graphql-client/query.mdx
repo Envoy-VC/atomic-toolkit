@@ -1,0 +1,54 @@
+---
+title: URQL GraphQL Client
+description: A highly customizable and versatile GraphQL client for React
+---
+
+The Toolkit exposes a URQL client that can be used to query the Arweave GraphQL API.
+
+## Usage
+
+```ts
+const res = await toolkit.gql.query(query, variables).toPromise();
+```
+
+## Input Parameters
+
+-   **query: `string`**: The GraphQL query string.
+-   **variables: `object`**: The variables for the query.
+
+## Example
+
+```ts
+const query = `
+    query MyQuery($id: ID!) {
+        transaction(id: $id) {
+            id
+            owner {
+                address
+            }
+            fee {
+                ar
+            }
+        }
+    }
+`;
+
+const variables = {
+    id: 'QJRUEcVHqNxVX5PNfzIpBSgWJlFwhQ3RmWdYEohrbwo',
+};
+
+const res = await toolkit.gql.query(query, variables).toPromise();
+console.log(res?.data);
+```
+
+**Response:**
+
+```json
+{
+    "transaction": {
+        "id": "QJRUEcVHqNxVX5PNfzIpBSgWJlFwhQ3RmWdYEohrbwo",
+        "owner": { "address": "uk9eBF_jieshHtXfC9d1p81OHYJT8bTHazhfruLBCTA" },
+        "fee": { "ar": "0.000000000000" }
+    }
+}
+```
