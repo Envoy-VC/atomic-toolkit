@@ -83,6 +83,11 @@
                         "guides/collection/create-collection",
                         "guides/collection/get-collection"
                     ]
+                },
+                {
+                    "group": "GraphQL",
+                    "icon": "diagram-project",
+                    "pages": ["guides/graphql-client/query"]
                 }
             ]
         },

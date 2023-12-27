@@ -1,7 +1,7 @@
 import React from 'react';
 import { Skeleton } from 'antd';
-
-import { Upload, Button, Image } from 'antd';
+import Image from 'next/image';
+import { Upload, Button } from 'antd';
 
 // Stores
 import { useCreateAtomicAsset } from '~/stores';
@@ -51,8 +51,10 @@ const AssetFile = () => {
 		<div className='flex flex-col items-center justify-center'>
 			{previewURL ? (
 				<Image
+					alt='Asset Preview'
 					src={previewURL}
-					preview={false}
+					width={300}
+					height={300}
 					className='mb-4 aspect-square h-full w-full max-w-xl rounded-xl'
 				/>
 			) : (

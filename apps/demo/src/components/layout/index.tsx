@@ -32,6 +32,7 @@ const Layout = ({ children }: Props) => {
 								'ACCESS_PUBLIC_KEY',
 								'ACCESS_ARWEAVE_CONFIG',
 								'SIGNATURE',
+								'DISPATCH',
 							],
 						}}
 					>

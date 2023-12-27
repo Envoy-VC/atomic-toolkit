@@ -24,7 +24,7 @@ class AtomicToolkitBase {
     protected arweaveInstance: Arweave;
     protected irys: Irys | null | undefined;
     protected key: JWKInterface | 'use_wallet' | null;
-    protected gql: Client;
+    public gql: Client;
 
     constructor(
         opts: Types.AtomicToolkitNodeOpts | Types.AtomicToolkitWebOpts,

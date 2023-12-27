@@ -12,6 +12,7 @@ describe('AtomicToolkit Class', () => {
             port: 443,
             protocol: 'https',
         });
+
         const jwk = await arweave.wallets.generate();
         const toolkit = new AtomicToolkit({
             key: jwk,

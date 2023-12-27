@@ -75,7 +75,8 @@ const uploadWithArweave = async (opts: Types.ArweaveUploadParams) => {
         tags.forEach((tag) => tx.addTag(tag.name, tag.value));
         // Sign Tx
         await arweave.transactions.sign(tx, jwk);
-        // Upload Tx
+
+        // Upload Transaction
         let uploader = await arweave.transactions.getUploader(tx);
 
         while (!uploader.isComplete) {
