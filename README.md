@@ -56,7 +56,7 @@ For a complete overview of available functions and usage examples, please refer 
 
 # Contributing
 
-We welcome contributions! Check out our [contributing guide](./contrubuting.md) for more information
+We welcome contributions! Check out our [contributing guide](./contributing.md) for more information
 
 # Future Plans
 
