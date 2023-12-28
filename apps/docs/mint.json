@@ -127,7 +127,7 @@
             ]
         }
     ],
-    "backgroundImage": "https://i.ibb.co/Z6P523f/background-image.png",
+    "backgroundImage": "/images/background-image.png",  
     "footerSocials": {
         "twitter": "https://twitter.com/Envoy_1084",
         "github": "https://github.com/Envoy-VC/atomic-toolkit"
