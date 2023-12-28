@@ -1,16 +1,17 @@
 import React from 'react';
 import { useActiveAddress } from 'arweave-wallet-kit';
 import { useAtomicToolkit } from '~/stores';
-import { Button } from 'antd';
+import { useAddress } from '@thirdweb-dev/react';
 
 interface Props {
 	children: React.ReactNode;
 }
 
 const Wrapper = ({ children }: Props) => {
-	const { atomicToolkit, setAtomicToolkit } = useAtomicToolkit();
+	const { atomicToolkit } = useAtomicToolkit();
 	const activeAddress = useActiveAddress();
-	if (atomicToolkit) {
+	const ethAddress = useAddress();
+	if (atomicToolkit && (activeAddress || ethAddress)) {
 		return <>{children}</>;
 	} else {
 		return (
