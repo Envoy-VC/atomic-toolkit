@@ -1,5 +1,9 @@
 import React from 'react';
-import { AntDesignConfigProvider, NotificationProvider } from '~/providers';
+import {
+	AntDesignConfigProvider,
+	NotificationProvider,
+	Web3Provider,
+} from '~/providers';
 
 import { ArweaveWalletKit } from 'arweave-wallet-kit';
 
@@ -18,34 +22,35 @@ const Layout = ({ children }: Props) => {
 	return (
 		<>
 			<SEO />
-
-			<AntDesignConfigProvider>
-				<NotificationProvider>
-					<ArweaveWalletKit
-						theme={{
-							displayTheme: 'light',
-						}}
-						config={{
-							permissions: [
-								'ACCESS_ALL_ADDRESSES',
-								'ACCESS_ADDRESS',
-								'ACCESS_PUBLIC_KEY',
-								'ACCESS_ARWEAVE_CONFIG',
-								'SIGNATURE',
-								'DISPATCH',
-							],
-						}}
-					>
-						<div className={clsx(inter.className)}>
-							<Navbar />
-							<div className='flex flex-col pt-[8vh] lg:flex-row'>
-								<Sidebar />
-								<div className='w-full lg:ml-[16rem]'>{children}</div>
+			<Web3Provider>
+				<AntDesignConfigProvider>
+					<NotificationProvider>
+						<ArweaveWalletKit
+							theme={{
+								displayTheme: 'light',
+							}}
+							config={{
+								permissions: [
+									'ACCESS_ALL_ADDRESSES',
+									'ACCESS_ADDRESS',
+									'ACCESS_PUBLIC_KEY',
+									'ACCESS_ARWEAVE_CONFIG',
+									'SIGNATURE',
+									'DISPATCH',
+								],
+							}}
+						>
+							<div className={clsx(inter.className)}>
+								<Navbar />
+								<div className='flex flex-col pt-[8vh] lg:flex-row'>
+									<Sidebar />
+									<div className='w-full lg:ml-[16rem]'>{children}</div>
+								</div>
 							</div>
-						</div>
-					</ArweaveWalletKit>
-				</NotificationProvider>
-			</AntDesignConfigProvider>
+						</ArweaveWalletKit>
+					</NotificationProvider>
+				</AntDesignConfigProvider>
+			</Web3Provider>
 		</>
 	);
 };

@@ -1,13 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
 
-import { ConnectButton } from 'arweave-wallet-kit';
 import { AtomicToolkitWeb } from 'atomic-toolkit';
+import ConnectButton from '../connect-button';
 
-// @ts-ignore
+import { WebIrys } from '@irys/sdk';
+import { providers } from 'ethers';
 
 // Hooks
 import { useAtomicToolkit } from '~/stores';
+import { useAddress } from '@thirdweb-dev/react';
 import { useConnection } from 'arweave-wallet-kit';
 
 // Icons
@@ -15,18 +17,41 @@ import AtomicToolkitLogo from '~/assets/light.svg';
 
 const Navbar = () => {
 	const { setAtomicToolkit } = useAtomicToolkit();
-	const { connected } = useConnection();
+	const { connected: arConnected } = useConnection();
+	const ethAddress = useAddress();
 
 	React.useEffect(() => {
-		const get = () => {
-			const toolkit = new AtomicToolkitWeb({});
-			setAtomicToolkit(toolkit);
+		const getIrys = async () => {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+			const provider = new providers.Web3Provider(window.ethereum);
+			const wallet = { name: 'ethersv5', provider: provider };
+			const url = 'https://node2.irys.xyz';
+			const token = 'matic';
+			const webIrys = new WebIrys({ url, token, wallet });
+
+			await webIrys.ready();
+			return webIrys;
 		};
 
-		if (connected) {
+		const get = async () => {
+			try {
+				let toolkit: AtomicToolkitWeb;
+				if (arConnected) {
+					toolkit = new AtomicToolkitWeb({});
+				} else {
+					const irys = await getIrys();
+					toolkit = new AtomicToolkitWeb({ irys });
+				}
+				setAtomicToolkit(toolkit);
+			} catch (error) {
+				console.log(error);
+			}
+		};
+
+		if (arConnected || ethAddress !== undefined) {
 			get();
 		}
-	}, [connected]);
+	}, [arConnected, ethAddress]);
 
 	return (
 		<div className='fixed z-[11] h-[8vh] w-full border-b-2 border-[#E5E7EB] bg-white p-4 px-6'>
@@ -39,14 +64,7 @@ const Navbar = () => {
 						height={100}
 					/>
 				</div>
-				<ConnectButton
-					showBalance={false}
-					showProfilePicture={false}
-					useAns
-					profileModal
-					accent='#fff'
-					className='ConnectBtn !border-2 !border-black !p-0 !text-xs !text-black sm:!text-[1rem]'
-				/>
+				<ConnectButton />
 			</div>
 		</div>
 	);

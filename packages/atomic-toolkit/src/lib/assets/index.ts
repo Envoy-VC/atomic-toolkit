@@ -32,7 +32,7 @@ class AtomicAssets extends AtomicToolkitBase {
             tags,
         });
 
-        const node = this.arweaveInstance ? 'arweave' : this.getIrysNode();
+        const node = this.irys ? this.getIrysNode() : 'arweave';
         const result = retryOperation(
             () => this.warp.register(tx.id, node),
             maxAttempts,

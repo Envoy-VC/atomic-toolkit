@@ -187,7 +187,7 @@ export const buildTradableAssetTags = (
         });
     }
 
-    const { indexWithUCM = true } = opts;
+    const { indexWithUCM } = opts;
 
     if (indexWithUCM) {
         tags.push({ name: 'Indexed-By', value: 'ucm' });

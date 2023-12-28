@@ -10,7 +10,7 @@ interface Props {
 const Wrapper = ({ children }: Props) => {
 	const { atomicToolkit, setAtomicToolkit } = useAtomicToolkit();
 	const activeAddress = useActiveAddress();
-	if (atomicToolkit && activeAddress) {
+	if (atomicToolkit) {
 		return <>{children}</>;
 	} else {
 		return (
