@@ -10,6 +10,23 @@
         "thumbsRating": true,
         "suggestEdit": true
     },
+    "metadata": {
+        "og:site_name": "Atomic Toolkit Docs",
+        "og:title": "Atomic Toolkit",
+        "og:description": "Craft rock-solid, spec-compliant assets on Arweave with ease.",
+        "og:url": "https://atomictoolkit.mintlify.app/",
+        "og:image": "https://i.ibb.co/y5qNDsY/Group-1.png",
+        "og:image:width": "1200",
+        "og:image:height": "630",
+        "og:locale": "en-US",
+        "twitter:title": "Atomic Toolkit",
+        "twitter:description": "Craft rock-solid, spec-compliant assets on Arweave with ease.",
+        "twitter:url": "https://atomictoolkit.mintlify.app/",
+        "twitter:image": "https://i.ibb.co/y5qNDsY/Group-1.png",
+        "twitter:site": "https://atomictoolkit.mintlify.app/",
+        "twitter:creator": "@Envoy_1084",
+        "twitter:card": "summary_large_image"
+    },
     "colors": {
         "primary": "#4779FF",
         "light": "#6AA5FF",
