@@ -8,7 +8,6 @@ import { useAtomicToolkit } from '~/stores';
 import { TbStack3 } from 'react-icons/tb';
 import { RiNftLine } from 'react-icons/ri';
 
-import { IconType } from 'react-icons';
 import Link from 'next/link';
 
 const createItems = [
@@ -29,8 +28,6 @@ const createItems = [
 ];
 
 const Home: NextPageWithLayout = () => {
-	const { atomicToolkit } = useAtomicToolkit();
-
 	return (
 		<div className='w-full p-6 sm:p-8'>
 			<div className='mx-auto flex w-full max-w-screen-lg flex-col gap-3'>
@@ -43,8 +40,8 @@ const Home: NextPageWithLayout = () => {
 				</p>
 				<div className='my-4 text-3xl font-semibold'>Create</div>
 				<div className='flex flex-col gap-2'>
-					{createItems.map((item) => (
-						<div className='rounded-md border-[1px] border-gray-300 p-4'>
+					{createItems.map((item, index) => (
+						<div className='rounded-md border-[1px] border-gray-300 p-4' key={index}>
 							<div className='flex flex-row gap-4'>
 								<div>
 									<item.Icon className='text-5xl text-gray-700' />
