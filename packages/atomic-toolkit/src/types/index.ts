@@ -72,6 +72,27 @@ export type AtomicToolkitWebOpts = XOR<
     AtomicToolkitWebWithIrys
 >;
 
+export type ModuleOpts = {
+    /**
+     * A Warp instance that uses DeployPlugin
+     */
+    warp: Warp;
+    /**
+     * Arweave Configuration Options(either arweave or irys)
+     */
+    arweave: Arweave;
+    /**
+     * Key File to use for Arweave
+     *
+     * @default 'use_wallet'
+     */
+    key: JWKInterface | 'use_wallet' | null;
+    /**
+     * Irys Configuration Options
+     */
+    irys: WebIrys | Irys | null;
+};
+
 export * from './asset';
 export * from './tags';
 export * from './upload';

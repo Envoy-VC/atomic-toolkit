@@ -46,7 +46,6 @@ describe('AtomicToolkitWeb Class', () => {
         const toolkit = new AtomicToolkitWeb({
             key: jwk,
         });
-
         // Assertions
         expect(toolkit).to.be.an.instanceof(AtomicToolkitWeb);
     });

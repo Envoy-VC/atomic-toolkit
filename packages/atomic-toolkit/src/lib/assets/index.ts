@@ -1,3 +1,9 @@
+import ModuleBase from '..';
+
+// Libraries
+import GraphQL from '../graphql';
+import Utilities from '../utils';
+
 // Helper functions
 import { buildTradableAssetTags } from '../tags';
 import { readState, retryOperation } from '../../lib/warp';
@@ -7,32 +13,35 @@ import { GetAtomicAsset } from '../graphql/assets';
 
 // Types
 import * as Types from '../../types';
-import AtomicToolkitBase from '../../base';
-import type { ContractDeploy } from 'warp-contracts';
-import { GetAtomicAssetQuery } from '../../../generated/graphql';
 
-class AtomicAssets extends AtomicToolkitBase {
-    constructor(
-        opts: Types.AtomicToolkitNodeOpts | Types.AtomicToolkitWebOpts,
-    ) {
+import type { ContractDeploy } from 'warp-contracts';
+import type { GetAtomicAssetQuery } from '../../../generated/graphql';
+
+class AtomicAssets extends ModuleBase {
+    protected graphql: GraphQL;
+    protected utils: Utilities;
+
+    constructor(opts: Types.ModuleOpts) {
         super(opts);
+        this.graphql = new GraphQL(opts);
+        this.utils = new Utilities(opts);
     }
 
     public async createAtomicAsset(
-        file: File,
+        file: File | string,
         opts: Types.CreateTradableAssetOpts,
     ): Promise<ContractDeploy> {
         const tags = buildTradableAssetTags(file, opts);
         const maxAttempts = 7;
         const delayBetweenAttempts = 5000;
 
-        const tx = await this.uploadData({
+        const tx = await this.utils.uploadData({
             type: 'file',
             data: file,
             tags,
         });
 
-        const node = this.irys ? this.getIrysNode() : 'arweave';
+        const node = this.irys ? this.utils.getIrysNode() : 'arweave';
         const result = retryOperation(
             () => this.warp.register(tx.id, node),
             maxAttempts,
@@ -44,7 +53,7 @@ class AtomicAssets extends AtomicToolkitBase {
 
     public async getAtomicAsset(id: string) {
         try {
-            const res = await this.gql
+            const res = await this.graphql.gql
                 .query<GetAtomicAssetQuery>(GetAtomicAsset, {
                     transactionId: id,
                 })

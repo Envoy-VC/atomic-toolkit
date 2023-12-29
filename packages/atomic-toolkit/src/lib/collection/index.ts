@@ -1,3 +1,10 @@
+import ModuleBase from '..';
+
+// Libraries
+import AtomicAssets from '../assets';
+import GraphQL from '../graphql';
+import Utilities from '../utils';
+
 // Helper functions
 import {
     buildAssetTags,
@@ -12,17 +19,21 @@ import { GetCollectionQuery } from '../../../generated/graphql';
 import { GetCollection } from '../graphql/collection';
 
 // Types
-import { Tag } from 'arbundles';
+import type { Tag } from 'arbundles';
 import * as Types from '../../types';
 import Transaction from 'arweave/node/lib/transaction';
 import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
-import AtomicToolkitBase from '../../base';
 
-class Collection extends AtomicToolkitBase {
-    constructor(
-        opts: Types.AtomicToolkitNodeOpts | Types.AtomicToolkitWebOpts,
-    ) {
+class Collection extends ModuleBase {
+    protected assets: AtomicAssets;
+    protected utils: Utilities;
+    protected graphql: GraphQL;
+
+    constructor(opts: Types.ModuleOpts) {
         super(opts);
+        this.assets = new AtomicAssets(opts);
+        this.utils = new Utilities(opts);
+        this.graphql = new GraphQL(opts);
     }
 
     public async createCollectionWithAssetIds(
@@ -35,32 +46,12 @@ class Collection extends AtomicToolkitBase {
         const baseTags: Tag[] = [];
 
         const tags = buildCollectionTags(baseTags, opts);
-        const tx = this.uploadData({
+        const tx = this.utils.uploadData({
             type: 'data',
             data: JSON.stringify(data),
             tags,
         });
         return tx;
-    }
-
-    protected getDirectorySize(directoryPath: string) {
-        let totalSize = 0;
-        const fs = require('fs');
-        const path = require('path');
-        function calculateSize(filePath: string) {
-            const stats = fs.statSync(filePath);
-
-            if (stats.isFile()) {
-                totalSize += stats.size;
-            } else if (stats.isDirectory()) {
-                const files = fs.readdirSync(filePath);
-                files.forEach((file: string) => {
-                    calculateSize(path.join(filePath, file));
-                });
-            }
-        }
-        calculateSize(directoryPath);
-        return totalSize;
     }
 
     public createCollection(
@@ -92,7 +83,7 @@ class Collection extends AtomicToolkitBase {
                 // Upload Thumbnail and Banner
                 progress = 'uploading-thumbnail';
                 callback({ step: progress, progress: 0 });
-                const thumbTx = await this.uploadData({
+                const thumbTx = await this.utils.uploadData({
                     type: 'file',
                     data: opts.thumbnail,
                     tags: buildAssetTags(opts.thumbnail, {
@@ -106,7 +97,7 @@ class Collection extends AtomicToolkitBase {
                 });
                 progress = 'uploading-banner';
                 callback({ step: progress, progress: progressPerStep });
-                const bannerTx = await this.uploadData({
+                const bannerTx = await this.utils.uploadData({
                     type: 'file',
                     data: opts.banner,
                     tags: buildAssetTags(opts.banner, {
@@ -142,7 +133,7 @@ class Collection extends AtomicToolkitBase {
                         license: opts.license,
                         indexWithUCM: true,
                     };
-                    const tx = await this.createAtomicAsset(
+                    const tx = await this.assets.createAtomicAsset(
                         files[index]!,
                         tradableAssetOpts,
                     );
@@ -193,7 +184,7 @@ class Collection extends AtomicToolkitBase {
 
     public async getCollection(id: string) {
         try {
-            const res = await this.gql
+            const res = await this.graphql.gql
                 .query<GetCollectionQuery>(GetCollection, {
                     collectionId: id,
                 })
@@ -210,30 +201,6 @@ class Collection extends AtomicToolkitBase {
         } catch (error) {
             throw new Error(String(error));
         }
-    }
-
-    protected async createAtomicAsset(
-        file: File | string,
-        opts: Types.CreateTradableAssetOpts,
-    ): Promise<ContractDeploy | Transaction> {
-        const tags = buildTradableAssetTags(file, opts);
-        const maxAttempts = 7;
-        const delayBetweenAttempts = 5000;
-
-        const tx = await this.uploadData({
-            type: 'file',
-            data: file,
-            tags,
-        });
-
-        const node = this.arweaveInstance ? 'arweave' : this.getIrysNode();
-        const result = retryOperation(
-            () => this.warp.register(tx.id, node),
-            maxAttempts,
-            delayBetweenAttempts,
-        );
-
-        return result;
     }
 }
 
