@@ -42,6 +42,7 @@
         "@types/lodash": "^4.14.202",
         "@types/node": "^18.19.3",
         "@urql/core": "^4.2.2",
+        "bignumber.js": "^9.1.2",
         "dotenv": "^16.3.1",
         "ethers": "v5",
         "mime": "^4.0.0",

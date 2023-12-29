@@ -8,7 +8,6 @@ describe('Collection GraphQL', () => {
         const res = await toolkit.collection.getCollection(
             'naUSbwwYgZo1Zo8wD1jsWNTulydnccOTnx6eOyzy5AM',
         );
-        console.log(res);
         expect(res).toBeDefined();
     });
 });

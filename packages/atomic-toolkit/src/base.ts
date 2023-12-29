@@ -1,5 +1,5 @@
 import { Warp } from 'warp-contracts';
-import Irys from '@irys/sdk';
+import Irys, { WebIrys } from '@irys/sdk';
 import Arweave from 'arweave';
 
 // Warp
@@ -22,7 +22,7 @@ import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
 class AtomicToolkitBase {
     protected warp: Warp;
     protected arweaveInstance: Arweave;
-    protected irys: Irys | null | undefined;
+    protected irys: WebIrys | Irys | null | undefined;
     protected key: JWKInterface | 'use_wallet' | null;
     public gql: Client;
 
@@ -54,6 +54,7 @@ class AtomicToolkitBase {
             this.key = key ?? 'use_wallet';
             this.irys = null;
         }
+
         this.gql = new Client({
             url: 'https://arweave.net/graphql',
             exchanges: [cacheExchange, fetchExchange],

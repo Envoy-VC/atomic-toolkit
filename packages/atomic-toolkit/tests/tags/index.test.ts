@@ -130,7 +130,6 @@ describe('Content-Type Tags', () => {
             'Contract-Src',
             'Init-State',
             'Contract-Manifest',
-            'Indexed-By',
             'License',
         ];
 
