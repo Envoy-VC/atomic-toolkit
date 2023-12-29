@@ -43,6 +43,26 @@ class Collection extends AtomicToolkitBase {
         return tx;
     }
 
+    protected getDirectorySize(directoryPath: string) {
+        let totalSize = 0;
+        const fs = require('fs');
+        const path = require('path');
+        function calculateSize(filePath: string) {
+            const stats = fs.statSync(filePath);
+
+            if (stats.isFile()) {
+                totalSize += stats.size;
+            } else if (stats.isDirectory()) {
+                const files = fs.readdirSync(filePath);
+                files.forEach((file: string) => {
+                    calculateSize(path.join(filePath, file));
+                });
+            }
+        }
+        calculateSize(directoryPath);
+        return totalSize;
+    }
+
     public createCollection(
         callback: (progress: Types.CollectionProgress, error?: string) => void,
         opts: Types.CreateCollectionOpts,
@@ -50,12 +70,14 @@ class Collection extends AtomicToolkitBase {
         let progress: string = 'idle';
         let error: Error | null = null;
         let files: File[] | string[] = [];
+
         if (typeof opts.assets === 'string') {
             const { readdirSync } = require('fs');
             const { join } = require('path');
             const paths: string[] = readdirSync(opts.assets).map(
                 (file: string) => join(opts.assets, file),
             );
+
             if (paths.length === 0)
                 throw new Error('No files found in the directory');
             files = paths;

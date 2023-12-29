@@ -18,6 +18,7 @@ import * as Types from './types';
 import { JWKInterface } from 'arweave/node/lib/wallet';
 import Transaction from 'arweave/node/lib/transaction';
 import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
+import Utilities from './lib/utils';
 
 class AtomicToolkitBase {
     protected warp: Warp;
@@ -30,6 +31,7 @@ class AtomicToolkitBase {
         opts: Types.AtomicToolkitNodeOpts | Types.AtomicToolkitWebOpts,
     ) {
         const { warp, ...props } = opts;
+
         if (warp) {
             if (!warp.hasPlugin('deploy') || warp.environment === 'local') {
                 throw new Error(

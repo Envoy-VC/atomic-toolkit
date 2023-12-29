@@ -33,4 +33,12 @@ describe('Utilities', () => {
         const cost = await toolkit.utils.getUploadCost(131434143);
         expect(cost).toBeDefined();
     });
+    it('should return directory size', async () => {
+        const toolkit = new AtomicToolkit({
+            key,
+        });
+
+        const res = toolkit.utils.getDirectorySize('./dist');
+        expect(res).toBeDefined();
+    });
 });

@@ -11,6 +11,26 @@ class Utilities extends AtomicToolkitBase {
         super(opts);
     }
 
+    public getDirectorySize(directoryPath: string) {
+        let totalSize = 0;
+        const fs = require('fs');
+        const path = require('path');
+        function calculateSize(filePath: string) {
+            const stats = fs.statSync(filePath);
+
+            if (stats.isFile()) {
+                totalSize += stats.size;
+            } else if (stats.isDirectory()) {
+                const files = fs.readdirSync(filePath);
+                files.forEach((file: string) => {
+                    calculateSize(path.join(filePath, file));
+                });
+            }
+        }
+        calculateSize(directoryPath);
+        return totalSize;
+    }
+
     public async getUploadCost(size: number) {
         let token: string;
         let balance: { atomic: string; formatted: string };
