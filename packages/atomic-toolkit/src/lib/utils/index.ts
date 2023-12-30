@@ -16,9 +16,10 @@ class Utilities extends ModuleBase {
 
     public getDirectorySize(files: string | File[]) {
         let totalSize = 0;
-        const fs = require('fs');
-        const path = require('path');
+
         function calculateSize(filePath: string) {
+            const fs = require('fs');
+            const path = require('path');
             const stats = fs.statSync(filePath);
 
             if (stats.isFile()) {

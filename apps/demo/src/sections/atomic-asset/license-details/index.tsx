@@ -29,6 +29,22 @@ const LicenseDetails = () => {
 	const [modalOpen, setModalOpen] = React.useState<boolean>(false);
 	const [txId, setTxId] = React.useState<string>('');
 
+	const [estimatedCost, setEstimatedCost] = React.useState<string>('');
+
+	React.useEffect(() => {
+		const get = async () => {
+			if (!atomicToolkit) return;
+			if (!file) return;
+
+			const totalSize = atomicToolkit.utils.getDirectorySize([file] as RcFile[]);
+			const cost = await atomicToolkit.utils.getUploadCost(totalSize);
+			setEstimatedCost(
+				`${parseFloat(cost.cost.formatted).toFixed(4)} ${cost.token}`
+			);
+		};
+		get();
+	}, [file]);
+
 	const handleOk = () => {
 		setModalOpen(false);
 		setTxId('');
@@ -87,6 +103,10 @@ const LicenseDetails = () => {
 				size='large'
 			>
 				<LicenseForm form={form} />
+				<span>
+					<span className='font-medium'>Estimated Cost: </span>
+					{estimatedCost}
+				</span>
 				<div className='my-8 flex justify-between'>
 					<Button type='dashed' onClick={onBack} disabled={isCreating}>
 						Back

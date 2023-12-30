@@ -15,6 +15,7 @@ import { CgSpinner } from 'react-icons/cg';
 
 import * as Types from '~/types';
 import { CollectionProgress } from 'atomic-toolkit';
+import { RcFile } from 'antd/es/upload';
 
 export interface ContractDeploy {
 	contractTxId: string;
@@ -46,6 +47,26 @@ const CollectionLicense = () => {
 	const [progress, setProgress] = React.useState<string>('idle');
 	const [txId, setTxId] = React.useState<string>('');
 
+	const [estimatedCost, setEstimatedCost] = React.useState<string>('');
+
+	React.useEffect(() => {
+		const get = async () => {
+			if (!atomicToolkit) return;
+			if (files.length === 0) return;
+
+			const totalSize = atomicToolkit.utils.getDirectorySize([
+				...files,
+				thumbnail,
+				banner,
+			] as RcFile[]);
+			const cost = await atomicToolkit.utils.getUploadCost(totalSize);
+			setEstimatedCost(
+				`${parseFloat(cost.cost.formatted).toFixed(4)} ${cost.token}`
+			);
+		};
+		get();
+	}, [files, thumbnail, banner]);
+
 	const handleOk = () => {
 		setTxId('');
 		setFiles([]);
@@ -70,6 +91,7 @@ const CollectionLicense = () => {
 				toast.error('Thumbnail and Banner are required');
 				throw new Error('Thumbnail and Banner are required');
 			}
+
 			setIsCreating(true);
 			setLicense(values);
 			setModalOpen(true);
@@ -115,6 +137,10 @@ const CollectionLicense = () => {
 				className='max-w-xl p-4'
 			>
 				<CollectionLicenseForm form={form} />
+				<span>
+					<span className='font-medium'>Estimated Cost: </span>
+					{estimatedCost}
+				</span>
 				<div className='my-8 flex justify-between'>
 					<Button type='dashed' onClick={onBack} disabled={isCreating}>
 						Back

@@ -32,6 +32,15 @@ class AtomicAssets extends ModuleBase {
         opts: Types.CreateTradableAssetOpts,
     ): Promise<ContractDeploy> {
         const tags = buildTradableAssetTags(file, opts);
+        const totalSize = this.utils.getDirectorySize(
+            typeof file === 'string' ? file : [file],
+        );
+        const cost = await this.utils.getUploadCost(totalSize);
+        if (parseInt(cost.additional.atomic) > 0) {
+            throw new Error(
+                `Insufficient balance. Additional ${cost.additional.formatted} ${cost.token} required.`,
+            );
+        }
         const maxAttempts = 7;
         const delayBetweenAttempts = 5000;
 

@@ -80,6 +80,15 @@ class Collection extends ModuleBase {
 
         const mutateAsync = async () => {
             try {
+                const totalSize = this.utils.getDirectorySize(opts.assets);
+                const cost = await this.utils.getUploadCost(totalSize);
+                if (parseInt(cost.additional.atomic) > 0) {
+                    throw new Error(
+                        `Not enough balance to create ${
+                            files.length + 1
+                        } atomic assets`,
+                    );
+                }
                 // Upload Thumbnail and Banner
                 progress = 'uploading-thumbnail';
                 callback({ step: progress, progress: 0 });
