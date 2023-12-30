@@ -42,9 +42,9 @@ export const retryOperation = async <T>(
 export const readState = async (contractTxId: string) => {
     try {
         const url = `https://dre-u.warp.cc/contract?id=${contractTxId}&events=false`;
-        const res = (await fetch(url)
+        const res = await fetch(url)
             .then((res) => res.json())
-            .then((res) => res.state)) as TradableAssetInitState;
+            .then((res) => res.state);
 
         return res;
     } catch (error) {

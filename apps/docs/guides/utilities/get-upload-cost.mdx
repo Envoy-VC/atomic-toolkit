@@ -1,0 +1,70 @@
+---
+title: Get Upload Cost
+description: Get the cost of uploading a file to Arweave.
+'og:image': 'https://atomic-toolkit-demo.vercel.app/api/og?title=Get%20Upload%20Cost'
+'og:description': 'Get the cost of uploading a file to Arweave.'
+---
+
+This function is used to get the cost of uploading a file to Arweave. It returns the required and additional cost for upload in atomic as well as formatted units.
+
+## Usage
+
+```ts
+const cost = await toolkit.utils.getUploadCost(size);
+```
+
+## Input Parameters
+
+-   **size: `number`**: The size of the file in bytes.
+
+## Return Value
+
+It returns and object with the following properties:
+
+-   **token: `string`**: The token to be used for upload, depends on irys instance.
+-   **balance: `object`**: The balance of the wallet.
+    -   **atomic: `string`**: The balance of the wallet in atomic units.
+    -   **formatted: `string`**: The balance of the wallet in formatted units.
+-   **cost: `object`**: The required cost for upload.
+    -   **atomic: `string`**: The required cost for upload in atomic units.
+    -   **formatted: `string`**: The required cost for upload in formatted units.
+-   **additional: `object`**: The additional cost for upload.
+    -   **atomic: `string`**: The additional cost for upload in atomic units.
+    -   **formatted: `string`**: The additional cost for upload in formatted units.
+
+## Example
+
+```ts
+const cost = await toolkit.utils.getUploadCost(10 ** 9); // 1 GB
+
+const costWithIrys = await toolkit.utils.getUploadCost(10 ** 9); // 1 GB
+```
+
+**Response:**
+
+```json
+// With Arweave
+
+{
+    "token": "arweave",
+    "cost": { "atomic": "799065973430", "formatted": "0.799065973430" },
+    "balance": { "atomic": "8738152084", "formatted": "0.008738152084" },
+    "additional": { "atomic": "790327821346", "formatted": "0.790327821346" }
+}
+```
+
+```json
+// With Irys
+{
+    "token": "matic",
+    "cost": {
+        "atomic": "12359556835023300000",
+        "formatted": "12.3595568350233"
+    },
+    "balance": { "atomic": "0", "formatted": "0" },
+    "additional": {
+        "atomic": "12359556835023300000",
+        "formatted": "12.3595568350233"
+    }
+}
+```

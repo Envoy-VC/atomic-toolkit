@@ -1,0 +1,26 @@
+---
+title: Get Directory Size
+description: Get the size of a directory in bytes.
+'og:image': 'https://atomic-toolkit-demo.vercel.app/api/og?title=Get%20Directory%20Size'
+'og:description': 'Get the size of a directory in bytes.'
+---
+
+This function returns the size of a directory in bytes.
+
+## Usage
+
+```ts
+const res = toolkit.utils.getDirectorySize('path/to/directory');
+```
+
+## Input Parameters
+
+-   **files: `string | File[]`**: The path to the directory or an array of files.
+
+## Example
+
+```ts
+const res = toolkit.utils.getDirectorySize('path/to/directory');
+
+console.log(res); // 2341341
+```

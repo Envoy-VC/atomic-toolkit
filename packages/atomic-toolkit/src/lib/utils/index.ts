@@ -14,7 +14,7 @@ class Utilities extends ModuleBase {
         super(opts);
     }
 
-    public getDirectorySize(directoryPath: string) {
+    public getDirectorySize(files: string | File[]) {
         let totalSize = 0;
         const fs = require('fs');
         const path = require('path');
@@ -30,7 +30,14 @@ class Utilities extends ModuleBase {
                 });
             }
         }
-        calculateSize(directoryPath);
+        if (typeof files === 'string') {
+            calculateSize(files);
+        } else {
+            files.forEach((file) => {
+                totalSize += file.size;
+            });
+        }
+
         return totalSize;
     }
 

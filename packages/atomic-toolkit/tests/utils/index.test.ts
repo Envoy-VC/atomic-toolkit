@@ -15,7 +15,7 @@ describe('Utilities', () => {
             key,
         });
 
-        const cost = await toolkit.utils.getUploadCost(10000);
+        const cost = await toolkit.utils.getUploadCost(10 ** 9);
         expect(cost).toBeDefined();
     });
     it('should return cost to upload data using irys', async () => {
@@ -30,7 +30,7 @@ describe('Utilities', () => {
             irys,
         });
 
-        const cost = await toolkit.utils.getUploadCost(131434143);
+        const cost = await toolkit.utils.getUploadCost(10 ** 9);
         expect(cost).toBeDefined();
     });
     it('should return directory size', async () => {

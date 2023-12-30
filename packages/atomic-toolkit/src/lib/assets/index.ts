@@ -81,7 +81,7 @@ class AtomicAssets extends ModuleBase {
             )
                 throw new Error('Missing required Atomic Asset Tags');
 
-            const state = await readState(id);
+            const state = (await readState(id)) as Types.TradableAssetInitState;
 
             return { ...data, state };
         } catch (error) {

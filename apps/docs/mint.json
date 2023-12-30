@@ -105,6 +105,15 @@
                     "group": "GraphQL",
                     "icon": "diagram-project",
                     "pages": ["guides/graphql-client/query"]
+                },
+                {
+                    "group": "Utilities",
+                    "icon": "handshake-angle",
+                    "pages": [
+                        "guides/utilities/get-directory-size",
+                        "guides/utilities/get-upload-cost",
+                        "guides/utilities/upload-data"
+                    ]
                 }
             ]
         },
@@ -127,7 +136,7 @@
             ]
         }
     ],
-    "backgroundImage": "/images/background-image.png",  
+    "backgroundImage": "/images/background-image.png",
     "footerSocials": {
         "twitter": "https://twitter.com/Envoy_1084",
         "github": "https://github.com/Envoy-VC/atomic-toolkit"

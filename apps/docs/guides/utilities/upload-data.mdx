@@ -1,0 +1,52 @@
+---
+title: Upload Data
+description: Upload data to Arweave.
+'og:image': 'https://atomic-toolkit-demo.vercel.app/api/og?title=Upload%20Data'
+'og:description': 'Upload data to Arweave.'
+---
+
+This function allows you to upload data to Arweave.
+
+## Usage
+
+```ts
+const res = toolkit.utils.uploadData(opts);
+```
+
+## Input Parameters
+
+The function takes in a object containing the following parameters:
+
+-   **type: `data | File`**: The type of data to upload.
+-   **data: `string | File`**: The data to upload. Can be a file or path to a file in case of node environments.
+-   **tags: `Tag[]`**: Tags to be added to the transaction.
+
+## Return Value
+
+The function returns a promise that resolves to `UploadResponse` or `Transaction` depending on whether Irys is used or not.
+
+-   `UploadResonse` - Returned when Irys is used. It contains feilds such as:
+    -   **id: `string`** - The transaction ID of the collection.
+    -   **signature: `string`** - The signature used while creating the collection.
+    -   **timestamp: `number`** - The timestamp of the transaction.
+-   `Transaction` - Returned when Arweave is used. It contains feilds such as:
+    -   **id: `string`** - The transaction ID of the collection.
+    -   **owner: `string`** - The owner of the collection.
+    -   **tags: `Tag[]`** - The tags of the collection.
+    -   **data: `Uint8Array`** - The data of the collection.
+    -   **signature: `string`** - The signature used while creating the collection.
+
+## Example
+
+```ts
+const file = new File(['hello world'], 'hello.txt', { type: 'text/plain' });
+
+const res = await toolkit.utils.uploadData({
+    type: 'file',
+    data: file,
+    tags: [
+        { name: 'Content-Type', value: 'text/plain' },
+        { name: 'Title', value: 'Hello World' },
+    ],
+});
+```
