@@ -140,5 +140,10 @@
     "footerSocials": {
         "twitter": "https://twitter.com/Envoy_1084",
         "github": "https://github.com/Envoy-VC/atomic-toolkit"
+    },
+    "analytics": {
+        "ga4": {
+            "measurementId": "G-TR0QKD7378"
+        }
     }
 }
