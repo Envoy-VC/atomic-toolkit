@@ -50,6 +50,23 @@ await irys.ready();
 const toolkit = new AtomicToolkit({ irys });
 ```
 
+Using Turbo Through Irys:
+
+```ts
+import Irys from '@irys/sdk';
+
+const irys = new Irys({
+    url: 'https://up.arweave.net',
+    token: 'matic',
+    key: 'your-private-key',
+});
+
+await irys.ready();
+
+const toolkit = new AtomicToolkit({ irys });
+```
+
+
 ## Documentation
 
 For a complete overview of available functions and usage examples, please refer to the official documentation: [https://atomictoolkit.mintlify.app](https://atomictoolkit.mintlify.app/introduction)
