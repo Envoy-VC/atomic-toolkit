@@ -33,6 +33,21 @@ describe('Utilities', () => {
         const cost = await toolkit.utils.getUploadCost(10 ** 9);
         expect(cost).toBeDefined();
     });
+    it('should return cost to upload data using irys through Turbo', async () => {
+        const irys = new Irys({
+            url: 'https://up.arweave.net',
+            token: 'matic',
+            key: process.env.PRIVATE_KEY,
+        });
+
+        await irys.ready();
+        const toolkit = new AtomicToolkit({
+            irys,
+        });
+
+        const cost = await toolkit.utils.getUploadCost(10 ** 9);
+        expect(cost).toBeDefined();
+    });
     it('should return directory size', async () => {
         const toolkit = new AtomicToolkit({
             key,
