@@ -3,6 +3,7 @@ import { Warp, WarpFactory } from 'warp-contracts';
 import { DeployPlugin } from 'warp-contracts-plugin-deploy';
 import Irys, { WebIrys } from '@irys/sdk';
 import { JWKInterface } from 'arbundles';
+import { TurboAuthenticatedClientInterface, TurboFactory, TurboUnauthenticatedClientInterface } from '@ardrive/turbo-sdk';
 
 import * as Types from '../types';
 
@@ -17,6 +18,8 @@ export const defaultArweave = new ArweaveClass({
     protocol: 'https',
 });
 
+export const defaultTurbo = TurboFactory.unauthenticated()
+
 export const getConfig = (
     opts: Types.AtomicToolkitNodeOpts | Types.AtomicToolkitWebOpts,
 ) => {
@@ -24,6 +27,7 @@ export const getConfig = (
     let baseArweave: Arweave;
     let baseIrys: WebIrys | Irys | null | undefined;
     let baseKey: JWKInterface | 'use_wallet' | null;
+    let baseTurbo: TurboAuthenticatedClientInterface | TurboUnauthenticatedClientInterface;
     const { warp, ...props } = opts;
 
     if (warp) {
@@ -42,6 +46,13 @@ export const getConfig = (
         baseIrys = irys;
         baseArweave = defaultArweave;
         baseKey = null;
+        baseTurbo = defaultTurbo;
+    } else if (typeof props === 'object' && 'turbo' in props) {
+        const { turbo } = props as Types.AtomicToolkitWithTurbo;
+        baseTurbo = turbo ?? defaultTurbo;
+        baseArweave = defaultArweave;
+        baseKey = null;
+        baseIrys = null;
     } else {
         const { arweave, key } = props as
             | Types.AtomicToolkitWithArweave
@@ -49,6 +60,7 @@ export const getConfig = (
         baseArweave = arweave ?? defaultArweave;
         baseKey = key ?? 'use_wallet';
         baseIrys = null;
+        baseTurbo = defaultTurbo;
     }
 
     return {
@@ -56,5 +68,6 @@ export const getConfig = (
         arweave: baseArweave,
         irys: baseIrys,
         key: baseKey,
+        turbo: baseTurbo,
     };
 };

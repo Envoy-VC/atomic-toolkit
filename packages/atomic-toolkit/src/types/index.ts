@@ -2,6 +2,7 @@ import Arweave from 'arweave';
 import { Warp } from 'warp-contracts';
 import Irys, { WebIrys } from '@irys/sdk';
 import { JWKInterface } from 'arweave/node/lib/wallet';
+import { TurboAuthenticatedClientInterface, TurboUnauthenticatedClientInterface } from '@ardrive/turbo-sdk';
 
 type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 type XOR<T, U> = T | U extends object
@@ -34,9 +35,14 @@ export type AtomicToolkitWithIrys = {
     irys: Irys;
 };
 
+export type AtomicToolkitWithTurbo = {
+    warp?: Warp;
+    turbo?: TurboAuthenticatedClientInterface | TurboUnauthenticatedClientInterface;
+};
+
 export type AtomicToolkitNodeOpts = XOR<
-    AtomicToolkitWithArweave,
-    AtomicToolkitWithIrys
+    AtomicToolkitWithTurbo,
+    XOR<AtomicToolkitWithIrys, AtomicToolkitWithArweave>
 >;
 
 export type AtomicToolkitWebWithArweave = {
@@ -69,7 +75,7 @@ export type AtomicToolkitWebWithIrys = {
 
 export type AtomicToolkitWebOpts = XOR<
     AtomicToolkitWebWithArweave,
-    AtomicToolkitWebWithIrys
+    XOR<AtomicToolkitWebWithIrys, AtomicToolkitWithTurbo>
 >;
 
 export type ModuleOpts = {
@@ -91,6 +97,10 @@ export type ModuleOpts = {
      * Irys Configuration Options
      */
     irys: WebIrys | Irys | null;
+    /**
+     * Turbo Configuration Options
+     */
+    turbo: TurboAuthenticatedClientInterface | TurboUnauthenticatedClientInterface;
 };
 
 export * from './asset';

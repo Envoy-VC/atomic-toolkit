@@ -2,12 +2,13 @@ import ModuleBase from '..';
 import BigNumber from 'bignumber.js';
 
 // Helpers
-import { uploadWithIrys, uploadWithArweave } from '../upload';
+import { uploadWithIrys, uploadWithArweave, uploadWithTurbo } from '../upload';
 
 // Types
 import * as Types from '../../types';
 import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
 import Transaction from 'arweave/node/lib/transaction';
+import { TurboAuthenticatedClient, TurboUploadDataItemResponse } from '@ardrive/turbo-sdk';
 
 class Utilities extends ModuleBase {
     constructor(opts: Types.ModuleOpts) {
@@ -69,6 +70,31 @@ class Utilities extends ModuleBase {
                     ? this.irys.utils.fromAtomic(a).toString()
                     : '0',
             };
+        } else if (this.turbo instanceof TurboAuthenticatedClient) {
+            const b1 = await this.turbo.getBalance();
+            const b = Number(b1['winc']);
+    
+            // Ensure c1 and c1[0] are defined before accessing 'winc'
+            const c1 = await this.turbo.getUploadCosts({bytes: [size]});
+            if (!c1 || !c1[0] || typeof c1[0]['winc'] === 'undefined') {
+                throw new Error('Unable to retrieve upload costs from Turbo');
+            }
+            const c = Number(c1[0]["winc"]);
+            const a = c - b;
+
+           token = 'arweave'
+           balance={
+            atomic: b1['winc'],
+            formatted: (b / 1000000000000).toString()
+           }
+           cost={
+            atomic: c1[0]['winc'],
+            formatted: (c / 1000000000000).toString()
+           }
+           additional={
+            atomic: a > 0 ? a.toString() : '0',
+            formatted: a > 0 ? (a / 1000000000000).toString() : '0'
+           }
         } else {
             if (!this.key) {
                 throw new Error('No key provided');
@@ -107,7 +133,7 @@ class Utilities extends ModuleBase {
 
     public async uploadData(
         opts: Types.UploadDataOpts,
-    ): Promise<Transaction | UploadResponse> {
+    ): Promise<Transaction | UploadResponse | TurboUploadDataItemResponse > {
         if (this.irys) {
             const tx = uploadWithIrys({
                 irys: this.irys,
@@ -116,7 +142,18 @@ class Utilities extends ModuleBase {
                 tags: opts.tags,
             });
             return tx;
-        } else {
+        } else if (this.turbo instanceof TurboAuthenticatedClient){
+            console.log("Uploading with Turbo... Boop Beep Boop")
+
+            const tx = uploadWithTurbo({
+                turbo: this.turbo,
+                type: opts.type,
+                data: opts.data,
+                tags: opts.tags
+            })
+            return tx
+        } 
+        else {
             if (!this.arweave || !this.key) {
                 throw new Error('Arweave and JWK must be defined');
             }
