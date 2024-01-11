@@ -143,8 +143,6 @@ class Utilities extends ModuleBase {
             });
             return tx;
         } else if (this.turbo instanceof TurboAuthenticatedClient){
-            console.log("Uploading with Turbo... Boop Beep Boop")
-
             const tx = uploadWithTurbo({
                 turbo: this.turbo,
                 type: opts.type,
