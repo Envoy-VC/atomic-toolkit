@@ -82,7 +82,7 @@ class Utilities extends ModuleBase {
             const c = Number(c1[0]["winc"]);
             const a = c - b;
 
-           token = 'arweave'
+           token = 'turbo'
            balance={
             atomic: b1['winc'],
             formatted: (b / 1000000000000).toString()
