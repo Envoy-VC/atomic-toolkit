@@ -8,14 +8,14 @@ import { getConfig } from './lib/config';
 // Types
 import * as Types from './types';
 import { JWKInterface } from 'arweave/node/lib/wallet';
-import { TurboAuthenticatedClientInterface, TurboUnauthenticatedClientInterface, } from '@ardrive/turbo-sdk';
+import { TurboAuthenticatedClientInterface } from '@ardrive/turbo-sdk';
 
 class AtomicToolkitBase {
     protected warp: Warp;
     protected arweaveInstance: Arweave;
     protected irys: WebIrys | Irys | null | undefined;
     protected key: JWKInterface | 'use_wallet' | null;
-    protected turbo: TurboAuthenticatedClientInterface | TurboUnauthenticatedClientInterface;
+    protected turbo: TurboAuthenticatedClientInterface | null | undefined;
 
     constructor(
         opts: Types.AtomicToolkitNodeOpts | Types.AtomicToolkitWebOpts,
@@ -26,7 +26,7 @@ class AtomicToolkitBase {
         this.arweaveInstance = arweave;
         this.irys = irys;
         this.key = key;
-        this.turbo = turbo
+        this.turbo = turbo;
     }
 }
 

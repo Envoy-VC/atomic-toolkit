@@ -11,7 +11,7 @@ class ModuleBase {
     protected arweave: Arweave;
     protected irys: WebIrys | Irys | null;
     protected key: JWKInterface | 'use_wallet' | null;
-    protected turbo: TurboAuthenticatedClientInterface | TurboUnauthenticatedClientInterface
+    protected turbo: TurboAuthenticatedClientInterface | null
 
     constructor(opts: Types.ModuleOpts) {
         this.warp = opts.warp;

@@ -24,7 +24,7 @@ Import the SDK:
 import AtomicToolkit from 'atomic-toolkit';
 ```
 
-## Initialize with Arweave Wallet or Irys SDK
+## Initialize with Arweave Wallet, Irys SDK, or Turbo SDK
 
 Using Arweave Wallet
 
@@ -66,6 +66,18 @@ await irys.ready();
 const toolkit = new AtomicToolkit({ irys });
 ```
 
+using Turbo:
+
+```ts
+const { TurboFactory } = require('@ardrive/turbo-sdk');
+const AtomicToolkit = require('atomic-toolkit').default;
+const fs = require('fs');
+
+const jwk = JSON.parse(fs.readFileSync('./KeyFile.json'));
+const turbo = TurboFactory.authenticated({ privateKey: jwk });
+
+const toolkit = new AtomicToolkit({ turbo });
+```
 
 ## Documentation
 

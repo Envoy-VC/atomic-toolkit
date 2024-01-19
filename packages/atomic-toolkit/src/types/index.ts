@@ -2,7 +2,9 @@ import Arweave from 'arweave';
 import { Warp } from 'warp-contracts';
 import Irys, { WebIrys } from '@irys/sdk';
 import { JWKInterface } from 'arweave/node/lib/wallet';
-import { TurboAuthenticatedClientInterface, TurboUnauthenticatedClientInterface } from '@ardrive/turbo-sdk';
+import { TurboAuthenticatedClientInterface} from '@ardrive/turbo-sdk';
+
+
 
 type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 type XOR<T, U> = T | U extends object
@@ -37,7 +39,7 @@ export type AtomicToolkitWithIrys = {
 
 export type AtomicToolkitWithTurbo = {
     warp?: Warp;
-    turbo?: TurboAuthenticatedClientInterface | TurboUnauthenticatedClientInterface;
+    turbo?: TurboAuthenticatedClientInterface | null
 };
 
 export type AtomicToolkitNodeOpts = XOR<
@@ -73,9 +75,14 @@ export type AtomicToolkitWebWithIrys = {
     irys: WebIrys;
 };
 
+export type AtomicToolkitWebWithTurbo = {
+    warp?: Warp;
+    turbo?: TurboAuthenticatedClientInterface | null
+}
+
 export type AtomicToolkitWebOpts = XOR<
     AtomicToolkitWebWithArweave,
-    XOR<AtomicToolkitWebWithIrys, AtomicToolkitWithTurbo>
+    XOR<AtomicToolkitWebWithIrys, AtomicToolkitWebWithTurbo>
 >;
 
 export type ModuleOpts = {
@@ -100,7 +107,7 @@ export type ModuleOpts = {
     /**
      * Turbo Configuration Options
      */
-    turbo: TurboAuthenticatedClientInterface | TurboUnauthenticatedClientInterface;
+    turbo: TurboAuthenticatedClientInterface | null;
 };
 
 export * from './asset';

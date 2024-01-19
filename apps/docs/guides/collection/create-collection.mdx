@@ -39,18 +39,29 @@ For details on the options see the [Create Collection Options](/types-reference/
 
 ### Return Value
 
-The function returns a promise that resolves to `UploadResponse` or `Transaction` depending on whether Irys is used or not.
+The function returns a promise that resolves to `UploadResponse`, `Transaction`, or `TurboUploadDataItemResponse` depending on whether Irys or Turbo are used or not.
 
--   `UploadResonse` - Returned when Irys is used. It contains feilds such as:
+-   `UploadResponse` - Returned when Irys is used. It contains fields such as:
     -   **id: `string`** - The transaction ID of the collection.
     -   **signature: `string`** - The signature used while creating the collection.
     -   **timestamp: `number`** - The timestamp of the transaction.
--   `Transaction` - Returned when Arweave is used. It contains feilds such as:
+-   `Transaction` - Returned when Arweave is used. It contains fields such as:
     -   **id: `string`** - The transaction ID of the collection.
     -   **owner: `string`** - The owner of the collection.
     -   **tags: `Tag[]`** - The tags of the collection.
     -   **data: `Uint8Array`** - The data of the collection.
     -   **signature: `string`** - The signature used while creating the collection.
+-   `TurboUploadDataItemResponse` - Returned when Turbo is used. It contains fields such as: 
+    -   **id: `string`** - The transaction ID of the collection,
+    -   **timestamp: `number`** - The timestamp of the transaction,
+    -   **winc: `string`** - The amount of Turbo Credits, in Winston Credits, spent on the upload,
+    -   **version: `string`** - The version number of the upload receipt returned,
+    -   **deadlineHeight: `number`** - The latest block height in which the uploaded data will be settled on Arweave,
+    -   **dataCaches: `array`** - A list of nodes where the data was cached while upload to Arweave is pending,
+    -   **fastFinalityIndexes: `array`** - A list of nodes where data is made available while waiting for it to settle on Arweave,
+    -   **public: `string`** - The public key of the wallet used for upload,
+    -   **signature: `string`** - The signature used while creating the collection,
+    -   **owner: `string`** - The owner of the collection.
 
 ### Example Usage
 
