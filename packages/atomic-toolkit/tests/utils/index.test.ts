@@ -7,6 +7,7 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 
 import { readFileSync } from 'fs';
+import { TurboFactory } from '@ardrive/turbo-sdk';
 const key = JSON.parse(readFileSync('./wallet.json').toString());
 
 describe('Utilities', () => {
@@ -44,6 +45,14 @@ describe('Utilities', () => {
         const toolkit = new AtomicToolkit({
             irys,
         });
+
+        const cost = await toolkit.utils.getUploadCost(10 ** 9);
+        expect(cost).toBeDefined();
+    });
+    it('should return cost to upload data using Turbo', async () => {
+        const turbo = TurboFactory.authenticated({privateKey: key})
+
+        const toolkit = new AtomicToolkit({turbo})
 
         const cost = await toolkit.utils.getUploadCost(10 ** 9);
         expect(cost).toBeDefined();
