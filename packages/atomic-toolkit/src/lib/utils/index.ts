@@ -134,10 +134,6 @@ class Utilities extends ModuleBase {
     public async uploadData(
         opts: Types.UploadDataOpts,
     ): Promise<Transaction | UploadResponse | TurboUploadDataItemResponse> {
-        if (this.turbo) {
-            console.log('Turbo exists');
-            console.log(this.turbo);
-        }
         if (this.irys) {
             const tx = uploadWithIrys({
                 irys: this.irys,
@@ -147,7 +143,6 @@ class Utilities extends ModuleBase {
             });
             return tx;
         } else if (this.turbo) {
-            console.log('using turbo');
             const tx = uploadWithTurbo({
                 turbo: this.turbo,
                 type: opts.type,
@@ -159,7 +154,6 @@ class Utilities extends ModuleBase {
             if (!this.arweave || !this.key) {
                 throw new Error('Arweave and JWK must be defined');
             }
-            console.log('using arweave');
             const tx = uploadWithArweave({
                 arweave: this.arweave,
                 jwk: this.key,

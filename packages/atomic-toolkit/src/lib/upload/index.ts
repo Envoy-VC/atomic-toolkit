@@ -99,8 +99,6 @@ const uploadWithTurbo = async (opts: Types.TurboUploadParams) => {
     const { turbo, type, data, tags } = opts;
 
     {
-        console.log('This is the upload with turbo function');
-
         let fileStreamFactory;
         let fileSizeFactory;
         let dataItemOpts: DataItemOptions = {
