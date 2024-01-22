@@ -24,7 +24,7 @@ Import the SDK:
 import AtomicToolkit from 'atomic-toolkit';
 ```
 
-## Initialize with Arweave Wallet or Irys SDK
+## Initialize with Arweave Wallet, Irys SDK, or Turbo SDK
 
 Using Arweave Wallet
 
@@ -48,6 +48,55 @@ const irys = new Irys({
 await irys.ready();
 
 const toolkit = new AtomicToolkit({ irys });
+```
+
+Using Turbo Through Irys:
+
+```ts
+import Irys from '@irys/sdk';
+
+const irys = new Irys({
+    url: 'https://up.arweave.net',
+    token: 'matic',
+    key: 'your-private-key',
+});
+
+await irys.ready();
+
+const toolkit = new AtomicToolkit({ irys });
+```
+
+Using Turbo:
+
+```ts
+const { TurboFactory } = require('@ardrive/turbo-sdk');
+const AtomicToolkit = require('atomic-toolkit').default;
+const fs = require('fs');
+
+const jwk = JSON.parse(fs.readFileSync('./KeyFile.json'));
+const turbo = TurboFactory.authenticated({ privateKey: jwk });
+
+const toolkit = new AtomicToolkit({ turbo });
+```
+
+Using Turbo in the web:
+
+```ts
+import { ArconnectSigner } from 'arbundles/web';
+import { TurboFactory } from '@ardrive/turbo-sdk/web';
+import { AtomicToolkitWeb } from 'atomic-toolkit';
+
+async function connectToolkit() {
+    await window.arweaveWallet.connect([
+        'ACCESS_PUBLIC_KEY',
+        'SIGNATURE',
+        'ACCESS_ADDRESS',
+        'SIGN_TRANSACTION',
+    ]);
+    const arConnectSigner = new ArconnectSigner(window.arweaveWallet);
+    const turbo = await TurboFactory.authenticated({ signer: arConnectSigner });
+    const toolkit = new AtomicToolkitWeb({ turbo });
+}
 ```
 
 ## Documentation

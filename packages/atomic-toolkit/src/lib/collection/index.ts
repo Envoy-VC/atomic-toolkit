@@ -23,6 +23,7 @@ import type { Tag } from 'arbundles';
 import * as Types from '../../types';
 import Transaction from 'arweave/node/lib/transaction';
 import { UploadResponse } from '@irys/sdk/build/cjs/common/types';
+import { TurboUploadDataItemResponse } from '@ardrive/turbo-sdk';
 
 class Collection extends ModuleBase {
     protected assets: AtomicAssets;
@@ -38,7 +39,7 @@ class Collection extends ModuleBase {
 
     public async createCollectionWithAssetIds(
         opts: Types.CreateCollectionWithAssetIdsOpts,
-    ): Promise<UploadResponse | Transaction> {
+    ): Promise<UploadResponse | Transaction | TurboUploadDataItemResponse> {
         const data = {
             type: 'Collection',
             items: opts.assetIds,

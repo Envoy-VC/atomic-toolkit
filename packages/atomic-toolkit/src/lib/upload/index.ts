@@ -1,6 +1,9 @@
 import { WebIrys } from '@irys/sdk';
+import { TurboFileFactory, DataItemOptions } from '@ardrive/turbo-sdk';
+
 import * as Types from '../../types/upload';
 import Mime from 'mime';
+import { Readable } from 'stream';
 
 const uploadWithIrys = async (opts: Types.IrysUploadParams) => {
     const { irys } = opts;
@@ -45,6 +48,7 @@ const uploadWithIrys = async (opts: Types.IrysUploadParams) => {
 const uploadWithArweave = async (opts: Types.ArweaveUploadParams) => {
     try {
         const { arweave, jwk, type, data, tags } = opts;
+
         let dataToUpload: string | ArrayBuffer;
         if (type === 'data' && typeof data === 'string') {
             dataToUpload = data;
@@ -91,4 +95,48 @@ const uploadWithArweave = async (opts: Types.ArweaveUploadParams) => {
     }
 };
 
-export { uploadWithArweave, uploadWithIrys };
+const uploadWithTurbo = async (opts: Types.TurboUploadParams) => {
+    const { turbo, type, data, tags } = opts;
+
+    {
+        let fileStreamFactory;
+        let fileSizeFactory;
+        let dataItemOpts: DataItemOptions = {
+            tags: tags.map((tag) => ({ name: tag.name, value: tag.value })),
+        };
+
+        if (data instanceof File) {
+            // Browser environment, data is a File object
+            fileStreamFactory = () => data.stream() as unknown as Readable;
+            fileSizeFactory = () => data.size;
+        } else if (type === 'data' && typeof data === 'string') {
+            // Handling raw data as a string
+            const buffer = Buffer.from(data);
+            fileStreamFactory = () => Readable.from(buffer);
+            fileSizeFactory = () => buffer.length;
+        } else if (type === 'file' && typeof data === 'string') {
+            // Node.js environment, data is assumed to be a file path
+            const fs = require('fs');
+            fileStreamFactory = () => fs.createReadStream(data);
+            fileSizeFactory = () => fs.statSync(data).size;
+        } else {
+            throw new Error('Invalid type or data format');
+        }
+
+        const uploadParams: TurboFileFactory = {
+            fileStreamFactory,
+            fileSizeFactory,
+            dataItemOpts,
+        };
+
+        try {
+            // Perform file upload using Turbo SDK
+            const tx = await turbo.uploadFile(uploadParams);
+            return tx;
+        } catch (error) {
+            throw new Error(String(error));
+        }
+    }
+};
+
+export { uploadWithArweave, uploadWithIrys, uploadWithTurbo };

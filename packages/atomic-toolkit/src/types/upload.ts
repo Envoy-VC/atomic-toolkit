@@ -2,6 +2,7 @@ import Arweave from 'arweave';
 import { Tag } from 'arbundles';
 import Irys, { WebIrys } from '@irys/sdk';
 import { JWKInterface } from 'arweave/node/lib/wallet';
+import { TurboAuthenticatedClientInterface } from '@ardrive/turbo-sdk';
 
 export type ArweaveUploadParams = {
     arweave: Arweave;
@@ -34,6 +35,13 @@ export type WebIrysUploadParams = {
 
 export type IrysUploadParams = {
     irys: WebIrys | Irys;
+    type: 'data' | 'file';
+    data: string | File;
+    tags: Tag[];
+};
+
+export type TurboUploadParams = {
+    turbo: TurboAuthenticatedClientInterface;
     type: 'data' | 'file';
     data: string | File;
     tags: Tag[];

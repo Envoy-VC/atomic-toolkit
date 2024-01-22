@@ -9,6 +9,7 @@ This section walks through the steps to use Atomic Toolkit in a browser applicat
 
 1. Using Injected Arweave Wallet
 2. Using WebIrys
+3. Using Turbo
 
 ## Using Injected Arweave Wallet
 
@@ -150,3 +151,32 @@ const webIrys = await getWebIrys();
 
 const toolkit = new AtomicToolkitWeb({ warp: warp, irys: webIrys });
 ```
+
+## Using Turbo
+
+This uses an authenticated Turbo instance for uploading data using Turbo credits.
+
+```ts
+import { ArconnectSigner } from 'arbundles/web';
+import { TurboFactory } from '@ardrive/turbo-sdk/web';
+import { AtomicToolkitWeb } from 'atomic-toolkit';
+
+async function connectToolkit() {
+    await window.arweaveWallet.connect([
+        'ACCESS_PUBLIC_KEY',
+        'SIGNATURE',
+        'ACCESS_ADDRESS',
+        'SIGN_TRANSACTION',
+    ]);
+    const arConnectSigner = new ArconnectSigner(window.arweaveWallet);
+    const turbo = await TurboFactory.authenticated({ signer: arConnectSigner });
+    const toolkit = new AtomicToolkitWeb({ turbo });
+}
+```
+
+### Input Parameters
+
+The following params are available and they must be passed in as an object:
+
+-   **warp (optional)**: `Warp`: A Warp Instance to use with Deploy Plugin. If not provided, the default Warp instance for Mainnet will be used.
+-   **turbo**: `TurboAuthenticatedClient`: An authenticated Turbo Instance to use for uploading data.

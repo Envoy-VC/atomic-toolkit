@@ -165,3 +165,23 @@ const toolkit = new AtomicToolkit({
     warp,
 });
 ```
+
+## Using Turbo SDK
+
+```ts
+import { TurboFactory } from '@ardrive/turbo-sdk';
+import AtomicToolkit from 'atomic-toolkit';
+import fs from 'fs';
+
+const jwk = JSON.parse(fs.readFileSync('./KeyFile.json'));
+
+const turbo = TurboFactory.authenticated({ privateKey: jwk });
+const toolkit = new AtomicToolkit({ turbo });
+```
+
+### Input Parameters
+
+The following params are available for this function and they must be passed in as an object:
+
+-   **warp (optional)**: `Warp`: A Warp Instance to use with Deploy Plugin. If not provided, the default Warp instance for Mainnet will be used.
+-   **turbo**: An authenticated Turbo instance to use for uploading with Turbo.
