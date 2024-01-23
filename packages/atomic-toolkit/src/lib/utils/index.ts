@@ -173,6 +173,7 @@ class Utilities extends ModuleBase {
         }
         const url = this.irys.api.config.url.href;
 
+        // Checks for Turbo urls being used in Irys
         if (
             url.includes('up.arweave.net') ||
             url.includes('turbo.ardrive.io')
