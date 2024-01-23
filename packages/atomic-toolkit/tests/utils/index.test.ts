@@ -50,9 +50,9 @@ describe('Utilities', () => {
         expect(cost).toBeDefined();
     });
     it('should return cost to upload data using Turbo', async () => {
-        const turbo = TurboFactory.authenticated({privateKey: key})
+        const turbo = TurboFactory.authenticated({ privateKey: key });
 
-        const toolkit = new AtomicToolkit({turbo})
+        const toolkit = new AtomicToolkit({ turbo });
 
         const cost = await toolkit.utils.getUploadCost(10 ** 9);
         expect(cost).toBeDefined();

@@ -51,7 +51,9 @@ class Utilities extends ModuleBase {
 
         if (this.irys) {
             await this.irys.ready();
-            const b = await this.irys.getLoadedBalance();
+            let b = await this.irys.getLoadedBalance();
+            if (b.isNaN()) b = BigNumber(0);
+
             const c = await this.irys.getPrice(size);
             const a = c.minus(b);
 
