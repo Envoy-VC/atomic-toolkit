@@ -73,7 +73,7 @@ const { TurboFactory } = require('@ardrive/turbo-sdk');
 const AtomicToolkit = require('atomic-toolkit').default;
 const fs = require('fs');
 
-const jwk = JSON.parse(fs.readFileSync('./KeyFile.json'));
+const jwk = JSON.parse(fs.readFileSync('./KeyFile.json').toString());
 const turbo = TurboFactory.authenticated({ privateKey: jwk });
 
 const toolkit = new AtomicToolkit({ turbo });
