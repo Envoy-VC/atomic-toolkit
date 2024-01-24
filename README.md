@@ -56,7 +56,7 @@ Using Turbo Through Irys:
 import Irys from '@irys/sdk';
 
 const irys = new Irys({
-    url: 'https://up.arweave.net',
+    url: 'https://turbo.ardrive.io',
     token: 'matic',
     key: 'your-private-key',
 });

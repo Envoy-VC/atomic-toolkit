@@ -36,7 +36,7 @@ describe('Utilities', () => {
     });
     it('should return cost to upload data using irys through Turbo', async () => {
         const irys = new Irys({
-            url: 'https://up.arweave.net',
+            url: 'https://turbo.ardrive.io',
             token: 'matic',
             key: process.env.PRIVATE_KEY,
         });

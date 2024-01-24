@@ -172,11 +172,26 @@ class Utilities extends ModuleBase {
             throw new Error('Irys is not defined');
         }
         const url = this.irys.api.config.url.href;
+
+        // Checks for Turbo urls being used in Irys
+        if (
+            url.includes('up.arweave.net') ||
+            url.includes('turbo.ardrive.io')
+        ) {
+            return 'arweave';
+        }
+
         const node = url?.split('https://')[1]?.split('.irys.xyz')[0];
         if (node === 'devnet') {
             throw new Error('Only Node1 and Node2 are supported');
         }
-        return node as 'node1' | 'node2';
+
+        if (node === 'node1' || node === 'node2') {
+            return node;
+        }
+
+        // Catch-all error for unexpected URLs
+        throw new Error('Unrecognized or unsupported URL');
     }
 }
 
