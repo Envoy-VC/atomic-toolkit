@@ -171,7 +171,8 @@ class Utilities extends ModuleBase {
         if (!this.irys) {
             throw new Error('Irys is not defined');
         }
-        const url = this.irys.api.config.url.href;
+        const url = this.irys.url.host;
+        console.log(url);
 
         // Checks for Turbo urls being used in Irys
         if (
@@ -181,7 +182,7 @@ class Utilities extends ModuleBase {
             return 'arweave';
         }
 
-        const node = url?.split('https://')[1]?.split('.irys.xyz')[0];
+        const node = url.split('.')[0];
         if (node === 'devnet') {
             throw new Error('Only Node1 and Node2 are supported');
         }
