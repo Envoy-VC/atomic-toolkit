@@ -1,8 +1,17 @@
 {
     "name": "atomic-toolkit",
     "version": "0.2.0",
-    "description": "Toolkit for creating Atomic Assets on Arweave using Warp Contracts",
+    "description": "Toolkit for creating spec-compliant atomic assets on arweave.",
+    "repository": "https://github.com/Envoy-VC/atomic-toolkit/packages/atomic-toolkit",
     "private": false,
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Envoy-VC/atomic-toolkit/issues"
+    },
+    "author": "Vedant Chainani <vedantchainani1084@gmail.com>",
+    "engines": {
+        "node": ">=18"
+    },
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
@@ -12,7 +21,8 @@
     "scripts": {
         "dev": "vitest",
         "test": "vitest run",
-        "build": "tsup",
+        "build": "tsup && pnpm run postbuild",
+        "postbuild": "cp README.md dist/",
         "lint": "tsc",
         "ci": "pnpm run lint && pnpm run test && pnpm run build",
         "release": "pnpm run lint && pnpm run test && pnpm run build && changeset publish",
@@ -25,8 +35,6 @@
         "warp",
         "contracts"
     ],
-    "author": "Vedant Chainani",
-    "license": "MIT",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
@@ -43,6 +51,7 @@
         "@types/node": "^18.19.3",
         "@urql/core": "^4.2.2",
         "bignumber.js": "^9.1.2",
+        "cpy-cli": "^5.0.0",
         "dotenv": "^16.3.1",
         "ethers": "v5",
         "mime": "^4.0.0",
