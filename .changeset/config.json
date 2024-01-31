@@ -6,6 +6,5 @@
     "linked": [],
     "access": "public",
     "updateInternalDependencies": "patch",
-    "ignore": ["atomic-toolkit-demo"],
     "baseBranch": "main"
 }
