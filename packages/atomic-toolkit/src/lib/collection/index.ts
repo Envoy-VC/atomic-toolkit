@@ -6,13 +6,12 @@ import GraphQL from '../graphql';
 import Utilities from '../utils';
 
 // Helper functions
+import { retryOperation } from '../warp';
 import {
     buildAssetTags,
     buildCollectionTags,
     buildTradableAssetTags,
 } from '../tags';
-import { ContractDeploy } from 'warp-contracts';
-import { retryOperation } from '../warp';
 
 // GraphQL
 import { GetCollectionQuery } from '../../../generated/graphql';
@@ -77,11 +76,20 @@ class Collection extends ModuleBase {
             files = opts.assets;
         }
 
-        const progressPerStep: number = 100 / (files.length + 3);
+        const progressPerStep: number = 100 / (files.length + 4);
 
         const mutateAsync = async () => {
             try {
-                const totalSize = this.utils.getDirectorySize(opts.assets);
+                const assetsSize = this.utils.getDirectorySize(opts.assets);
+                const thumbnailSize = this.utils.getDirectorySize(
+                    opts.thumbnail instanceof File
+                        ? [opts.thumbnail]
+                        : opts.thumbnail,
+                );
+                const bannerSize = this.utils.getDirectorySize(
+                    opts.banner instanceof File ? [opts.banner] : opts.banner,
+                );
+                const totalSize = assetsSize + thumbnailSize + bannerSize;
                 const cost = await this.utils.getUploadCost(totalSize);
                 if (parseInt(cost.additional.atomic) > 0) {
                     throw new Error(
@@ -90,6 +98,7 @@ class Collection extends ModuleBase {
                         } atomic assets`,
                     );
                 }
+
                 // Upload Thumbnail and Banner
                 progress = 'uploading-thumbnail';
                 callback({ step: progress, progress: 0 });
@@ -143,20 +152,52 @@ class Collection extends ModuleBase {
                         license: opts.license,
                         indexWithUCM: true,
                     };
-                    const tx = await this.assets.createAtomicAsset(
+
+                    const tags = buildTradableAssetTags(
                         files[index]!,
                         tradableAssetOpts,
                     );
-                    assetUploadPromises.push(tx.contractTxId);
+                    const tx = await this.utils.uploadData({
+                        type: 'file',
+                        data: files[index]!,
+                        tags,
+                    });
+                    assetUploadPromises.push(tx.id);
                 }
 
                 const assetIds = await Promise.all(assetUploadPromises);
+
+                // Register all atomic assets
+                progress = 'registering-assets';
+                callback({
+                    step: progress,
+                    progress: progressPerStep * (files.length + 2),
+                });
+                const assetRegistrationPromises = [];
+
+                for (let index = 0; index < assetIds.length; index++) {
+                    const assetId = assetIds[index]!;
+                    const maxAttempts = 7;
+                    const delayBetweenAttempts = 5000;
+
+                    const node = this.irys
+                        ? this.utils.getIrysNode()
+                        : 'arweave';
+                    const result = await retryOperation(
+                        () => this.warp.register(assetId, node),
+                        maxAttempts,
+                        delayBetweenAttempts,
+                    );
+                    assetRegistrationPromises.push(result.contractTxId);
+                }
+
+                await Promise.all(assetRegistrationPromises);
 
                 // Create Collection
                 progress = 'creating-collection';
                 callback({
                     step: progress,
-                    progress: progressPerStep * (files.length + 2),
+                    progress: progressPerStep * (files.length + 3),
                 });
                 const res = this.createCollectionWithAssetIds({
                     assetIds,
